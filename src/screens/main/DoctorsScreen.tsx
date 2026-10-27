@@ -19,7 +19,8 @@ export default function DoctorsScreen({ navigation }: any) {
     setLoading(true);
     try {
       const res = await getDoctors(selectedSpec || undefined);
-      setDoctors(res.data || []);
+      console.log(res.data)
+      setDoctors(res.data.doctors || []);
     } catch {
       setDoctors([]);
     } finally {

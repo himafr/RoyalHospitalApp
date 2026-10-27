@@ -10,20 +10,30 @@ interface Props {
 
 export default function FilterChips({ selected, onSelect }: Props) {
   return (
-    <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.container}>
+    <ScrollView
+      horizontal
+      showsHorizontalScrollIndicator={false}
+      contentContainerStyle={styles.container}
+    >
       <TouchableOpacity
         style={[styles.chip, selected === '' && styles.chipActive]}
         onPress={() => onSelect('')}
       >
-        <Text style={[styles.text, selected === '' && styles.textActive]}>الكل</Text>
+        <Text style={[styles.text, selected === '' && styles.textActive]}>
+          الكل
+        </Text>
       </TouchableOpacity>
-      {SPECIALTIES.map((spec) => (
+      {SPECIALTIES.map(spec => (
         <TouchableOpacity
           key={spec.id}
           style={[styles.chip, selected === spec.id && styles.chipActive]}
           onPress={() => onSelect(spec.id)}
         >
-          <Text style={[styles.text, selected === spec.id && styles.textActive]}>{spec.label}</Text>
+          <Text
+            style={[styles.text, selected === spec.id && styles.textActive]}
+          >
+            {spec.label}
+          </Text>
         </TouchableOpacity>
       ))}
     </ScrollView>
@@ -31,7 +41,14 @@ export default function FilterChips({ selected, onSelect }: Props) {
 }
 
 const styles = StyleSheet.create({
-  container: { paddingHorizontal: spacing.md, paddingVertical: spacing.sm, gap: spacing.sm, flexDirection: 'row' },
+  container: {
+    paddingHorizontal: spacing.md,
+    paddingVertical: spacing.sm,
+    gap: spacing.sm,
+    flexDirection: 'row',
+    height:50
+    
+  },
   chip: {
     paddingHorizontal: spacing.md,
     paddingVertical: spacing.xs,
@@ -41,6 +58,7 @@ const styles = StyleSheet.create({
     backgroundColor: colors.white,
     marginRight: spacing.sm,
     minWidth: 80,
+    height:30,
     alignItems: 'center',
   },
   chipActive: { backgroundColor: colors.primary, borderColor: colors.primary },
