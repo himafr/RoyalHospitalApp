@@ -1,3 +1,9 @@
 import client from './client';
-export const getServices = (specialty?: string) =>
-  client.get('/api/services', { params: { specialty } });
+interface GetServicesParams {
+  page: number;
+  size: number;
+  specialty?: string;
+}
+
+export const getServices = (params: GetServicesParams) =>
+  client.get('/api/services', { params });

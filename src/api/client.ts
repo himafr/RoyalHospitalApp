@@ -17,7 +17,7 @@ client.interceptors.request.use(async (config) => {
 });
 
 client.interceptors.response.use(
-  (res) => res,
+  (res) => res.data,
   async (error) => {
     if (error.response?.status === 401) {
       await AsyncStorage.removeItem('auth_token');

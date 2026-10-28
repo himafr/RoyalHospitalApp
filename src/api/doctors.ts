@@ -1,3 +1,9 @@
 import client from './client';
-export const getDoctors = (specialty?: string) =>
-  client.get('/api/doctors', { params: { specialty } });
+interface GetDoctorsParams {
+  page: number;
+  size: number;
+  specialty?: string;
+}
+
+export const getDoctors = (params:GetDoctorsParams) =>
+  client.get('/api/doctors', { params });
