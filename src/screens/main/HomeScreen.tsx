@@ -10,8 +10,8 @@ import Icon from 'react-native-vector-icons/Ionicons';
 import { useAuth } from '../../context/AuthContext';
 import { colors, spacing, radius } from '../../theme';
 
-export default function HomeScreen() {
-  const { fullName, signOut } = useAuth();
+export default  function HomeScreen() {
+  const { fullName, signOut ,isVerified} = useAuth();
 
   return (
     <ScrollView >
@@ -29,6 +29,7 @@ export default function HomeScreen() {
         </Text>
         <Text style={styles.heroSub}>
           نقدم أفضل الخدمات الطبية بأحدث التقنيات لضمان صحتكم وسلامتكم.
+          { isVerified() }
         </Text>
       </View>
 

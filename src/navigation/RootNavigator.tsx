@@ -6,6 +6,7 @@ import { useAuth } from '../context/AuthContext';
 import AuthStack from './AuthStack';
 import MainTabs from './MainTabs';
 import { colors } from '../theme';
+import ActivateScreen from '../screens/auth/ActivateScreen';
 
 const Stack = createNativeStackNavigator();
 
@@ -16,7 +17,26 @@ export default function RootNavigator() {
   return (
     <NavigationContainer>
       <Stack.Navigator screenOptions={{ headerShown: false }}>
-        {!isAuthenticated ? <Stack.Screen name="Auth" component={AuthStack} /> : <Stack.Screen name="Main" component={MainTabs} />}
+          {!isAuthenticated ? (
+          <Stack.Screen name="Auth" component={AuthStack} />
+        ) : (
+          <>
+            <Stack.Screen name="Main" component={MainTabs} />
+            
+            <Stack.Screen 
+              name="Activate" 
+              component={ActivateScreen} 
+              options={{ 
+                presentation: 'modal', 
+                headerShown: true,
+                title: 'تفعيل الحساب',
+                headerTintColor: colors.primary,
+                headerStyle: { backgroundColor: colors.white },
+              }} 
+            />
+          </>
+        )}
+
       </Stack.Navigator>
     </NavigationContainer>
   );

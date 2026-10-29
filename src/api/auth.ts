@@ -5,8 +5,11 @@ export const login = (email: string, password: string) =>
 
 export const signup = (data: any) => client.post('/api/auth/signup', data);
 export const doctorSignup = (data: any) => client.post('/api/auth/doctor-signup', data);
-export const sendActivationCode = (email: string) =>
-  client.post('/api/auth/activate', { email });
-export const verifyActivationCode = (email: string, pin: string) =>
-  client.put('/api/auth/activate', { email, pin });
+
+export const sendActivationCode = () =>
+  client.post('/api/activation');
+
+export const verifyActivationCode = (pin: string) =>
+  client.put('/api/activation', { pin });
+
 export const logout = () => client.post('/api/auth/logout');

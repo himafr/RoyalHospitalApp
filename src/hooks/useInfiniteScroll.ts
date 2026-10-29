@@ -35,7 +35,6 @@ export default function useInfiniteScroll({
       }
 
       try {
-        await new Promise(resolve => setTimeout(resolve, 3000));
 
         const res = await fetchApi({
           page: pageNum,

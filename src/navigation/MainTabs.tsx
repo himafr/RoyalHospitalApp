@@ -6,16 +6,21 @@ import AppointmentScreen from '../screens/main/AppointmentScreen';
 import DoctorsScreen from '../screens/main/DoctorsScreen';
 import HomeScreen from '../screens/main/HomeScreen';
 import ServicesScreen from '../screens/main/ServicesScreen';
+import { useAuth } from '../context/AuthContext';
+import DoctorHomeScreen from '../screens/main/DoctorHomeScreen';
+import PatientHomeScreen from '../screens/main/PatientHomeScreen';
 
 const Tab = createBottomTabNavigator();
 
 export default function MainTabs() {
+  const {role}=useAuth()
+  const isDoctor=role=="DOCTOR"
    return (
     <Tab.Navigator
       tabBar={(props) => <CustomTabBar {...props} />}
       screenOptions={{ headerShown: false }}
     >
-      <Tab.Screen name="HomeTab" component={HomeScreen} />
+      <Tab.Screen name="HomeTab" component={isDoctor?DoctorHomeScreen:PatientHomeScreen} />
       <Tab.Screen name="AboutTab" component={AboutScreen} />
       <Tab.Screen name="AppointmentTab" component={AppointmentScreen} />
       <Tab.Screen name="ServicesTab" component={ServicesScreen} />

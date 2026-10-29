@@ -16,8 +16,8 @@ import { colors, spacing, radius } from '../../theme';
 
 export default function LoginScreen({ navigation }: any) {
   const { login } = useAuth();
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
+  const [email, setEmail] = useState('hema@sallem.com');
+  const [password, setPassword] = useState('12345678');
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
 
