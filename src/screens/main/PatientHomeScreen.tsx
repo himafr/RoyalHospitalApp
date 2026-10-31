@@ -1,535 +1,276 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   View,
   Text,
   StyleSheet,
   ScrollView,
   TouchableOpacity,
-  FlatList,
+  ActivityIndicator,
 } from 'react-native';
 import Ionicons from 'react-native-vector-icons/Ionicons';
-import { colors, spacing, radius, shadow } from '../../theme';
-import VerifyMessage from '../../components/VerifyMessage';
 import { useAuth } from '../../context/AuthContext';
-
-const features = [
-  {
-    icon: 'hardware-chip-outline',
-    title: 'أحدث المعدات الطبية',
-    desc: 'نستخدم أحدث التقنيات وأفضل الأجهزة لضمان التشخيص والعلاج الدقيق والسريع.',
-  },
-  {
-    icon: 'people-outline',
-    title: 'فريق طبي متخصص',
-    desc: 'أطباء استشاريون ذوو خبرة عالية وشهادات معتمدة في مختلف التخصصات الطبية.',
-  },
-  {
-    icon: 'document-text-outline',
-    title: 'متابعة دقيقة للحالات',
-    desc: 'نظام ملفات إلكتروني متكامل لمتابعة تاريخك المرضي وتطورات حالتك بدقة متناهية.',
-  },
-  {
-    icon: 'alarm-outline',
-    title: 'تذكير تلقائي بالمواعيد',
-    desc: 'نرسل رسائل تذكيرية نصية وعبر التطبيق لضمان عدم تفويت مواعيدك المهمة.',
-  },
-];
-
-const services = [
-  {
-    icon: 'medkit-outline',
-    title: 'الاستشارات الطبية',
-    desc: 'احصل على تشخيص دقيق وخطة علاجية مخصصة لحالتك من قبل نخبة من الاستشاريين في كا...',
-  },
-  {
-    icon: 'flask-outline',
-    title: 'الإجراءات الطبية',
-    desc: 'خدمات التحاليل المخبرية والأشعة والإجراءات البسيطة التي تتم داخل العيادة بأعلى...',
-  },
-  {
-    icon: 'refresh-circle-outline',
-    title: 'المتابعة الدورية',
-    desc: 'برامج فحص دوري شاملة للأفراد والعائلات للتأكد من الصحة العامة والكشف المبكر',
-  },
-  {
-    icon: 'fitness-outline',
-    title: 'برامج العلاج',
-    desc: 'خطط علاجية طويلة وقصيرة المدى، تشمل العلاج الطبيعي والتأهيلي تحت إشراف',
-  },
-];
-
-const testimonials = [
-  {
-    name: 'أحمد المحمدي',
-    text: 'تجربة ممتازة جداً. الطاقم الطبي محترف والتعامل راقي. والأهم من ذلك دقة المواعيد والنظافة العامة للعيادة. أنصح بها بشدة.',
-  },
-  {
-    name: 'سارة العتيبي',
-    text: 'أفضل عيادة زرتها. الاهتمام بالتفاصيل والرعاية الإنسانية لا مثيل لها.',
-  },
-  {
-    name: 'خالد الفيصل',
-    text: 'خدمة راقية وتشخيص دقيق. أنصح الجميع بزيارة عيادة الشفاء.',
-  },
-];
+import { colors, spacing, radius, shadow } from '../../theme';
+import { User } from '../../../types/user';
+import useUser from '../../hooks/useUser';
+import SmallIndicator from '../../components/SmallIndicator';
 
 export default function PatientHomeScreen({ navigation }: any) {
-  const { isVerified , signOut} = useAuth();
+  const { email, fullName } = useAuth();
+  const { data: user, loading } = useUser();
   return (
-    <ScrollView style={styles.root} showsVerticalScrollIndicator={false}>
-      <View style={styles.header}>
-        <View style={styles.logoCircle}>
-          <Ionicons name="medkit" size={22} color={colors.gold} />
+    <>
+      <View style={styles.welcomeHeader}>
+        <View style={styles.avatar}>
+          <Ionicons name="person" size={40} color={colors.gold} />
         </View>
-        <Text style={styles.brand}>عيادة الشفاء </Text>
-        <VerifyMessage isVerified={isVerified()} navigation={navigation} />
+        <View style={{ flex: 1, alignItems: 'flex-end' }}>
+          <Text style={styles.welcomeTitle}>
+            أهلاً بك، {fullName || email?.split('@')[0]}
+          </Text>
+          <Text style={styles.welcomeSub}>مريض ذهبي</Text>
+        </View>
       </View>
 
-      <View style={styles.hero}>
-        <Text style={styles.heroTitle}>
-          رعاية طبية
-          <Text style={{ color: colors.gold }}>باحترافية وثقة</Text>
-        </Text>
-        <Text style={styles.heroSub}>
-          نقدم أفضل الخدمات الطبية بأحدث التقنيات لضمان صحتكم وسلامتكم. فريقنا
-          الطبي المتخصص جاهز لخدمتكم على مدار الساعة لضمان راحة بالكم.
-        </Text>
-
-        <View style={styles.heroBtns}>
-          <TouchableOpacity
-            style={styles.btnPrimary}
-            onPress={() => navigation.navigate('AppointmentTab')}
-          >
-            <Text style={styles.btnPrimaryText}>احجز موعدك الان</Text>
-          </TouchableOpacity>
-          <TouchableOpacity
-            style={styles.btnSecondary}
-            onPress={() => navigation.navigate('AboutTab')}
-          >
-            <Text style={styles.btnSecondaryText}>تعرف علينا</Text>
-          </TouchableOpacity>
-        </View>
-
-        {/* التقييم والصور الرمزية */}
-        <View style={styles.ratingRow}>
-          <View style={styles.avatarGroup}>
-            {[1, 2, 3].map(i => (
-              <View key={i} style={styles.avatarMini}>
-                <Ionicons name="person" size={14} color={colors.gold} />
-              </View>
-            ))}
+      <ScrollView style={styles.root} showsVerticalScrollIndicator={false}>
+        {/* 2. المعلومات الشخصية */}
+        <View style={styles.card}>
+          <View style={styles.cardHeader}>
+            <Text style={styles.cardTitle}>المعلومات الشخصية</Text>
+            <TouchableOpacity
+              onPress={() => navigation.navigate('EditPersonalDetails')}
+            >
+              <Ionicons name="pencil" size={20} color={colors.gold} />
+            </TouchableOpacity>
           </View>
-          <View style={{ alignItems: 'flex-end' }}>
-            <View style={{ flexDirection: 'row-reverse' }}>
-              {[1, 2, 3, 4, 5].map(i => (
-                <Ionicons key={i} name="star" size={12} color={colors.gold} />
-              ))}
+          <View style={styles.infoGrid}>
+            <View style={styles.infoItem}>
+              <Text style={styles.infoLabel}>الاسم الكامل</Text>
+              <Text style={styles.infoValue}>
+                {loading ? <SmallIndicator /> : user?.fullName || 'غير محدد'}
+              </Text>
             </View>
-            <Text style={styles.ratingText}>أكثر من 5000 مريض سعيد</Text>
+            <View style={styles.infoItem}>
+              <Text style={styles.infoLabel}>البريد الإلكتروني</Text>
+              <Text style={styles.infoValue}>
+                {loading ? <SmallIndicator /> : email || 'غير محدد'}
+              </Text>
+            </View>
+            <View style={styles.infoItem}>
+              <Text style={styles.infoLabel}>رقم الجوال</Text>
+              <Text style={styles.infoValue}>
+                {loading ? <SmallIndicator /> : user?.phoneNumber || 'غير محدد'}
+              </Text>
+            </View>
+            <View style={styles.infoItem}>
+              <Text style={styles.infoLabel}>تاريخ الميلاد</Text>
+              <Text style={styles.infoValue}>
+                {loading ? <SmallIndicator /> : user?.dateOfBirth || 'غير محدد'}
+              </Text>
+            </View>
+            <View style={styles.infoItem}>
+              <Text style={styles.infoLabel}>الجنس</Text>
+              <Text style={styles.infoValue}>
+                {loading ? <SmallIndicator /> : user?.gender || 'غير محدد'}
+              </Text>
+            </View>
+            <View style={styles.infoItem}>
+              <Text style={styles.infoLabel}>العنوان</Text>
+              <Text style={styles.infoValue}>
+                {loading ? <SmallIndicator /> : user?.address || 'غير محدد'}
+              </Text>
+            </View>
           </View>
         </View>
-      </View>
 
-      {/* 3. لماذا تختار عيادتنا؟ (Features) */}
-      <View style={styles.section}>
-        <Text style={styles.sectionTitle}>لماذا تختار عيادتنا؟</Text>
-        <Text style={styles.sectionSub}>
-          نتميز بتقديم خدمات طبية عالية الجودة مع التركيز على راحة المريض ودقة
-          التشخيص.
-        </Text>
-
-        <FlatList
-          data={features}
-          scrollEnabled={false}
-          keyExtractor={i => i.title}
-          renderItem={({ item }) => (
-            <View style={styles.featureCard}>
-              <View style={styles.featureIcon}>
-                <Ionicons
-                  name={item.icon as any}
-                  size={24}
-                  color={colors.gold}
-                />
-              </View>
-              <View style={{ flex: 1 }}>
-                <Text style={styles.featureTitle}>{item.title}</Text>
-                <Text style={styles.featureDesc}>{item.desc}</Text>
-              </View>
-            </View>
-          )}
-        />
-      </View>
-
-      {/* 4. خدماتنا الطبية (Services) */}
-      <View style={[styles.section, { backgroundColor: colors.bgGray }]}>
-        <View style={styles.servicesHeader}>
-          <Text style={styles.sectionTitle}>خدماتنا الطبية</Text>
-          <TouchableOpacity onPress={() => navigation.navigate('ServicesTab')}>
-            <Text style={styles.linkText}>عرض جميع الخدمات</Text>
-          </TouchableOpacity>
-        </View>
-        <Text style={styles.sectionSub}>
-          نغطي كافة احتياجاتك الصحية تحت سقف واحد
-        </Text>
-
-        <FlatList
-          data={services}
-          scrollEnabled={false}
-          keyExtractor={i => i.title}
-          renderItem={({ item }) => (
-            <View style={styles.serviceCard}>
-              <View style={styles.serviceIconBox}>
-                <Ionicons
-                  name={item.icon as any}
-                  size={28}
-                  color={colors.gold}
-                />
-              </View>
-              <Text style={styles.serviceTitle}>{item.title}</Text>
-              <Text style={styles.serviceDesc}>{item.desc}</Text>
-              <TouchableOpacity
-                style={styles.detailsBtn}
-                onPress={() => navigation.navigate('ServicesTab')}
-              >
-                <Text style={styles.detailsText}>التفاصيل</Text>
-                <Ionicons name="arrow-back" size={14} color={colors.gold} />
-              </TouchableOpacity>
-            </View>
-          )}
-        />
-      </View>
-
-      {/* 5. آراء المرضى (Testimonials) */}
-      <View style={styles.section}>
-        <Text style={[styles.sectionTitle, { textAlign: 'center' }]}>
-          آراء المرضى
-        </Text>
-        <Text style={[styles.sectionSub, { textAlign: 'center' }]}>
-          قصص نجاح مرضانا
-        </Text>
-
-        {testimonials.map((t, i) => (
-          <View key={i} style={styles.testimonialCard}>
-            <View style={styles.testimonialHeader}>
-              <View style={styles.avatarMini}>
-                <Ionicons name="person" size={18} color={colors.gold} />
-              </View>
-              <View style={{ alignItems: 'flex-end' }}>
-                <Text style={styles.testimonialName}>{t.name}</Text>
-                <View style={{ flexDirection: 'row-reverse' }}>
-                  {[1, 2, 3, 4, 5].map(s => (
-                    <Ionicons
-                      key={s}
-                      name="star"
-                      size={10}
-                      color={colors.gold}
-                    />
-                  ))}
-                </View>
-              </View>
-            </View>
-            <Text style={styles.testimonialText}>"{t.text}"</Text>
+        {/* 3. المواعيد */}
+        <View style={styles.card}>
+          <View style={styles.cardHeader}>
+            <Text style={styles.cardTitle}>مواعيدي القادمة والسابقة</Text>
+            <TouchableOpacity>
+              <Ionicons name="eye" size={20} color={colors.gold} />
+            </TouchableOpacity>
           </View>
-        ))}
-      </View>
-
-      {/* 6. CTA (ابدأ رحلتك) */}
-      <View style={styles.cta}>
-        <Text style={styles.ctaTitle}>تواصل معنا وابدأ رحلتك العلاجية</Text>
-        <Text style={styles.ctaSub}>
-          صحتك هي استثمارك الأهم. لا تتردد في التواصل معنا للحصول على استشارة
-          فورية أو حجز موعد يناسبك.
-        </Text>
-        <View style={styles.ctaBtns}>
-          <TouchableOpacity
-            style={styles.ctaBtn}
-            onPress={() => navigation.navigate('AppointmentTab')}
-          >
-            <Text style={styles.ctaBtnText}>احجز موعدك الآن</Text>
-          </TouchableOpacity>
-          <TouchableOpacity
-            style={styles.ctaBtnSecondary}
-            onPress={() => {
-              /* اتصال */
-            }}
-          >
-            <Ionicons name="call" size={20} color={colors.white} />
-            <Text style={styles.ctaBtnSecondaryText}>اتصل بنا</Text>
-          </TouchableOpacity>
+          <View style={styles.emptyBox}>
+            <Text style={styles.emptyText}>لا توجد مواعيد مجدولة حالياً.</Text>
+          </View>
         </View>
-      </View>
-      <TouchableOpacity style={styles.logoutBtn} onPress={signOut}>
-        <Ionicons name="log-out-outline" size={20} color={colors.white} />
-        <Text style={styles.logoutText}>تسجيل الخروج</Text>
-      </TouchableOpacity>
-      <View style={{ height: 100 }} />
-    </ScrollView>
+
+        {/* 4. الملف الطبي */}
+        <View style={styles.card}>
+          <View style={styles.cardHeader}>
+            <Text style={styles.cardTitle}>الملف الطبي</Text>
+            <TouchableOpacity
+              onPress={() => navigation.navigate('EditMedicalRecord')}
+            >
+              <Ionicons name="pencil" size={20} color={colors.gold} />
+            </TouchableOpacity>
+          </View>
+          <View style={styles.cardBody}>
+            <View style={styles.rowBetween}>
+              <Text style={styles.infoLabel}>فصيلة الدم</Text>
+              {/* <View style={styles.badgeGreen}><Text style={styles.badgeGreenText}>{user?.bloodType || 'غير معروفة'}</Text></View> */}
+            </View>
+            <View style={styles.rowBetween}>
+              <Text style={styles.infoLabel}>الحساسية</Text>
+              <Text style={styles.infoValue}>لا توجد</Text>
+            </View>
+            <View style={styles.rowBetween}>
+              <Text style={styles.infoLabel}>الأمراض المزمنة</Text>
+              <Text style={styles.infoValue}>لا توجد</Text>
+            </View>
+            <View style={styles.rowBetween}>
+              <Text style={styles.infoLabel}>الأدوية الحالية</Text>
+              <Text style={styles.infoValue}>لا توجد</Text>
+            </View>
+          </View>
+        </View>
+
+        {/* 5. اتصال الطوارئ */}
+        <View style={styles.card}>
+          <View style={styles.cardHeader}>
+            <Text style={styles.cardTitle}>اتصال الطوارئ</Text>
+            <TouchableOpacity>
+              <Ionicons name="pencil" size={20} color={colors.gold} />
+            </TouchableOpacity>
+          </View>
+          <View style={styles.cardBody}>
+            {/* <View style={styles.rowBetween}><Text style={styles.infoLabel}>الاسم</Text><Text style={styles.infoValue}>{user?.emergencyContactName || 'غير محدد'}</Text></View> */}
+            {/* <View style={styles.rowBetween}><Text style={styles.infoLabel}>رقم الجوال</Text><Text style={styles.infoValue}>{user?.emergencyContactPhone || 'غير محدد'}</Text></View> */}
+            <View style={styles.warningBox}>
+              <Text style={styles.warningText}>
+                سيتم التواصل مع هذا الرقم فوراً في الحالات الحرجة فقط
+              </Text>
+            </View>
+          </View>
+        </View>
+
+        {/* 6. الأمان */}
+        <View style={styles.card}>
+          <View style={styles.cardHeader}>
+            <Text style={styles.cardTitle}>تغيير كلمة المرور</Text>
+          </View>
+          <View style={styles.cardBody}>
+            <TouchableOpacity style={styles.actionButton}>
+              <Ionicons name="lock-closed" size={20} color={colors.gold} />
+              <Text style={styles.actionText}>تحديث كلمة المرور</Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+
+        <View style={{ height: 120 }} />
+      </ScrollView>
+    </>
   );
 }
 
 const styles = StyleSheet.create({
-  root: { flex: 1, backgroundColor: colors.white },
+  root: { flex: 1, backgroundColor: colors.bgLight, padding: spacing.md },
 
-  header: {
-    height: 65,
+  welcomeHeader: {
     flexDirection: 'row-reverse',
     alignItems: 'center',
-    paddingHorizontal: spacing.md,
-    borderBottomWidth: 1,
-    borderBottomColor: colors.goldBorder,
-    gap: spacing.sm,
-  },
-  logoCircle: {
-    width: 40,
-    height: 40,
-    borderRadius: 20,
     backgroundColor: colors.primary,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  brand: { fontSize: 18, fontWeight: '900', color: colors.primary },
-
-  hero: {
-    padding: spacing.lg,
-    backgroundColor: colors.bgLight,
-    borderBottomLeftRadius: 32,
-    borderBottomRightRadius: 32,
-  },
-  heroTitle: {
-    fontSize: 32,
-    fontWeight: '900',
-    color: colors.primary,
-    lineHeight: 42,
-    textAlign: 'right',
-  },
-  heroSub: {
-    fontSize: 15,
-    color: colors.textSecondary,
-    lineHeight: 24,
     marginTop: spacing.md,
-    textAlign: 'right',
-  },
-
-  heroBtns: {
-    flexDirection: 'row-reverse',
-    gap: spacing.sm,
-    marginTop: spacing.lg,
-  },
-  btnPrimary: {
-    backgroundColor: colors.primary,
-    paddingHorizontal: spacing.lg,
-    paddingVertical: spacing.sm,
-    borderRadius: radius.md,
-  },
-  btnPrimaryText: { color: colors.gold, fontWeight: '700', fontSize: 14 },
-  btnSecondary: {
-    backgroundColor: colors.white,
-    borderWidth: 1,
-    borderColor: colors.goldBorder,
-    paddingHorizontal: spacing.lg,
-    paddingVertical: spacing.sm,
-    borderRadius: radius.md,
-  },
-  btnSecondaryText: { color: colors.primary, fontWeight: '700', fontSize: 14 },
-
-  ratingRow: {
-    flexDirection: 'row-reverse',
-    alignItems: 'center',
-    marginTop: spacing.lg,
+    padding: spacing.lg,
+    borderRadius: radius.xl,
     gap: spacing.md,
+    marginHorizontal: spacing.md,
   },
-  avatarGroup: { flexDirection: 'row-reverse' },
-  avatarMini: {
-    width: 32,
-    height: 32,
-    borderRadius: 16,
+  avatar: {
+    width: 70,
+    height: 70,
+    borderRadius: 35,
     backgroundColor: colors.white,
-    borderWidth: 2,
-    borderColor: colors.gold,
     justifyContent: 'center',
     alignItems: 'center',
-    marginLeft: -10,
+    borderWidth: 3,
+    borderColor: colors.gold,
   },
-  ratingText: { color: colors.primary, fontSize: 12, fontWeight: '700' },
+  welcomeTitle: { fontSize: 20, fontWeight: '900', color: colors.white },
+  welcomeSub: { fontSize: 14, color: colors.gold, fontWeight: '700' },
 
-  section: { padding: spacing.lg },
-  sectionTitle: {
-    fontSize: 24,
-    fontWeight: '900',
-    color: colors.primary,
-    textAlign: 'right',
-    marginBottom: spacing.xs,
-  },
-  sectionSub: {
-    fontSize: 14,
-    color: colors.textSecondary,
-    textAlign: 'right',
-    marginBottom: spacing.lg,
-    lineHeight: 22,
-  },
-
-  featureCard: {
-    flexDirection: 'row-reverse',
-    alignItems: 'center',
-    gap: spacing.md,
+  card: {
     backgroundColor: colors.white,
-    padding: spacing.md,
     borderRadius: radius.lg,
-    borderWidth: 1,
-    borderColor: colors.goldBorder,
     marginBottom: spacing.md,
     ...shadow.card,
+    overflow: 'hidden',
   },
-  featureIcon: {
-    width: 48,
-    height: 48,
-    borderRadius: radius.md,
-    backgroundColor: colors.goldLight,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  featureTitle: {
-    fontSize: 16,
-    fontWeight: '900',
-    color: colors.primary,
-    textAlign: 'right',
-  },
-  featureDesc: {
-    fontSize: 13,
-    color: colors.textSecondary,
-    textAlign: 'right',
-    marginTop: 4,
-    lineHeight: 20,
-  },
-
-  servicesHeader: {
+  cardHeader: {
     flexDirection: 'row-reverse',
     justifyContent: 'space-between',
     alignItems: 'center',
-  },
-  linkText: { color: colors.gold, fontWeight: '700', fontSize: 14 },
-  detailsBtn: {
-    flexDirection: 'row-reverse',
-    alignItems: 'center',
-    marginTop: spacing.sm,
-    gap: 4,
-  },
-  detailsText: { color: colors.gold, fontWeight: '700', fontSize: 14 },
-
-  serviceCard: {
+    padding: spacing.md,
     backgroundColor: colors.white,
-    padding: spacing.lg,
-    borderRadius: radius.lg,
+    borderBottomWidth: 1,
+    borderBottomColor: colors.borderLight,
+  },
+  cardTitle: { fontSize: 16, fontWeight: '900', color: colors.primary },
+  cardBody: { padding: spacing.md },
+
+  infoGrid: {
+    padding: spacing.md,
+    flexDirection: 'row-reverse',
+    flexWrap: 'wrap',
+    justifyContent: 'space-between',
+  },
+  infoItem: { width: '48%', marginBottom: spacing.md },
+  infoLabel: {
+    fontSize: 12,
+    color: colors.textMuted,
+    textAlign: 'right',
+    marginBottom: 4,
+  },
+  infoValue: {
+    fontSize: 14,
+    color: colors.primary,
+    fontWeight: '700',
+    textAlign: 'right',
+  },
+
+  rowBetween: {
+    flexDirection: 'row-reverse',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginBottom: spacing.sm,
+    borderBottomWidth: 1,
+    borderBottomColor: colors.borderLight,
+    paddingBottom: 8,
+  },
+  badgeGreen: {
+    backgroundColor: colors.success + '20',
+    paddingHorizontal: spacing.sm,
+    paddingVertical: 2,
+    borderRadius: radius.sm,
+  },
+  badgeGreenText: { color: '#0a7c2b', fontWeight: '700', fontSize: 12 },
+
+  warningBox: {
+    backgroundColor: colors.goldLight,
+    padding: spacing.sm,
+    borderRadius: radius.md,
     borderWidth: 1,
     borderColor: colors.goldBorder,
-    marginBottom: spacing.md,
+    marginTop: spacing.sm,
   },
-  serviceIconBox: {
-    width: 56,
-    height: 56,
-    borderRadius: radius.md,
-    backgroundColor: colors.bgLight,
-    justifyContent: 'center',
-    alignItems: 'center',
-    marginBottom: spacing.md,
-    alignSelf: 'flex-start',
-  },
-  serviceTitle: {
-    fontSize: 18,
-    fontWeight: '900',
+  warningText: {
+    fontSize: 12,
     color: colors.primary,
     textAlign: 'right',
-    marginBottom: spacing.xs,
-  },
-  serviceDesc: {
-    fontSize: 14,
-    color: colors.textSecondary,
-    textAlign: 'right',
-    lineHeight: 22,
+    fontWeight: '700',
   },
 
-  testimonialCard: {
+  emptyBox: { padding: spacing.lg, alignItems: 'center' },
+  emptyText: { color: colors.textMuted, fontSize: 14 },
+
+  actionButton: {
+    flexDirection: 'row-reverse',
+    alignItems: 'center',
+    justifyContent: 'center',
     backgroundColor: colors.bgGray,
-    padding: spacing.lg,
-    borderRadius: radius.lg,
-    borderWidth: 1,
-    borderColor: colors.goldBorder,
-    marginBottom: spacing.md,
-  },
-  testimonialHeader: {
-    flexDirection: 'row-reverse',
-    alignItems: 'center',
-    gap: spacing.md,
-    marginBottom: spacing.sm,
-  },
-  testimonialName: { fontSize: 15, fontWeight: '900', color: colors.primary },
-  testimonialText: {
-    fontSize: 14,
-    color: colors.textSecondary,
-    lineHeight: 22,
-    textAlign: 'right',
-    fontStyle: 'italic',
-  },
-
-  cta: {
-    margin: spacing.lg,
-    padding: spacing.xl,
-    backgroundColor: colors.primary,
-    borderRadius: radius.xl,
-    borderWidth: 2,
-    borderColor: colors.goldBorder,
-    alignItems: 'center',
-  },
-  ctaTitle: {
-    fontSize: 22,
-    fontWeight: '900',
-    color: colors.white,
-    textAlign: 'center',
-    lineHeight: 32,
-  },
-  ctaSub: {
-    fontSize: 14,
-    color: colors.textLight,
-    textAlign: 'center',
-    marginVertical: spacing.sm,
-    lineHeight: 22,
-  },
-  ctaBtns: {
-    flexDirection: 'row',
-    gap: spacing.sm,
-    marginTop: spacing.md,
-    flexWrap: 'wrap',
-    justifyContent: 'center',
-  },
-  ctaBtn: {
-    backgroundColor: colors.gold,
-    paddingHorizontal: spacing.xl,
-    paddingVertical: spacing.md,
-    borderRadius: radius.md,
-  },
-  ctaBtnText: { color: colors.primary, fontWeight: '900', fontSize: 16 },
-  ctaBtnSecondary: {
-    flexDirection: 'row-reverse',
-    alignItems: 'center',
-    backgroundColor: 'transparent',
-    borderWidth: 1,
-    borderColor: colors.white,
-    paddingHorizontal: spacing.xl,
-    paddingVertical: spacing.md,
-    borderRadius: radius.md,
-    gap: spacing.sm,
-  },
-  ctaBtnSecondaryText: { color: colors.white, fontWeight: '700', fontSize: 16 },
-  
-  logoutBtn: {
-    flexDirection: 'row-reverse',
-    alignItems: 'center',
-    justifyContent: 'center',
-    backgroundColor: colors.danger,
-    margin: spacing.lg,
     padding: spacing.md,
     borderRadius: radius.md,
     gap: spacing.sm,
   },
-  logoutText: { color: colors.white, fontWeight: '700', fontSize: 16 }
+  actionText: { color: colors.primary, fontWeight: '700', fontSize: 16 },
 });

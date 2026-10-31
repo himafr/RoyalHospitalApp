@@ -55,15 +55,17 @@ export default function CustomTabBar({
 
             const icons: any = {
               HomeTab: 'home',
-              AboutTab: 'information-circle',
+              // AboutTab: 'information-circle',
+              Profile:"person-circle",
               DoctorsTab: 'people',
               ServicesTab: 'medkit',
               AppointmentTab: 'calendar',
             };
-
+            
             const labels: any = {
               HomeTab: 'الرئيسية',
-              AboutTab: 'عن العيادة',
+              Profile:"الملف الشخصي",
+              // AboutTab: 'عن العيادة',
               DoctorsTab: 'الأطباء',
               ServicesTab: 'الخدمات',
               AppointmentTab: 'حجز',

@@ -75,6 +75,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const login = async (email: string, password: string) => {
     console.log("first")
     const res = await authApi.login(email, password) as any
+    console.log(res)
     const { token: t, fullName: fn, email: e,role:r } = res;
     console.log(t,fn,e,r)
     await persist(t, fn, e,r);

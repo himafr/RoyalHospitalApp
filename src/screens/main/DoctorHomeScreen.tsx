@@ -29,7 +29,6 @@ export default function DoctorHomeScreen({ navigation }: any) {
         </View>
       </View>
 
-      {/* 🟢 الإحصائيات (Brief) */}
       <View style={styles.briefContainer}>
         <View style={styles.briefCard}>
           <Ionicons name="people" size={24} color={colors.success} />

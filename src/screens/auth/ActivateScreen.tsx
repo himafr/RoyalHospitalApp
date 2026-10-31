@@ -18,7 +18,7 @@ import { colors, spacing, radius } from '../../theme';
 const COUNTDOWN = 90;
 
 export default function ActivateScreen({ navigation }: any) {
-  const { updateToken } = useAuth(); // بنجيب دالة تحديث التوكن من الـ Context
+  const { updateToken } = useAuth(); 
   const [pin, setPin] = useState('');
   const [error, setError] = useState('');
   const [message, setMessage] = useState('');
