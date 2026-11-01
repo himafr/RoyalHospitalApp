@@ -10,7 +10,7 @@ import Ionicons from 'react-native-vector-icons/Ionicons';
 import { useAuth } from '../../context/AuthContext';
 import { colors, spacing, radius, shadow } from '../../theme';
 
-export default function DoctorHomeScreen({ navigation }: any) {
+export default function DoctorProfileScreen({ navigation }: any) {
   const { email, signOut } = useAuth();
 
   return (

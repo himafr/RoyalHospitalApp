@@ -1,22 +1,28 @@
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import {
-  View,
-  Text,
-  StyleSheet,
   ScrollView,
+  StyleSheet,
+  Text,
   TouchableOpacity,
-  ActivityIndicator,
+  View,
 } from 'react-native';
 import Ionicons from 'react-native-vector-icons/Ionicons';
-import { useAuth } from '../../context/AuthContext';
-import { colors, spacing, radius, shadow } from '../../theme';
-import { User } from '../../../types/user';
-import useUser from '../../hooks/useUser';
 import SmallIndicator from '../../components/SmallIndicator';
+import { useAuth } from '../../context/AuthContext';
+import useUser from '../../hooks/useUser';
+import { colors, radius, shadow, spacing } from '../../theme';
+import usePatient from '../../hooks/usePatient';
 
-export default function PatientHomeScreen({ navigation }: any) {
+export default function PatientProfileScreen({ navigation }: any) {
   const { email, fullName } = useAuth();
   const { data: user, loading } = useUser();
+  const {
+    loading: patientLoading,
+    patient,
+    error: patientError,
+    medicalRecord,
+  } = usePatient();
+
   return (
     <>
       <View style={styles.welcomeHeader}>
@@ -32,7 +38,6 @@ export default function PatientHomeScreen({ navigation }: any) {
       </View>
 
       <ScrollView style={styles.root} showsVerticalScrollIndicator={false}>
-        {/* 2. المعلومات الشخصية */}
         <View style={styles.card}>
           <View style={styles.cardHeader}>
             <Text style={styles.cardTitle}>المعلومات الشخصية</Text>
@@ -82,7 +87,6 @@ export default function PatientHomeScreen({ navigation }: any) {
           </View>
         </View>
 
-        {/* 3. المواعيد */}
         <View style={styles.card}>
           <View style={styles.cardHeader}>
             <Text style={styles.cardTitle}>مواعيدي القادمة والسابقة</Text>
@@ -95,7 +99,6 @@ export default function PatientHomeScreen({ navigation }: any) {
           </View>
         </View>
 
-        {/* 4. الملف الطبي */}
         <View style={styles.card}>
           <View style={styles.cardHeader}>
             <Text style={styles.cardTitle}>الملف الطبي</Text>
@@ -108,19 +111,48 @@ export default function PatientHomeScreen({ navigation }: any) {
           <View style={styles.cardBody}>
             <View style={styles.rowBetween}>
               <Text style={styles.infoLabel}>فصيلة الدم</Text>
-              {/* <View style={styles.badgeGreen}><Text style={styles.badgeGreenText}>{user?.bloodType || 'غير معروفة'}</Text></View> */}
+              <View style={styles.badgeGreen}>
+                <Text style={styles.badgeGreenText}>
+                  {patient?.bloodType || 'غير معروفة'}
+                </Text>
+              </View>
             </View>
             <View style={styles.rowBetween}>
               <Text style={styles.infoLabel}>الحساسية</Text>
-              <Text style={styles.infoValue}>لا توجد</Text>
+              <Text style={styles.infoValue}>
+                {loading ? (
+                  <SmallIndicator />
+                ) : (
+                  medicalRecord?.allergies.map(v => v.allergy).join(' ,') ||
+                  'لا توجد'
+                )}
+              </Text>
             </View>
             <View style={styles.rowBetween}>
               <Text style={styles.infoLabel}>الأمراض المزمنة</Text>
-              <Text style={styles.infoValue}>لا توجد</Text>
+              <Text style={styles.infoValue}>
+                {' '}
+                {loading ? (
+                  <SmallIndicator />
+                ) : (
+                  medicalRecord?.chronicDiseases
+                    .map(v => v.disease)
+                    .join(' ,') || 'لا توجد'
+                )}
+              </Text>
             </View>
             <View style={styles.rowBetween}>
               <Text style={styles.infoLabel}>الأدوية الحالية</Text>
-              <Text style={styles.infoValue}>لا توجد</Text>
+              <Text style={styles.infoValue}>
+                {' '}
+                {loading ? (
+                  <SmallIndicator />
+                ) : (
+                  medicalRecord?.medications
+                    .map(v => v.medications)
+                    .join(' ,') || 'لا توجد'
+                )}
+              </Text>
             </View>
           </View>
         </View>
@@ -134,8 +166,18 @@ export default function PatientHomeScreen({ navigation }: any) {
             </TouchableOpacity>
           </View>
           <View style={styles.cardBody}>
-            {/* <View style={styles.rowBetween}><Text style={styles.infoLabel}>الاسم</Text><Text style={styles.infoValue}>{user?.emergencyContactName || 'غير محدد'}</Text></View> */}
-            {/* <View style={styles.rowBetween}><Text style={styles.infoLabel}>رقم الجوال</Text><Text style={styles.infoValue}>{user?.emergencyContactPhone || 'غير محدد'}</Text></View> */}
+            <View style={styles.rowBetween}>
+              <Text style={styles.infoLabel}>الاسم</Text>
+              <Text style={styles.infoValue}>
+                {patient?.emergencyContactName || 'غير محدد'}
+              </Text>
+            </View>
+            <View style={styles.rowBetween}>
+              <Text style={styles.infoLabel}>رقم الجوال</Text>
+              <Text style={styles.infoValue}>
+                {patient?.emergencyContactPhone || 'غير محدد'}
+              </Text>
+            </View>
             <View style={styles.warningBox}>
               <Text style={styles.warningText}>
                 سيتم التواصل مع هذا الرقم فوراً في الحالات الحرجة فقط
