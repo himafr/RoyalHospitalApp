@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
-import { getMedicalRecord, getPatient } from '../api/patient';
-import { Patient } from '../../types/user';
-import { MedicalRecord } from '../../types/medical';
+import { BloodType, Patient } from '../../../types/user';
+import { MedicalRecord } from '../../../types/medical';
+import { getMedicalRecord, getPatient, updateBloodType, updateEmergencyContact } from '../../api/patient';
 
 type UsePatientResult = {
   patient: Patient |null;
@@ -9,6 +9,8 @@ type UsePatientResult = {
   loading: boolean;
   error: Error | null;
   refetch: () => Promise<void>;
+  emergencyContactUpdate: (v:any) => Promise<void>;
+  bloodTypeUpdate: (bloodType:BloodType) => Promise<void>;
 };
 
 export default function usePatient(): UsePatientResult {
@@ -18,6 +20,31 @@ export default function usePatient(): UsePatientResult {
   const [error, setError] = useState<Error | null>(null);
 
   const mountedRef = useRef<boolean>(true);
+
+  async function emergencyContactUpdate(v: any) {
+      setLoading(true);
+      setError(null);
+  
+      try {
+        await updateEmergencyContact(v);
+      } catch (e) {
+        if (mountedRef.current) setError(e as Error);
+      } finally {
+        if (mountedRef.current) setLoading(false);
+      }
+    }
+  async function bloodTypeUpdate(bloodType: BloodType) {
+      setLoading(true);
+      setError(null);
+  
+      try {
+        await updateBloodType(bloodType);
+      } catch (e) {
+        if (mountedRef.current) setError(e as Error);
+      } finally {
+        if (mountedRef.current) setLoading(false);
+      }
+    }
 
   const fetchPatient = useCallback(async (): Promise<void> => {
     setLoading(true);
@@ -33,6 +60,7 @@ export default function usePatient(): UsePatientResult {
       if (mountedRef.current) setLoading(false);
     }
   }, []);
+
   const fetchMedicalRecord = useCallback(async (): Promise<void> => {
     setLoading(true);
     setError(null);
@@ -57,5 +85,5 @@ export default function usePatient(): UsePatientResult {
     };
   }, [fetchPatient,fetchMedicalRecord]);
 
-  return { patient, loading, error, refetch: fetchPatient,medicalRecord };
+  return { patient, loading, error, refetch: fetchPatient,medicalRecord ,emergencyContactUpdate,bloodTypeUpdate};
 }

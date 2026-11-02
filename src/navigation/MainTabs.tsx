@@ -7,7 +7,7 @@ import HomeScreen from '../screens/main/HomeScreen';
 import ServicesScreen from '../screens/main/ServicesScreen';
 import { useAuth } from '../context/AuthContext';
 import DoctorHomeScreen from '../screens/main/DoctorProfileScreen';
-import PatientHomeScreen from '../screens/main/PatientProfileScreen';
+import PatientHomeScreen from '../features/patient/PatientProfileScreen';
 
 const Tab = createBottomTabNavigator();
 

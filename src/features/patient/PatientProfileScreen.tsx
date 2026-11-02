@@ -11,7 +11,8 @@ import SmallIndicator from '../../components/SmallIndicator';
 import { useAuth } from '../../context/AuthContext';
 import useUser from '../../hooks/useUser';
 import { colors, radius, shadow, spacing } from '../../theme';
-import usePatient from '../../hooks/usePatient';
+import usePatient from './usePatient';
+import PersonalDetailsForm from './PersonalDetailsForm';
 
 export default function PatientProfileScreen({ navigation }: any) {
   const { email, fullName } = useAuth();
@@ -42,7 +43,15 @@ export default function PatientProfileScreen({ navigation }: any) {
           <View style={styles.cardHeader}>
             <Text style={styles.cardTitle}>المعلومات الشخصية</Text>
             <TouchableOpacity
-              onPress={() => navigation.navigate('EditPersonalDetails')}
+            disabled={loading}
+              onPress={() =>
+                navigation.navigate('EditModal', {
+                  title: 'تعديل المعلومات الشخصية',
+                  renderContent: (nav: any) => (
+                    <PersonalDetailsForm  navigation={nav} />
+                  ),
+                })
+              }
             >
               <Ionicons name="pencil" size={20} color={colors.gold} />
             </TouchableOpacity>

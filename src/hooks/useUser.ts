@@ -1,11 +1,12 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { User } from '../../types/user';
-import { getUser } from '../api/users';
+import { getUser, updateUser } from '../api/users';
 
 type UseUserResult = {
   data: User | null;
   loading: boolean;
   error: Error | null;
+  updatePersonalDetails: (v: any) => Promise<void>;
   refetch: () => Promise<void>;
 };
 
@@ -15,6 +16,20 @@ export default function useUser(): UseUserResult {
   const [error, setError] = useState<Error | null>(null);
 
   const mountedRef = useRef<boolean>(true);
+
+  async function updatePersonalDetails(v: any) {
+    setLoading(true);
+    setError(null);
+
+    try {
+      const res = await updateUser(v);
+      if (mountedRef.current) setData(res.data);
+    } catch (e) {
+      if (mountedRef.current) setError(e as Error);
+    } finally {
+      if (mountedRef.current) setLoading(false);
+    }
+  }
 
   const fetchData = useCallback(async (): Promise<void> => {
     setLoading(true);
@@ -38,5 +53,5 @@ export default function useUser(): UseUserResult {
     };
   }, [fetchData]);
 
-  return { data, loading, error, refetch: fetchData };
+  return { data, loading, error, refetch: fetchData ,updatePersonalDetails};
 }

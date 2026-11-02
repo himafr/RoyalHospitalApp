@@ -6,7 +6,8 @@ import { useAuth } from '../context/AuthContext';
 import AuthStack from './AuthStack';
 import MainTabs from './MainTabs';
 import { colors } from '../theme';
-import ActivateScreen from '../screens/auth/ActivateScreen';
+import ActivateScreen from '../features/auth/ActivateScreen';
+import EditModalScreen from '../screens/EditModalScreen';
 
 const Stack = createNativeStackNavigator();
 
@@ -34,6 +35,15 @@ export default function RootNavigator() {
                 headerStyle: { backgroundColor: colors.white },
               }} 
             />
+            <Stack.Screen 
+  name="EditModal" 
+  component={EditModalScreen} 
+  options={({ route }) => ({ 
+    presentation: 'modal', 
+    headerShown: true, 
+    title: route.params?.title || 'تعديل' // بناخد العنوان من الـ Params
+  })} 
+/>
           </>
         )}
 
