@@ -19,7 +19,7 @@ interface AuthContextData {
   login: (email: string, password: string) => Promise<void>;
   updateToken: (newToken: string) => Promise<void>;
   signup: (data: any) => Promise<any>;
-  doctorSignup: (data: any) => Promise<any>;
+  // doctorSignup: (data: any) => Promise<any>;
   signOut: () => Promise<void>;
 }
 
@@ -73,7 +73,6 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   }
 
   const login = async (email: string, password: string) => {
-    console.log("first")
     const res = await authApi.login(email, password) as any
     console.log(res)
     const { token: t, fullName: fn, email: e,role:r } = res;
@@ -86,15 +85,14 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     return res;
   };
 
-  const doctorSignup = async (data: any) => {
-    const res = await authApi.doctorSignup(data);
-    return res;
-  };
 
+  // const doctorSignup = async (data: any) => {
+  //   const res = await authApi.doctorSignup(data);
+  //   return res;
+  // };
+
+  
   const signOut = async () => {
-    try {
-      await authApi.logout();
-    } catch {}
     setToken(null);
     setEmail(null);
     setFullName(null);
@@ -112,7 +110,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         isAuthenticated: !!token,
         login,
         signup,
-        doctorSignup,
+        // doctorSignup,
         signOut,
         updateToken,
         isVerified,

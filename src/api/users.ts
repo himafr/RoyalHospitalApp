@@ -1,9 +1,12 @@
 import { User } from '../../types/user';
 import client from './client';
-
+const BASE_URL = '/api/users';
 export const getUser = () =>
-  client.get('/api/users');
+  client.get(BASE_URL);
 
 export const updateUser = (form:User) =>
-  client.put('/api/users',form);
+  client.put(BASE_URL,form);
+
+export const updatePassword = (data: any) => client.put(BASE_URL+'/update-password', data);
+
 

@@ -1,10 +1,12 @@
 import client from './client';
 
+const BASE_URL="/api/auth"
 export const login = (email: string, password: string) =>
-  client.post('/api/auth/login', { email, password });
+  client.post(BASE_URL+'/login', { email, password });
 
-export const signup = (data: any) => client.post('/api/auth/signup', data);
-export const doctorSignup = (data: any) => client.post('/api/auth/doctor-signup', data);
+export const signup = (data: any) => client.post(BASE_URL+'/signup', data);
+
+// export const doctorSignup = (data: any) => client.post('/api/auth/doctor-signup', data);
 
 export const sendActivationCode = () =>
   client.post('/api/activation');
@@ -12,4 +14,4 @@ export const sendActivationCode = () =>
 export const verifyActivationCode = (pin: string) =>
   client.put('/api/activation', { pin });
 
-export const logout = () => client.post('/api/auth/logout');
+export const logout = () => client.post(BASE_URL+'/logout');

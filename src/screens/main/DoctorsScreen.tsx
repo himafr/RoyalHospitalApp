@@ -90,7 +90,7 @@ export default function DoctorsScreen({ navigation }: any) {
           data={doctors}
           renderItem={renderDoctor}
           keyExtractor={item => item.id.toString()}
-          onEndReached={loadMore}
+          onEndReached={doctors.length ? loadMore : () => {}}
           onEndReachedThreshold={0.5}
           ListFooterComponent={renderFooter}
           refreshing={refreshing}

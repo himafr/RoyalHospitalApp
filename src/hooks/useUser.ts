@@ -1,12 +1,19 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { User } from '../../types/user';
-import { getUser, updateUser } from '../api/users';
+import { getUser, updatePassword, updateUser } from '../api/users';
 
 type UseUserResult = {
   data: User | null;
   loading: boolean;
   error: Error | null;
   updatePersonalDetails: (v: any) => Promise<void>;
+  passwordUpdate: ({
+    newPass,
+    oldPass,
+  }: {
+    newPass: string;
+    oldPass: string;
+  }) =>  Promise<number|undefined>;
   refetch: () => Promise<void>;
 };
 
@@ -24,6 +31,24 @@ export default function useUser(): UseUserResult {
     try {
       const res = await updateUser(v);
       if (mountedRef.current) setData(res.data);
+    } catch (e) {
+      if (mountedRef.current) setError(e as Error);
+    } finally {
+      if (mountedRef.current) setLoading(false);
+    }
+  }
+  async function passwordUpdate({
+    newPass,
+    oldPass,
+  }: {
+    newPass: string;
+    oldPass: string;
+  }) {
+    setLoading(true);
+    setError(null);
+    try {
+     const res= await updatePassword({ newPass, oldPass });
+     return res.status 
     } catch (e) {
       if (mountedRef.current) setError(e as Error);
     } finally {
@@ -53,5 +78,5 @@ export default function useUser(): UseUserResult {
     };
   }, [fetchData]);
 
-  return { data, loading, error, refetch: fetchData ,updatePersonalDetails};
+  return { data, loading, error, refetch: fetchData, updatePersonalDetails,passwordUpdate };
 }

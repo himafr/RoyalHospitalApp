@@ -1,5 +1,6 @@
 import React from 'react';
 import {
+  RefreshControl,
   ScrollView,
   StyleSheet,
   Text,
@@ -15,14 +16,15 @@ import usePatient from './usePatient';
 import PersonalDetailsForm from './PersonalDetailsForm';
 import EmergencyContactForm from './EmergencyContactForm';
 import BloodTypeForm from './BloodTypeForm';
+import ChangePasswordForm from './ChangePasswordForm';
 
 export default function PatientProfileScreen({ navigation }: any) {
   const { email, fullName } = useAuth();
-  const { data: user, loading ,refetch,error:userError} = useUser();
+  const { data: user, loading, refetch, error: userError } = useUser();
   const {
     loading: patientLoading,
     patient,
-    refetch:patientRefetch,
+    refetch: patientRefetch,
     error: patientError,
     medicalRecord,
   } = usePatient();
@@ -41,31 +43,32 @@ export default function PatientProfileScreen({ navigation }: any) {
         </View>
       </View>
 
-      <ScrollView style={styles.root} showsVerticalScrollIndicator={false}>
+      <ScrollView
+        style={styles.root}
+        refreshControl={
+          <RefreshControl refreshing={loading} onRefresh={refetch} />
+        }
+        showsVerticalScrollIndicator={false}
+      >
         <View style={styles.card}>
           <View style={styles.cardHeader}>
             <Text style={styles.cardTitle}>المعلومات الشخصية</Text>
-            <View style={styles.buttonGap} >
-              <TouchableOpacity
-                disabled={loading}
-                onPress={() =>
-                  navigation.navigate('EditModal', {
-                    title: 'تعديل المعلومات الشخصية',
-                    renderContent: (nav: any) => (
-                      <PersonalDetailsForm refreshData={refetch} navigation={nav} />
-                    ),
-                  })
-                }
-              >
-                <Ionicons name="pencil" size={20} color={colors.gold} />
-              </TouchableOpacity>
-              <TouchableOpacity
-                disabled={loading}
-                onPress={refetch}
-              >
-                <Ionicons name="refresh" size={20} color={colors.gold} />
-              </TouchableOpacity>
-            </View>
+            <TouchableOpacity
+              disabled={loading}
+              onPress={() =>
+                navigation.navigate('EditModal', {
+                  title: 'تعديل المعلومات الشخصية',
+                  renderContent: (nav: any) => (
+                    <PersonalDetailsForm
+                      refreshData={refetch}
+                      navigation={nav}
+                    />
+                  ),
+                })
+              }
+            >
+              <Ionicons name="pencil" size={20} color={colors.gold} />
+            </TouchableOpacity>
           </View>
           <View style={styles.infoGrid}>
             <View style={styles.infoItem}>
@@ -123,16 +126,19 @@ export default function PatientProfileScreen({ navigation }: any) {
           <View style={styles.cardHeader}>
             <Text style={styles.cardTitle}>الملف الطبي</Text>
             <TouchableOpacity
-             disabled={loading}
-                onPress={() =>
-                  navigation.navigate('EditModal', {
-                    title: 'تعديل فصيلة الدم',
-                    renderContent: (nav: any) => (
-                      <BloodTypeForm refreshData={patientRefetch} navigation={nav} />
-                    ),
-                  })
-                }
-              >
+              disabled={loading}
+              onPress={() =>
+                navigation.navigate('EditModal', {
+                  title: 'تعديل فصيلة الدم',
+                  renderContent: (nav: any) => (
+                    <BloodTypeForm
+                      refreshData={patientRefetch}
+                      navigation={nav}
+                    />
+                  ),
+                })
+              }
+            >
               <Ionicons name="pencil" size={20} color={colors.gold} />
             </TouchableOpacity>
           </View>
@@ -189,16 +195,19 @@ export default function PatientProfileScreen({ navigation }: any) {
           <View style={styles.cardHeader}>
             <Text style={styles.cardTitle}>اتصال الطوارئ</Text>
             <TouchableOpacity
-            disabled={patientLoading}
-                onPress={() =>
-                  navigation.navigate('EditModal', {
-                    title: 'تعديل معلومات الطوارئ',
-                    renderContent: (nav: any) => (
-                      <EmergencyContactForm refreshData={patientRefetch} navigation={nav} />
-                    ),
-                  })
-                }
-              >
+              disabled={patientLoading}
+              onPress={() =>
+                navigation.navigate('EditModal', {
+                  title: 'تعديل معلومات الطوارئ',
+                  renderContent: (nav: any) => (
+                    <EmergencyContactForm
+                      refreshData={patientRefetch}
+                      navigation={nav}
+                    />
+                  ),
+                })
+              }
+            >
               <Ionicons name="pencil" size={20} color={colors.gold} />
             </TouchableOpacity>
           </View>
@@ -206,13 +215,21 @@ export default function PatientProfileScreen({ navigation }: any) {
             <View style={styles.rowBetween}>
               <Text style={styles.infoLabel}>الاسم</Text>
               <Text style={styles.infoValue}>
-                {patientLoading ? <SmallIndicator /> :patient?.emergencyContactName || 'غير محدد'}
+                {patientLoading ? (
+                  <SmallIndicator />
+                ) : (
+                  patient?.emergencyContactName || 'غير محدد'
+                )}
               </Text>
             </View>
             <View style={styles.rowBetween}>
               <Text style={styles.infoLabel}>رقم الجوال</Text>
               <Text style={styles.infoValue}>
-                {patientLoading ? <SmallIndicator /> :patient?.emergencyContactPhone || 'غير محدد'}
+                {patientLoading ? (
+                  <SmallIndicator />
+                ) : (
+                  patient?.emergencyContactPhone || 'غير محدد'
+                )}
               </Text>
             </View>
             <View style={styles.warningBox}>
@@ -223,13 +240,25 @@ export default function PatientProfileScreen({ navigation }: any) {
           </View>
         </View>
 
-        {/* 6. الأمان */}
         <View style={styles.card}>
           <View style={styles.cardHeader}>
             <Text style={styles.cardTitle}>تغيير كلمة المرور</Text>
           </View>
           <View style={styles.cardBody}>
-            <TouchableOpacity style={styles.actionButton}>
+            <TouchableOpacity
+              style={styles.actionButton}
+              onPress={() => {
+                navigation.navigate('EditModal', {
+                  title: 'تحديث كلمة المرور',
+                  renderContent: (nav: any) => (
+                    <ChangePasswordForm
+                      refreshData={refetch}
+                      navigation={nav}
+                    />
+                  ),
+                });
+              }}
+            >
               <Ionicons name="lock-closed" size={20} color={colors.gold} />
               <Text style={styles.actionText}>تحديث كلمة المرور</Text>
             </TouchableOpacity>
@@ -285,9 +314,7 @@ const styles = StyleSheet.create({
     borderBottomWidth: 1,
     borderBottomColor: colors.borderLight,
   },
-  buttonGap:{
-    display:'flex',flexDirection:'row',gap:5
-  },
+
   cardTitle: { fontSize: 16, fontWeight: '900', color: colors.primary },
   cardBody: { padding: spacing.md },
 

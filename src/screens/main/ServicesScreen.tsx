@@ -92,7 +92,7 @@ export default function ServicesScreen({ navigation }: any) {
         keyExtractor={item => item.id.toString()}
           
          
-          onEndReached={loadMore}          
+          onEndReached={services.length?loadMore:()=>{}}          
           onEndReachedThreshold={0.5}       
           ListFooterComponent={renderFooter} 
           
@@ -102,7 +102,7 @@ export default function ServicesScreen({ navigation }: any) {
 
           contentContainerStyle={{ padding: spacing.md }}
           showsVerticalScrollIndicator={false}
-          ListEmptyComponent={
+          ListEmptyComponent={ 
             <Text style={styles.empty}>لا توجد خدمات متاحة.</Text>
           }
         />
