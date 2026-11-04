@@ -52,7 +52,6 @@ export default function usePatient(): UsePatientResult {
 
     try {
       const res = await getPatient();
-      console.log(res)
       if (mountedRef.current) setPatient(res.data);
     } catch (e) {
       if (mountedRef.current) setError(e as Error);

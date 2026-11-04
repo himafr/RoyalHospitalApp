@@ -13,13 +13,16 @@ import useUser from '../../hooks/useUser';
 import { colors, radius, shadow, spacing } from '../../theme';
 import usePatient from './usePatient';
 import PersonalDetailsForm from './PersonalDetailsForm';
+import EmergencyContactForm from './EmergencyContactForm';
+import BloodTypeForm from './BloodTypeForm';
 
 export default function PatientProfileScreen({ navigation }: any) {
   const { email, fullName } = useAuth();
-  const { data: user, loading } = useUser();
+  const { data: user, loading ,refetch,error:userError} = useUser();
   const {
     loading: patientLoading,
     patient,
+    refetch:patientRefetch,
     error: patientError,
     medicalRecord,
   } = usePatient();
@@ -30,7 +33,7 @@ export default function PatientProfileScreen({ navigation }: any) {
         <View style={styles.avatar}>
           <Ionicons name="person" size={40} color={colors.gold} />
         </View>
-        <View style={{ flex: 1, alignItems: 'flex-end' }}>
+        <View style={styles.flexAlignmentItem}>
           <Text style={styles.welcomeTitle}>
             أهلاً بك، {fullName || email?.split('@')[0]}
           </Text>
@@ -42,19 +45,27 @@ export default function PatientProfileScreen({ navigation }: any) {
         <View style={styles.card}>
           <View style={styles.cardHeader}>
             <Text style={styles.cardTitle}>المعلومات الشخصية</Text>
-            <TouchableOpacity
-            disabled={loading}
-              onPress={() =>
-                navigation.navigate('EditModal', {
-                  title: 'تعديل المعلومات الشخصية',
-                  renderContent: (nav: any) => (
-                    <PersonalDetailsForm  navigation={nav} />
-                  ),
-                })
-              }
-            >
-              <Ionicons name="pencil" size={20} color={colors.gold} />
-            </TouchableOpacity>
+            <View style={styles.buttonGap} >
+              <TouchableOpacity
+                disabled={loading}
+                onPress={() =>
+                  navigation.navigate('EditModal', {
+                    title: 'تعديل المعلومات الشخصية',
+                    renderContent: (nav: any) => (
+                      <PersonalDetailsForm refreshData={refetch} navigation={nav} />
+                    ),
+                  })
+                }
+              >
+                <Ionicons name="pencil" size={20} color={colors.gold} />
+              </TouchableOpacity>
+              <TouchableOpacity
+                disabled={loading}
+                onPress={refetch}
+              >
+                <Ionicons name="refresh" size={20} color={colors.gold} />
+              </TouchableOpacity>
+            </View>
           </View>
           <View style={styles.infoGrid}>
             <View style={styles.infoItem}>
@@ -112,8 +123,16 @@ export default function PatientProfileScreen({ navigation }: any) {
           <View style={styles.cardHeader}>
             <Text style={styles.cardTitle}>الملف الطبي</Text>
             <TouchableOpacity
-              onPress={() => navigation.navigate('EditMedicalRecord')}
-            >
+             disabled={loading}
+                onPress={() =>
+                  navigation.navigate('EditModal', {
+                    title: 'تعديل فصيلة الدم',
+                    renderContent: (nav: any) => (
+                      <BloodTypeForm refreshData={patientRefetch} navigation={nav} />
+                    ),
+                  })
+                }
+              >
               <Ionicons name="pencil" size={20} color={colors.gold} />
             </TouchableOpacity>
           </View>
@@ -166,11 +185,20 @@ export default function PatientProfileScreen({ navigation }: any) {
           </View>
         </View>
 
-        {/* 5. اتصال الطوارئ */}
         <View style={styles.card}>
           <View style={styles.cardHeader}>
             <Text style={styles.cardTitle}>اتصال الطوارئ</Text>
-            <TouchableOpacity>
+            <TouchableOpacity
+            disabled={patientLoading}
+                onPress={() =>
+                  navigation.navigate('EditModal', {
+                    title: 'تعديل معلومات الطوارئ',
+                    renderContent: (nav: any) => (
+                      <EmergencyContactForm refreshData={patientRefetch} navigation={nav} />
+                    ),
+                  })
+                }
+              >
               <Ionicons name="pencil" size={20} color={colors.gold} />
             </TouchableOpacity>
           </View>
@@ -178,13 +206,13 @@ export default function PatientProfileScreen({ navigation }: any) {
             <View style={styles.rowBetween}>
               <Text style={styles.infoLabel}>الاسم</Text>
               <Text style={styles.infoValue}>
-                {patient?.emergencyContactName || 'غير محدد'}
+                {patientLoading ? <SmallIndicator /> :patient?.emergencyContactName || 'غير محدد'}
               </Text>
             </View>
             <View style={styles.rowBetween}>
               <Text style={styles.infoLabel}>رقم الجوال</Text>
               <Text style={styles.infoValue}>
-                {patient?.emergencyContactPhone || 'غير محدد'}
+                {patientLoading ? <SmallIndicator /> :patient?.emergencyContactPhone || 'غير محدد'}
               </Text>
             </View>
             <View style={styles.warningBox}>
@@ -208,7 +236,7 @@ export default function PatientProfileScreen({ navigation }: any) {
           </View>
         </View>
 
-        <View style={{ height: 120 }} />
+        <View style={styles.bottomHeight} />
       </ScrollView>
     </>
   );
@@ -247,6 +275,7 @@ const styles = StyleSheet.create({
     ...shadow.card,
     overflow: 'hidden',
   },
+  flexAlignmentItem: { flex: 1, alignItems: 'flex-end' },
   cardHeader: {
     flexDirection: 'row-reverse',
     justifyContent: 'space-between',
@@ -255,6 +284,9 @@ const styles = StyleSheet.create({
     backgroundColor: colors.white,
     borderBottomWidth: 1,
     borderBottomColor: colors.borderLight,
+  },
+  buttonGap:{
+    display:'flex',flexDirection:'row',gap:5
   },
   cardTitle: { fontSize: 16, fontWeight: '900', color: colors.primary },
   cardBody: { padding: spacing.md },
@@ -324,4 +356,5 @@ const styles = StyleSheet.create({
     gap: spacing.sm,
   },
   actionText: { color: colors.primary, fontWeight: '700', fontSize: 16 },
+  bottomHeight: { height: 120 },
 });

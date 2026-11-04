@@ -13,37 +13,37 @@ import {
 import useUser from '../../hooks/useUser';
 import { colors, radius, spacing } from '../../theme';
 
-export default function PersonalDetailsForm({ navigation }: any) {
-  const { data: user, updatePersonalDetails, loading ,refetch} = useUser();
+export default function PersonalDetailsForm({ navigation, refreshData }: any) {
+  const { data: user, updatePersonalDetails, loading } = useUser();
   const [form, setForm] = useState({
-    fullName: "",
-    phoneNumber: "",
-    dateOfBirth: "",
-    gender: "",
-    address: "",
+    fullName: '',
+    phoneNumber: '',
+    dateOfBirth: '',
+    gender: '',
+    address: '',
   });
 
   const [showDatePicker, setShowDatePicker] = useState(false);
   const [selectedDate, setSelectedDate] = useState(
     user?.dateOfBirth ? new Date(user.dateOfBirth) : new Date(),
   );
-  
 
   useEffect(() => {
     if (user) {
       setForm({
-        fullName: user.fullName ,
-        phoneNumber: user.phoneNumber ,
-        dateOfBirth: user.dateOfBirth ,
-        gender: user.gender ,
-        address: user.address ,
+        fullName: user.fullName,
+        phoneNumber: user.phoneNumber,
+        dateOfBirth: user.dateOfBirth,
+        gender: user.gender,
+        address: user.address,
       });
     }
   }, [user]);
 
   async function handleSave() {
     await updatePersonalDetails(form);
-    // navigation.goBack();
+    refreshData();
+    navigation.goBack();
   }
   // ✨ دالة التعامل مع اختيار التاريخ
   const onChangeDate = (event: any, date?: Date) => {
@@ -95,7 +95,7 @@ export default function PersonalDetailsForm({ navigation }: any) {
           mode="date"
           display="default"
           onChange={onChangeDate}
-          maximumDate={new Date()} // عشان ميقدرش يختار تاريخ في المستقبل
+          maximumDate={new Date(new Date().setFullYear(new Date().getFullYear() - 12))}
         />
       )}
 

@@ -9,7 +9,7 @@ export const getMedicalRecord = () =>
   client.get('/api/patient/medical-record');
 
 export const updateEmergencyContact=(form:any)=>
-  client.put('/update-emergency-contact',form)
+  client.put('/api/patient/update-emergency-contact',form)
 
 export const updateBloodType=(bloodType:BloodType)=>
-  client.put('/update-blood-type',bloodType)
+  client.put('/api/patient/update-blood-type',{bloodType})
