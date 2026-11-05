@@ -6,4 +6,4 @@ interface GetServicesParams {
 }
 
 export const getServices = (params: GetServicesParams) =>
-  client.get('/api/services', { params });
+  client.get('/services', { params });

@@ -9,9 +9,21 @@ import {
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import { useAuth } from '../../context/AuthContext';
 import { colors, spacing, radius, shadow } from '../../theme';
+import useDoctor from './useDoctor';
+import AddCertificationForm from './AddCertificationForm';
+import EditCertificationForm from './EditCertificationForm';
 
 export default function DoctorProfileScreen({ navigation }: any) {
   const { email, signOut } = useAuth();
+  const { doctor: user, loading, refetch } = useDoctor();
+
+  // دالة مساعدة لعرض حقل
+  const InfoItem = ({ label, value }: { label: string; value: string }) => (
+    <View style={styles.infoItem}>
+      <Text style={styles.infoLabel}>{label}</Text>
+      <Text style={styles.infoValue}>{value || 'غير محدد'}</Text>
+    </View>
+  );
 
   return (
     <ScrollView style={styles.root} showsVerticalScrollIndicator={false}>
@@ -88,21 +100,24 @@ export default function DoctorProfileScreen({ navigation }: any) {
         </View>
       </View>
 
-      {/* 🟢 إدارة الملف المهني */}
-      <View style={styles.section}>
-        <Text style={styles.sectionTitle}>إدارة الملف المهني</Text>
+      {/* 3. المعلومات المهنية */}
+      <View style={styles.card}>
+        <View style={styles.cardHeader}>
+          <Text style={styles.cardTitle}>المعلومات المهنية</Text>
+        </View>
+        <View style={styles.cardBody}>
+          <InfoItem label="التخصص" value={user?.specialty || 'غير محدد'} />
+          <InfoItem
+            label="المسمى الوظيفي"
+            value={user?.specialization || 'غير محدد'}
+          />
+          <InfoItem label="العضويات المهنية" value={user?.work || 'غير محدد'} />
 
-        <TouchableOpacity
-          style={styles.actionBtn}
-          onPress={() => {
-            /* اذهب لشاشة الشهادات */
-          }}
-        >
-          <Ionicons name="school" size={20} color={colors.gold} />
-          <Text style={styles.actionBtnText}>إدارة الشهادات العلمية</Text>
-          <Ionicons name="chevron-back" size={20} color={colors.gold} />
-        </TouchableOpacity>
-
+          <Text style={styles.label}>نبذة عن الطبيب</Text>
+          <Text style={styles.aboutText}>
+            {user?.about || 'لم يتم إضافة نبذة بعد.'}
+          </Text>
+        </View>
         <TouchableOpacity
           style={styles.actionBtn}
           onPress={() => {
@@ -113,6 +128,67 @@ export default function DoctorProfileScreen({ navigation }: any) {
           <Text style={styles.actionBtnText}>تعديل المعلومات المهنية</Text>
           <Ionicons name="chevron-back" size={20} color={colors.gold} />
         </TouchableOpacity>
+      </View>
+
+      {/* 5. الشهادات العلمية */}
+      <View style={styles.card}>
+        <View style={styles.cardHeader}>
+          <Text style={styles.cardTitle}>الشهادات العلمية</Text>
+          <TouchableOpacity
+            onPress={() =>
+              navigation.navigate('EditModal', {
+                title: 'اضافة شهاده',
+                renderContent: (nav: any) => (
+                  <AddCertificationForm
+                    refetchData={refetch}
+                    navigation={nav}
+                  />
+                ),
+              })
+            }
+          >
+            <Ionicons name="add" size={24} color={colors.gold} />
+          </TouchableOpacity>
+        </View>
+        <View style={styles.cardBody}>
+          {user?.certifications && user.certifications.length > 0 ? (
+            user.certifications.map((cert: any, index: number) => (
+              <View key={index} style={styles.certItem}>
+                <View style={styles.certIcon}>
+                  <Ionicons name="school" size={18} color={colors.gold} />
+                </View>
+                <View style={{ flex: 1, alignItems: 'flex-end' }}>
+                  <Text style={styles.certName}>{cert.name}</Text>
+                  <Text style={styles.certOrg}>
+                    {cert.organization} - {cert.place}
+                  </Text>
+                </View>
+                <TouchableOpacity
+                  onPress={() =>
+                    navigation.navigate(
+                      'EditModal',
+
+                      {
+                        title: 'تعديل الشهاده العلمية',
+                        renderContent: (nav: any) => (
+                          <EditCertificationForm
+                            navigation={nav}
+                            refetchData={refetch}
+                            certId={cert.id}
+                          />
+                        ),
+                      },
+                    )
+                  }
+                >
+                  <Ionicons name="pencil" size={18} color={colors.textMuted} />
+                </TouchableOpacity>
+              </View>
+            ))
+          ) : (
+            <Text style={styles.emptyText}>لم يتم إضافة شهادات بعد.</Text>
+          )}
+        </View>
       </View>
 
       <TouchableOpacity style={styles.logoutBtn} onPress={signOut}>
@@ -133,6 +209,8 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     backgroundColor: colors.primary,
     padding: spacing.lg,
+    marginBottom: spacing.md,
+
     borderBottomLeftRadius: 32,
     borderBottomRightRadius: 32,
     gap: spacing.md,
@@ -247,8 +325,9 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     backgroundColor: colors.white,
     padding: spacing.md,
-    borderRadius: radius.md,
-    marginBottom: spacing.sm,
+
+    borderEndEndRadius: radius.md,
+    borderEndStartRadius: radius.md,
     borderWidth: 1,
     borderColor: colors.goldBorder,
     gap: spacing.sm,
@@ -272,4 +351,80 @@ const styles = StyleSheet.create({
     gap: spacing.sm,
   },
   logoutText: { color: colors.white, fontWeight: '700', fontSize: 16 },
+
+  card: {
+    backgroundColor: colors.white,
+    borderRadius: radius.lg,
+    marginBottom: spacing.md,
+    ...shadow.card,
+    overflow: 'hidden',
+    marginHorizontal: spacing.lg,
+  },
+  cardHeader: {
+    flexDirection: 'row-reverse',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    padding: spacing.md,
+    backgroundColor: colors.white,
+    borderBottomWidth: 1,
+    borderBottomColor: colors.borderLight,
+  },
+  cardTitle: { fontSize: 16, fontWeight: '900', color: colors.primary },
+  cardBody: { padding: spacing.md },
+
+  infoItem: { marginBottom: spacing.md },
+  infoLabel: {
+    fontSize: 12,
+    color: colors.textMuted,
+    textAlign: 'right',
+    marginBottom: 4,
+  },
+  infoValue: {
+    fontSize: 14,
+    color: colors.primary,
+    fontWeight: '700',
+    textAlign: 'right',
+  },
+
+  label: {
+    fontSize: 12,
+    color: colors.textMuted,
+    textAlign: 'right',
+    marginBottom: 4,
+  },
+  aboutText: {
+    fontSize: 14,
+    color: colors.textSecondary,
+    textAlign: 'right',
+    lineHeight: 22,
+  },
+  certItem: {
+    flexDirection: 'row-reverse',
+    alignItems: 'center',
+    backgroundColor: colors.bgGray,
+    padding: spacing.md,
+    borderRadius: radius.md,
+    marginBottom: spacing.sm,
+    gap: spacing.sm,
+  },
+  certIcon: {
+    width: 36,
+    height: 36,
+    borderRadius: 18,
+    backgroundColor: colors.goldLight,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  certName: {
+    fontSize: 15,
+    fontWeight: '900',
+    color: colors.primary,
+    textAlign: 'right',
+  },
+  certOrg: { fontSize: 12, color: colors.textMuted, textAlign: 'right' },
+  emptyText: {
+    textAlign: 'center',
+    color: colors.textMuted,
+    marginVertical: spacing.md,
+  },
 });

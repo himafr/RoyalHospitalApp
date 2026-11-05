@@ -33,7 +33,7 @@ export type Specialty =
 
 /** Base class — maps to ProjectUser */
 
-export type Patient =  {
+export type Patient = User & {
   emergencyContactName: string;
   emergencyContactPhone: string;
   bloodType: BloodType | null;
@@ -41,7 +41,7 @@ export type Patient =  {
   medicalRecord: MedicalRecord | null;
 };
 
-export type Doctor =  {
+export type Doctor = User & {
   appointments: Appointment[];
   certifications: Certification[];
   specialty: Specialty | null;

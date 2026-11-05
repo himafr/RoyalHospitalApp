@@ -1,6 +1,6 @@
 import { User } from '../../types/user';
 import client from './client';
-const BASE_URL = '/api/users';
+const BASE_URL = '/users';
 export const getUser = () =>
   client.get(BASE_URL);
 

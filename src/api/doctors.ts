@@ -6,4 +6,8 @@ interface GetDoctorsParams {
 }
 
 export const getDoctors = (params:GetDoctorsParams) =>
-  client.get('/api/doctors', { params });
+  client.get('/doctors', { params });
+
+
+export const getDoctor = () =>
+  client.get('/doctors/me' );
