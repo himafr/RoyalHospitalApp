@@ -1,7 +1,7 @@
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import React from 'react';
 import CustomTabBar from '../components/CustomTabBar';
-import AppointmentScreen from '../screens/main/AppointmentScreen';
+import AppointmentScreen from '../features/appointment/AppointmentScreen';
 import DoctorsScreen from '../screens/main/DoctorsScreen';
 import HomeScreen from '../screens/main/HomeScreen';
 import ServicesScreen from '../screens/main/ServicesScreen';

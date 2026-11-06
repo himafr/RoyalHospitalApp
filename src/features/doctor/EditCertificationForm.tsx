@@ -1,8 +1,7 @@
-import React, { useState, useEffect } from 'react';
-import { View, Text, StyleSheet, TextInput, TouchableOpacity, Alert, ActivityIndicator } from 'react-native';
-import  Ionicons  from 'react-native-vector-icons/Ionicons';
-import client from '../../api/client';
-import { colors, spacing, radius } from '../../theme';
+import React, { useEffect, useState } from 'react';
+import { ActivityIndicator, Alert, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
+import Ionicons from 'react-native-vector-icons/Ionicons';
+import { colors, radius, spacing } from '../../theme';
 import useDoctor from './useDoctor';
 
 export default function EditCertificationForm({ certId:id, navigation ,refetchData}: any) {

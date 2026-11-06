@@ -72,7 +72,7 @@ export default function CustomTabBar({
             };
 
             return (
-              <>
+              
                 <TouchableOpacity
                   key={route.key}
                   onPress={onPress}
@@ -92,7 +92,7 @@ export default function CustomTabBar({
                     {labels[route.name]}
                   </Text>
                 </TouchableOpacity>
-              </>
+              
             );
           })}
         </View>

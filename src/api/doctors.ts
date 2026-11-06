@@ -8,6 +8,9 @@ interface GetDoctorsParams {
 export const getDoctors = (params:GetDoctorsParams) =>
   client.get('/doctors', { params });
 
+export const doctorUpdate = (params:any) =>
+  client.put('/doctors',  params );
+
 
 export const getDoctor = () =>
   client.get('/doctors/me' );

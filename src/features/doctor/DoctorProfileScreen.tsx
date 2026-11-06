@@ -5,6 +5,7 @@ import {
   StyleSheet,
   ScrollView,
   TouchableOpacity,
+  RefreshControl,
 } from 'react-native';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import { useAuth } from '../../context/AuthContext';
@@ -12,10 +13,11 @@ import { colors, spacing, radius, shadow } from '../../theme';
 import useDoctor from './useDoctor';
 import AddCertificationForm from './AddCertificationForm';
 import EditCertificationForm from './EditCertificationForm';
+import EditCareerDetailsForm from './EditCareerDetailsForm';
 
 export default function DoctorProfileScreen({ navigation }: any) {
   const { email, signOut } = useAuth();
-  const { doctor: user, loading, refetch } = useDoctor();
+  const { doctor: user, loading, refetch,error } = useDoctor();
 
   // دالة مساعدة لعرض حقل
   const InfoItem = ({ label, value }: { label: string; value: string }) => (
@@ -26,7 +28,9 @@ export default function DoctorProfileScreen({ navigation }: any) {
   );
 
   return (
-    <ScrollView style={styles.root} showsVerticalScrollIndicator={false}>
+    <ScrollView style={styles.root}
+    refreshControl={<RefreshControl refreshing={loading} onRefresh={refetch} />}
+    showsVerticalScrollIndicator={false}>
       <View style={styles.welcomeCard}>
         <View style={styles.avatar}>
           <Ionicons name="person" size={40} color={colors.gold} />
@@ -38,6 +42,7 @@ export default function DoctorProfileScreen({ navigation }: any) {
           <Text style={styles.welcomeSub}>
             نتمنى لك يوماً سعيداً وموفقاً في خدمة مرضاك.
           </Text>
+          <Text>{JSON.stringify(error)}</Text>
         </View>
       </View>
 
@@ -121,7 +126,15 @@ export default function DoctorProfileScreen({ navigation }: any) {
         <TouchableOpacity
           style={styles.actionBtn}
           onPress={() => {
-            /* اذهب لشاشة تحديث البيانات */
+           navigation.navigate('EditModal', {
+                title: 'تعديل المعلومات المهنية',
+                renderContent: (nav: any) => (
+                <EditCareerDetailsForm
+                    refetchData={refetch}
+                    navigation={nav}
+                  />
+                ),
+              })
           }}
         >
           <Ionicons name="create" size={20} color={colors.gold} />
