@@ -3,7 +3,6 @@ import {
   View,
   Text,
   StyleSheet,
-  ScrollView,
   TouchableOpacity,
   FlatList,
 } from 'react-native';
@@ -11,6 +10,7 @@ import Ionicons from 'react-native-vector-icons/Ionicons';
 import { colors, spacing, radius, shadow } from '../../theme';
 import VerifyMessage from '../../components/VerifyMessage';
 import { useAuth } from '../../context/AuthContext';
+import SmoothScrollView from '../../components/SmoothScrollView';
 
 const features = [
   {
@@ -76,7 +76,7 @@ const testimonials = [
 export default function PatientHomeScreen({ navigation }: any) {
   const { isVerified , signOut} = useAuth();
   return (
-    <ScrollView style={styles.root} showsVerticalScrollIndicator={false}>
+    <SmoothScrollView style={styles.root} showsVerticalScrollIndicator={false}>
       <View style={styles.header}>
         <View style={styles.logoCircle}>
           <Ionicons name="medkit" size={22} color={colors.gold} />
@@ -263,7 +263,7 @@ export default function PatientHomeScreen({ navigation }: any) {
         <Text style={styles.logoutText}>تسجيل الخروج</Text>
       </TouchableOpacity>
       <View style={{ height: 100 }} />
-    </ScrollView>
+    </SmoothScrollView>
   );
 }
 
@@ -287,25 +287,25 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
   },
-  brand: { fontSize: 18, fontWeight: '900', color: colors.primary },
+  brand: { fontSize: 16, fontWeight: '900', color: colors.primary },
 
   hero: {
     padding: spacing.lg,
     backgroundColor: colors.bgLight,
-    borderBottomLeftRadius: 32,
-    borderBottomRightRadius: 32,
+    borderBottomLeftRadius: radius.lg,
+    borderBottomRightRadius: radius.lg,
   },
   heroTitle: {
     fontSize: 32,
     fontWeight: '900',
     color: colors.primary,
-    lineHeight: 42,
+    lineHeight: 38,
     textAlign: 'right',
   },
   heroSub: {
-    fontSize: 15,
+    fontSize: 14,
     color: colors.textSecondary,
-    lineHeight: 24,
+    lineHeight: 21,
     marginTop: spacing.md,
     textAlign: 'right',
   },
@@ -350,7 +350,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     marginLeft: -10,
   },
-  ratingText: { color: colors.primary, fontSize: 12, fontWeight: '700' },
+  ratingText: { color: colors.primary, fontSize: 14, fontWeight: '700' },
 
   section: { padding: spacing.lg },
   sectionTitle: {
@@ -395,11 +395,11 @@ const styles = StyleSheet.create({
     textAlign: 'right',
   },
   featureDesc: {
-    fontSize: 13,
+    fontSize: 14,
     color: colors.textSecondary,
     textAlign: 'right',
     marginTop: 4,
-    lineHeight: 20,
+    lineHeight: 21,
   },
 
   servicesHeader: {
@@ -435,7 +435,7 @@ const styles = StyleSheet.create({
     alignSelf: 'flex-start',
   },
   serviceTitle: {
-    fontSize: 18,
+    fontSize: 16,
     fontWeight: '900',
     color: colors.primary,
     textAlign: 'right',
@@ -462,11 +462,11 @@ const styles = StyleSheet.create({
     gap: spacing.md,
     marginBottom: spacing.sm,
   },
-  testimonialName: { fontSize: 15, fontWeight: '900', color: colors.primary },
+  testimonialName: { fontSize: 16, fontWeight: '900', color: colors.primary },
   testimonialText: {
     fontSize: 14,
     color: colors.textSecondary,
-    lineHeight: 22,
+    lineHeight: 21,
     textAlign: 'right',
     fontStyle: 'italic',
   },
@@ -485,14 +485,14 @@ const styles = StyleSheet.create({
     fontWeight: '900',
     color: colors.white,
     textAlign: 'center',
-    lineHeight: 32,
+    lineHeight: 29,
   },
   ctaSub: {
     fontSize: 14,
     color: colors.textLight,
     textAlign: 'center',
     marginVertical: spacing.sm,
-    lineHeight: 22,
+    lineHeight: 21,
   },
   ctaBtns: {
     flexDirection: 'row',

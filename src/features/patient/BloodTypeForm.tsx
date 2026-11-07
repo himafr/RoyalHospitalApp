@@ -4,6 +4,7 @@ import { ActivityIndicator, StyleSheet, Text, TouchableOpacity, View } from 'rea
 import { BloodType } from '../../../types/user';
 import { colors, radius, spacing } from '../../theme';
 import usePatient from './usePatient';
+import { getErrorMessage, showErrorToast, showSuccessToast } from '../../utils/toast';
 
 export default function BloodTypeForm({ navigation,refreshData }: any) {
   const { patient, loading,bloodTypeUpdate } = usePatient();
@@ -17,9 +18,14 @@ export default function BloodTypeForm({ navigation,refreshData }: any) {
 
   const handleSave = async () => {
      if (!bloodType) return;
-    await bloodTypeUpdate(bloodType);
-    refreshData();
-    navigation.goBack();
+    try {
+      await bloodTypeUpdate(bloodType);
+      showSuccessToast('تم تحديث فصيلة الدم.');
+      refreshData();
+      navigation.goBack();
+    } catch (error: unknown) {
+      showErrorToast(getErrorMessage(error, 'تعذر تحديث فصيلة الدم.'));
+    }
 
   };
 

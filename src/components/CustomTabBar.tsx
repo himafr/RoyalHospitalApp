@@ -1,22 +1,48 @@
-import React from 'react';
 import {
+  Animated,
   View,
   Text,
   TouchableOpacity,
   StyleSheet,
-  Dimensions,
   Platform,
 } from 'react-native';
+import React, { useEffect } from 'react';
 import { BottomTabBarProps } from '@react-navigation/bottom-tabs';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { colors, spacing } from '../theme';
 
-const { width } = Dimensions.get('window');
+function AnimatedTabIcon({
+  name,
+  focused,
+}: {
+  name: string;
+  focused: boolean;
+}) {
+  const scale = React.useRef(new Animated.Value(1)).current;
+
+  useEffect(() => {
+    Animated.spring(scale, {
+      toValue: focused ? 1.12 : 1,
+      speed: 20,
+      bounciness: 4,
+      useNativeDriver: true,
+    }).start();
+  }, [focused, scale]);
+
+  return (
+    <Animated.View style={{ transform: [{ scale }] }}>
+      <Ionicons
+        name={focused ? name : `${name}-outline`}
+        size={24}
+        color={focused ? colors.gold : colors.textLight}
+      />
+    </Animated.View>
+  );
+}
 
 export default function CustomTabBar({
   state,
-  descriptors,
   navigation,
 }: BottomTabBarProps) {
   const insets = useSafeAreaInsets();
@@ -70,7 +96,6 @@ export default function CustomTabBar({
               ServicesTab: 'الخدمات',
               AppointmentTab: 'حجز',
             };
-
             return (
               
                 <TouchableOpacity
@@ -79,14 +104,9 @@ export default function CustomTabBar({
                   style={[styles.tabItem]}
                   activeOpacity={0.7}
                 >
-                  <Ionicons
-                    name={
-                      isFocused
-                        ? icons[route.name]
-                        : `${icons[route.name]}-outline`
-                    }
-                    size={24}
-                    color={isFocused ? colors.gold : colors.textLight}
+                  <AnimatedTabIcon
+                    name={icons[route.name]}
+                    focused={isFocused}
                   />
                   <Text style={[styles.label, isFocused && styles.labelActive]}>
                     {labels[route.name]}

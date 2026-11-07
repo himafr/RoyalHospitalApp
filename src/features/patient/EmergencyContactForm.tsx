@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { View, Text, StyleSheet, TextInput, TouchableOpacity, ActivityIndicator } from 'react-native';
 import { colors, spacing, radius } from '../../theme';
 import usePatient from './usePatient';
+import { getErrorMessage, showErrorToast, showSuccessToast } from '../../utils/toast';
 
 export default function EmergencyContactForm({ navigation,refreshData }: any) {
   const { emergencyContactUpdate,patient, loading } = usePatient();
@@ -20,10 +21,14 @@ export default function EmergencyContactForm({ navigation,refreshData }: any) {
   }, [patient]);
 
   const handleSave = async () => {
-  await emergencyContactUpdate(form);
-  refreshData();
-  navigation.goBack()
-
+    try {
+      await emergencyContactUpdate(form);
+      showSuccessToast('تم تحديث جهة اتصال الطوارئ.');
+      refreshData();
+      navigation.goBack();
+    } catch (error: unknown) {
+      showErrorToast(getErrorMessage(error, 'تعذر تحديث جهة اتصال الطوارئ.'));
+    }
   };
 
   if (loading && !patient) return <ActivityIndicator size="large" color={colors.primary} />;

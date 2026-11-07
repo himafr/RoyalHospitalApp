@@ -17,7 +17,13 @@ export default function RootNavigator() {
 
   return (
     <NavigationContainer>
-      <Stack.Navigator screenOptions={{ headerShown: false }}>
+      <Stack.Navigator
+        screenOptions={{
+          headerShown: false,
+          animation: 'fade_from_bottom',
+          animationDuration: 250,
+        }}
+      >
           {!isAuthenticated ? (
           <Stack.Screen name="Auth" component={AuthStack} />
         ) : (
@@ -30,6 +36,7 @@ export default function RootNavigator() {
               options={{ 
                 presentation: 'modal', 
                 headerShown: true,
+                animationDuration: 250,
                 title: 'تفعيل الحساب',
                 headerTintColor: colors.primary,
                 headerStyle: { backgroundColor: colors.white },
@@ -41,6 +48,7 @@ export default function RootNavigator() {
   options={({ route }) => ({ 
     presentation: 'modal', 
     headerShown: true, 
+    animationDuration: 250,
     title: route.params?.title || 'تعديل' // بناخد العنوان من الـ Params
   })} 
 />

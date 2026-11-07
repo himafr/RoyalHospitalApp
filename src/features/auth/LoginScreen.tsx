@@ -3,7 +3,6 @@ import {
   View,
   Text,
   StyleSheet,
-  ScrollView,
   TouchableOpacity,
   KeyboardAvoidingView,
   Platform,
@@ -13,6 +12,8 @@ import { useAuth } from '../../context/AuthContext';
 import InputField from '../../components/InputField';
 import PrimaryButton from '../../components/PrimaryButton';
 import { colors, spacing, radius } from '../../theme';
+import { getErrorMessage, showErrorToast, showSuccessToast } from '../../utils/toast';
+import SmoothScrollView from '../../components/SmoothScrollView';
 
 export default function LoginScreen({ navigation }: any) {
   const { login } = useAuth();
@@ -28,11 +29,10 @@ export default function LoginScreen({ navigation }: any) {
     setLoading(true);
     try {
       await login(email.trim(), password);
-    } catch (e: any) {
-      setError(
-        e.response?.data?.message ||
-          e.message ||
-          'البريد الإلكتروني أو كلمة المرور غير صحيحة',
+      showSuccessToast('أهلاً بك من جديد');
+    } catch (e: unknown) {
+      showErrorToast(
+        getErrorMessage(e, 'البريد الإلكتروني أو كلمة المرور غير صحيحة'),
       );
     } finally {
       setLoading(false);
@@ -44,7 +44,7 @@ export default function LoginScreen({ navigation }: any) {
       behavior={Platform.OS === 'ios' ? 'padding' : undefined}
       style={styles.root}
     >
-      <ScrollView
+      <SmoothScrollView
         contentContainerStyle={styles.scroll}
         keyboardShouldPersistTaps="handled"
       >
@@ -99,7 +99,7 @@ export default function LoginScreen({ navigation }: any) {
             </TouchableOpacity>
           </View>
         </View>
-      </ScrollView>
+      </SmoothScrollView>
     </KeyboardAvoidingView>
   );
 }

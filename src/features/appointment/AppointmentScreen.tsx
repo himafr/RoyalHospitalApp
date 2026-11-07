@@ -3,9 +3,7 @@ import {
   View,
   Text,
   StyleSheet,
-  ScrollView,
   TouchableOpacity,
-  Alert,
   Platform,
 } from 'react-native';
 import Ionicons from 'react-native-vector-icons/Ionicons';
@@ -16,6 +14,8 @@ import PrimaryButton from '../../components/PrimaryButton';
 import useAppointment from './useAppointment';
 import { SPECIALTIES } from '../../constants';
 import { colors, spacing, radius } from '../../theme';
+import { showErrorToast, showSuccessToast } from '../../utils/toast';
+import SmoothScrollView from '../../components/SmoothScrollView';
 
 export default function AppointmentScreen({ route, navigation }: any) {
   // 1. بنشوف إحنا جايين منين
@@ -74,12 +74,20 @@ export default function AppointmentScreen({ route, navigation }: any) {
       setField('serviceId', initialServiceId);
       loadDoctorsForService(initialServiceId, specialty);
     }
-  }, [initialDoctorId, initialServiceId, specialty]);
+  }, [
+    initialDoctorId,
+    initialServiceId,
+    specialty,
+    loadDoctorsForService,
+    loadServicesForDoctor,
+    setField,
+    setSpecialty,
+  ]);
 
   const isDateFullyBooked = form.date ? bookedDates.includes(form.date) : false;
 
   return (
-    <ScrollView style={styles.root} showsVerticalScrollIndicator={false}>
+    <SmoothScrollView style={styles.root} showsVerticalScrollIndicator={false}>
       {/* الهيدر */}
       <View style={styles.header}>
         <Ionicons name="calendar" size={48} color={colors.gold} />
@@ -230,17 +238,17 @@ export default function AppointmentScreen({ route, navigation }: any) {
           title="تأكيد طلب الحجز"
           onPress={async () => {
             const result = await submitBooking();
-            if (result.error) Alert.alert('خطأ', result.error);
-            else if (result.success)
-              Alert.alert('تم', result.success, [
-                { text: 'حسناً', onPress: () => navigation.goBack() },
-              ]);
+            if (result.error) showErrorToast(result.error);
+            else if (result.success) {
+              showSuccessToast(result.success, 'تم إرسال طلب الحجز');
+              navigation.goBack();
+            }
           }}
           loading={booking}
           icon="checkmark-circle"
         />
       </View>
-    </ScrollView>
+    </SmoothScrollView>
   );
 }
 

@@ -1,16 +1,17 @@
 import React from 'react';
-import { View, StyleSheet, ScrollView } from 'react-native';
+import { View, StyleSheet } from 'react-native';
 import { colors, spacing } from '../theme';
+import SmoothScrollView from '../components/SmoothScrollView';
 
 export default function EditModalScreen({ route, navigation }: any) {
   const { renderContent } = route.params;
 
   return (
-    <ScrollView style={styles.root} contentContainerStyle={styles.content}>
+    <SmoothScrollView style={styles.root} contentContainerStyle={styles.content}>
       <View style={styles.card}>
         {renderContent ? renderContent(navigation) : null}
       </View>
-    </ScrollView>
+    </SmoothScrollView>
   );
 }
 

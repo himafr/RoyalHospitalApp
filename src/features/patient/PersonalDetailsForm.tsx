@@ -12,6 +12,7 @@ import {
 } from 'react-native';
 import useUser from '../../hooks/useUser';
 import { colors, radius, spacing } from '../../theme';
+import { getErrorMessage, showErrorToast, showSuccessToast } from '../../utils/toast';
 
 export default function PersonalDetailsForm({ navigation, refreshData }: any) {
   const { data: user, updatePersonalDetails, loading } = useUser();
@@ -41,9 +42,14 @@ export default function PersonalDetailsForm({ navigation, refreshData }: any) {
   }, [user]);
 
   async function handleSave() {
-    await updatePersonalDetails(form);
-    refreshData();
-    navigation.goBack();
+    try {
+      await updatePersonalDetails(form);
+      showSuccessToast('تم تحديث بياناتك الشخصية.');
+      refreshData();
+      navigation.goBack();
+    } catch (error: unknown) {
+      showErrorToast(getErrorMessage(error, 'تعذر تحديث بياناتك الشخصية.'));
+    }
   }
   // ✨ دالة التعامل مع اختيار التاريخ
   const onChangeDate = (event: any, date?: Date) => {

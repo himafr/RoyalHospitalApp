@@ -1,7 +1,6 @@
 import React from 'react';
 import {
   RefreshControl,
-  ScrollView,
   StyleSheet,
   Text,
   TouchableOpacity,
@@ -17,6 +16,7 @@ import PersonalDetailsForm from './PersonalDetailsForm';
 import EmergencyContactForm from './EmergencyContactForm';
 import BloodTypeForm from './BloodTypeForm';
 import ChangePasswordForm from './ChangePasswordForm';
+import SmoothScrollView from '../../components/SmoothScrollView';
 
 export default function PatientProfileScreen({ navigation }: any) {
   const { email, fullName } = useAuth();
@@ -43,7 +43,7 @@ export default function PatientProfileScreen({ navigation }: any) {
         </View>
       </View>
 
-      <ScrollView
+      <SmoothScrollView
         style={styles.root}
         refreshControl={
           <RefreshControl refreshing={loading} onRefresh={refetch} />
@@ -266,7 +266,7 @@ export default function PatientProfileScreen({ navigation }: any) {
         </View>
 
         <View style={styles.bottomHeight} />
-      </ScrollView>
+      </SmoothScrollView>
     </>
   );
 }

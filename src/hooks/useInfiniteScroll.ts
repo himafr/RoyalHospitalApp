@@ -1,4 +1,5 @@
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, useRef } from 'react';
+import { showErrorToast } from '../utils/toast';
 
 interface UseInfiniteScrollProps {
   fetchApi: (params: {
@@ -24,18 +25,22 @@ export default function useInfiniteScroll({
   const [hasMore, setHasMore] = useState(true);
 
   const [refreshing, setRefreshing] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const hasMoreRef = useRef(true);
+  const loadingMoreRef = useRef(false);
 
   const fetchData = useCallback(
     async (pageNum: number, isLoadMore = false) => {
       if (isLoadMore) {
-        if (!hasMore || loadingMore) return;
+        if (!hasMoreRef.current || loadingMoreRef.current) return;
+        loadingMoreRef.current = true;
         setLoadingMore(true);
       } else {
         setLoading(true);
       }
+      setError(null);
 
       try {
-
         const res = await fetchApi({
           page: pageNum,
           size: 3,
@@ -51,25 +56,32 @@ export default function useInfiniteScroll({
           setData(content);
         }
 
+        hasMoreRef.current = !isLast;
         setHasMore(!isLast);
         setPage(pageNum);
-      } catch (error) {
-        console.log('Error fetching data:', error);
-        if (!isLoadMore) setData([]);
+      } catch (caughtError) {
+        console.log('Error fetching data:', caughtError);
+        if (isLoadMore) {
+          showErrorToast('تعذر تحميل المزيد. حاول مرة أخرى.');
+        } else {
+          setError('تحقق من اتصالك بالإنترنت ثم حاول مرة أخرى.');
+        }
       } finally {
         setLoading(false);
+        loadingMoreRef.current = false;
         setLoadingMore(false);
         setRefreshing(false);
       }
     },
-    [fetchApi, selectedSpec, hasMore, loadingMore],
+    [fetchApi, selectedSpec],
   );
 
   useEffect(() => {
     setPage(0);
+    hasMoreRef.current = true;
     setHasMore(true);
     fetchData(0, false);
-  }, [selectedSpec]);
+  }, [fetchData]);
 
   const loadMore = () => {
     if (!loading && !loadingMore && hasMore) {
@@ -89,6 +101,7 @@ export default function useInfiniteScroll({
     loadingMore,
     hasMore,
     refreshing,
+    error,
     loadMore,
     onRefresh,
   };

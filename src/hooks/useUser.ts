@@ -33,6 +33,7 @@ export default function useUser(): UseUserResult {
       if (mountedRef.current) setData(res.data);
     } catch (e) {
       if (mountedRef.current) setError(e as Error);
+      throw e;
     } finally {
       if (mountedRef.current) setLoading(false);
     }
@@ -51,6 +52,7 @@ export default function useUser(): UseUserResult {
      return res.status 
     } catch (e) {
       if (mountedRef.current) setError(e as Error);
+      throw e;
     } finally {
       if (mountedRef.current) setLoading(false);
     }

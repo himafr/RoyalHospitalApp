@@ -1,10 +1,12 @@
 import React, { useState } from 'react';
-import { View, Text, StyleSheet, ScrollView, TouchableOpacity, KeyboardAvoidingView, Platform } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, KeyboardAvoidingView, Platform } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
 import { useAuth } from '../../context/AuthContext';
 import InputField from '../../components/InputField';
 import PrimaryButton from '../../components/PrimaryButton';
 import { colors, spacing, radius } from '../../theme';
+import { getErrorMessage, showErrorToast, showSuccessToast } from '../../utils/toast';
+import SmoothScrollView from '../../components/SmoothScrollView';
 
 export default function SignupScreen({ navigation }: any) {
   const { signup } = useAuth();
@@ -22,9 +24,10 @@ export default function SignupScreen({ navigation }: any) {
     setLoading(true);
     try {
       await signup(form);
+      showSuccessToast('تم إنشاء حسابك. أرسلنا إليك كود التفعيل.');
       navigation.navigate('Activate', { email: form.email });
-    } catch (e: any) {
-      setError(e.response?.data?.message || 'حدث خطأ أثناء إنشاء الحساب');
+    } catch (e: unknown) {
+      showErrorToast(getErrorMessage(e, 'حدث خطأ أثناء إنشاء الحساب'));
     } finally {
       setLoading(false);
     }
@@ -32,7 +35,7 @@ export default function SignupScreen({ navigation }: any) {
 
   return (
     <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : undefined} style={styles.root}>
-      <ScrollView contentContainerStyle={styles.scroll} keyboardShouldPersistTaps="handled">
+      <SmoothScrollView contentContainerStyle={styles.scroll} keyboardShouldPersistTaps="handled">
         <View style={styles.card}>
           <Text style={styles.header}>إنشاء حساب جديد</Text>
           <Text style={styles.sub}>انضم إلى نخبة مرضانا واستمتع بخدماتنا المتميزة</Text>
@@ -72,7 +75,7 @@ export default function SignupScreen({ navigation }: any) {
             </View>
           </View>
         </View>
-      </ScrollView>
+      </SmoothScrollView>
     </KeyboardAvoidingView>
   );
 }

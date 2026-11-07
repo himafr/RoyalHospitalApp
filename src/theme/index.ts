@@ -24,15 +24,15 @@ export const spacing = {
 };
 
 export const radius = {
-  sm: 8, md: 12, lg: 16, xl: 24, xxl: 40, pill: 9999,
+  sm: 8, md: 8, lg: 8, xl: 8, xxl: 8, pill: 9999,
 };
 
 export const shadow = {
   card: {
     shadowColor: '#000',
-    shadowOffset: { width: 0, height: 25 },
-    shadowOpacity: 0.16,
-    shadowRadius: 50,
-    elevation: 8,
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.08,
+    shadowRadius: 8,
+    elevation: 2,
   },
 };

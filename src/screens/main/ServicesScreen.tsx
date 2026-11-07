@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import {
   View,
   Text,
@@ -12,6 +12,8 @@ import FilterChips from '../../components/FilterChips';
 import PrimaryButton from '../../components/PrimaryButton';
 import { colors, spacing, radius, shadow } from '../../theme';
 import useInfiniteScroll from '../../hooks/useInfiniteScroll';
+import ErrorState from '../../components/ErrorState';
+import ScreenTransition from '../../components/ScreenTransition';
 
 export default function ServicesScreen({ navigation }: any) {
   const [selectedSpec, setSelectedSpec] = useState('');
@@ -22,6 +24,7 @@ export default function ServicesScreen({ navigation }: any) {
     loadMore,
     refreshing,
     onRefresh,
+    error,
   } = useInfiniteScroll({
     fetchApi: getServices,
     selectedSpec,
@@ -69,7 +72,7 @@ export default function ServicesScreen({ navigation }: any) {
   );
 
   return (
-    <View style={styles.root}>
+    <ScreenTransition style={styles.root}>
       <View style={styles.header}>
         <Text style={styles.title}>
           رعاية صحية <Text style={{ color: colors.gold }}>ملكية</Text>
@@ -85,8 +88,13 @@ export default function ServicesScreen({ navigation }: any) {
           color={colors.gold}
           style={{ marginTop: 50 }}
         />
+      ) : error ? (
+        <ErrorState message={error} onRetry={() => onRefresh()} />
       ) : (
         <FlatList
+        decelerationRate="normal"
+        scrollEventThrottle={16}
+        overScrollMode="never"
         data={services}
         renderItem={renderService}
         keyExtractor={item => item.id.toString()}
@@ -103,11 +111,13 @@ export default function ServicesScreen({ navigation }: any) {
           contentContainerStyle={{ padding: spacing.md }}
           showsVerticalScrollIndicator={false}
           ListEmptyComponent={ 
-            <Text style={styles.empty}>لا توجد خدمات متاحة.</Text>
+            <Text style={styles.empty}>
+              لا توجد خدمات متاحة حالياً. اختر تخصصاً آخر أو تحقق لاحقاً.
+            </Text>
           }
         />
       )}
-    </View>
+    </ScreenTransition>
   );
 }
 
@@ -115,7 +125,7 @@ const styles = StyleSheet.create({
   root: { flex: 1, backgroundColor: colors.white },
   header: { padding: spacing.lg, backgroundColor: colors.bgLight },
   title: {
-    fontSize: 28,
+    fontSize: 24,
     fontWeight: '900',
     color: colors.primary,
     textAlign: 'right',
@@ -146,7 +156,7 @@ const styles = StyleSheet.create({
     alignSelf: 'flex-start',
   },
   name: {
-    fontSize: 20,
+    fontSize: 16,
     fontWeight: '900',
     color: colors.primary,
     textAlign: 'right',
@@ -155,7 +165,7 @@ const styles = StyleSheet.create({
   desc: {
     fontSize: 14,
     color: colors.textSecondary,
-    lineHeight: 22,
+    lineHeight: 21,
     textAlign: 'right',
     marginBottom: spacing.md,
   },
@@ -164,7 +174,13 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     alignItems: 'center',
   },
-  price: { fontSize: 18, fontWeight: '900', color: colors.primary },
+  price: { fontSize: 16, fontWeight: '900', color: colors.primary },
   currency: { color: colors.gold, fontSize: 14 },
-  empty: { textAlign: 'center', marginTop: 50, color: colors.textMuted },
+  empty: {
+    textAlign: 'center',
+    marginTop: spacing.xxl,
+    color: colors.textSecondary,
+    fontSize: 14,
+    lineHeight: 21,
+  },
 });

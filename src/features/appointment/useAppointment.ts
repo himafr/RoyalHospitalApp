@@ -2,6 +2,9 @@ import { useState, useEffect, useCallback } from 'react';
 import { getDoctors } from '../../api/doctors';
 import { getServices } from '../../api/services';
 import { getBookedDates, getAvailableSlots, createAppointment } from '../../api/appointments';
+import { showErrorToast } from '../../utils/toast';
+
+const DEFAULT_SLOTS = ['09:00', '11:30', '16:30', '19:00'];
 
 export default function useAppointment(
   initialDoctorId?: number,
@@ -32,49 +35,50 @@ const initialForm={
     try {
       const [docsRes, servsRes] = await Promise.all([
         getDoctors({ page: 0, size: 100,  specialty }),
-        getServices({ page: 0, size: 100, specialty: specialty }),
+        getServices({ page: 0, size: 100,  specialty }),
       ]);
       setDoctors(docsRes.data.content || []);
       setServices(servsRes.data.content || []);
     } catch (e) {
       console.log('Error loading initial data', e);
+      showErrorToast('تعذر تحميل بيانات الأطباء والخدمات.');
     } finally {
       setLoading(false);
     }
   }, []);
 
   // 2. فلترة الخدمات بناءً على تخصص الطبيب
-  const loadServicesForDoctor = async (doctorId: number|null, specialty: string) => {
+  const loadServicesForDoctor = useCallback(async (doctorId: number|null, specialty: string) => {
     try {
       const res = await getServices({ page: 0, size: 100, specialty });
       setServices(res.data.content || []);
     } catch (e) {
       console.log('Error loading services for doctor', e);
+      showErrorToast('تعذر تحميل الخدمات لهذا التخصص.');
     }
-  };
+  }, []);
 
   // 3. فلترة الأطباء بناءً على تخصص الخدمة
-  const loadDoctorsForService = async (serviceId: number|null, specialty: string) => {
+  const loadDoctorsForService = useCallback(async (serviceId: number|null, specialty: string) => {
     try {
       const res = await getDoctors({ page: 0, size: 100,  specialty });
       setDoctors(res.data.content || []);
     } catch (e) {
       console.log('Error loading doctors for service', e);
+      showErrorToast('تعذر تحميل الأطباء لهذا التخصص.');
     }
-  };
+  }, []);
 
   // 4. جلب التواريخ المحجوزة لما الدكتور يتغير
   useEffect(() => {
     if (form.doctorId) {
       getBookedDates(form.doctorId)
         .then(res => setBookedDates(res.data || []))
-        .catch(() => {});
+        .catch(() => showErrorToast('تعذر التحقق من المواعيد المحجوزة.'));
     }
   }, [form.doctorId]);
 
   // ... جوه الـ useAppointment
-
-const DEFAULT_SLOTS = ['09:00', '11:30', '16:30', '19:00']; // ✨ الفترات الأساسية
 
 // 5. جلب الفترات المتاحة لما التاريخ يتغير
 useEffect(() => {
@@ -98,6 +102,7 @@ useEffect(() => {
       .catch(() => {
         // لو حصل خطأ، نعرض الفترات الافتراضية برضه
         setAvailableSlots(DEFAULT_SLOTS);
+        showErrorToast('تعذر التحقق من الفترات المتاحة.');
       });
   }
 }, [form.doctorId, form.date, bookedDates]);
@@ -126,15 +131,15 @@ useEffect(() => {
   };
 
   // 7. تغيير التخصص (بيعيد تحميل الأطباء والخدمات)
-  const setSpecialty = (specialty: string) => {
-    setForm({ ...form, specialty, doctorId: null, serviceId: null });
+  const setSpecialty = useCallback((specialty: string) => {
+    setForm(previous => ({ ...previous, specialty, doctorId: null, serviceId: null }));
     loadInitialData(specialty);
-  };
+  }, [loadInitialData]);
 
   // 8. تحديث حقل معين
-  const setField = (key: string, value: any) => {
-    setForm({ ...form, [key]: value });
-  };
+  const setField = useCallback((key: string, value: any) => {
+    setForm(previous => ({ ...previous, [key]: value }));
+  }, []);
 
   // 9. تشغيل التحميل الأولي لو إحنا جايين بتخصص
   useEffect(() => {

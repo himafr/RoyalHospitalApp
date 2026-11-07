@@ -1,7 +1,8 @@
 import React from 'react';
-import { ScrollView, TouchableOpacity, Text, StyleSheet } from 'react-native';
+import { TouchableOpacity, Text, StyleSheet } from 'react-native';
 import { SPECIALTIES } from '../constants';
 import { colors, spacing, radius } from '../theme';
+import SmoothScrollView from './SmoothScrollView';
 
 interface Props {
   selected: string;
@@ -10,7 +11,7 @@ interface Props {
 
 export default function FilterChips({ selected, onSelect }: Props) {
   return (
-    <ScrollView
+    <SmoothScrollView
       horizontal
       showsHorizontalScrollIndicator={false}
       contentContainerStyle={styles.container}
@@ -36,7 +37,7 @@ export default function FilterChips({ selected, onSelect }: Props) {
           </Text>
         </TouchableOpacity>
       ))}
-    </ScrollView>
+    </SmoothScrollView>
   );
 }
 

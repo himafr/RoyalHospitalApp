@@ -2,7 +2,6 @@ import { Picker } from '@react-native-picker/picker';
 import React, { useEffect, useState } from 'react';
 import {
   ActivityIndicator,
-  Alert,
   StyleSheet,
   Text,
   TextInput,
@@ -11,12 +10,13 @@ import {
 } from 'react-native';
 import { colors, radius, spacing } from '../../theme';
 import useDoctor from './useDoctor';
+import { getErrorMessage, showErrorToast, showSuccessToast } from '../../utils/toast';
 
 export default function EditCareerDetailsForm({
   navigation,
   refetchData,
 }: any) {
-  const { doctor: user, loading, editDoctorCareer ,error} = useDoctor();
+  const { doctor: user, loading, editDoctorCareer } = useDoctor();
   const [form, setForm] = useState({
     specialty: '',
     specialization: '',
@@ -36,12 +36,14 @@ export default function EditCareerDetailsForm({
   }, [user]);
 
   const handleSave = async () => {
-    await editDoctorCareer({ data: form });
-    if(error) return Alert.alert('فشل', error.message);
-      Alert.alert('تم', 'تم تحديث المعلومات المهنية بنجاح');
-    
-    await refetchData();
-    navigation.goBack();
+    try {
+      await editDoctorCareer({ data: form });
+      await refetchData();
+      showSuccessToast('تم تحديث المعلومات المهنية بنجاح.');
+      navigation.goBack();
+    } catch (error: unknown) {
+      showErrorToast(getErrorMessage(error, 'تعذر تحديث المعلومات المهنية.'));
+    }
   };
 
   if (loading && !user)

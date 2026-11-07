@@ -4,6 +4,8 @@ import { StatusBar } from 'react-native';
 import { decode as base64Decode } from 'base-64';
 import { AuthProvider } from './src/context/AuthContext';
 import RootNavigator from './src/navigation/RootNavigator';
+import Toast from 'react-native-toast-message';
+import { toastConfig } from './src/utils/toast';
 (globalThis as any).atob = base64Decode;
 export default function App() {
   return (
@@ -11,6 +13,7 @@ export default function App() {
       <StatusBar barStyle="light-content"  />
       <AuthProvider>
         <RootNavigator />
+        <Toast config={toastConfig} />
       </AuthProvider>
     </SafeAreaProvider>
   );

@@ -3,7 +3,6 @@ import {
   View,
   Text,
   StyleSheet,
-  TextInput,
   TouchableOpacity,
   Alert,
   ActivityIndicator,
@@ -12,10 +11,11 @@ import { useAuth } from '../../context/AuthContext';
 import useUser from '../../hooks/useUser';
 import { colors, radius, spacing } from '../../theme';
 import PasswordInput from '../../components/PasswordInput';
+import { getErrorMessage, showErrorToast } from '../../utils/toast';
 
 export default function ChangePasswordForm({ navigation }: any) {
   const { signOut } = useAuth();
-  const { passwordUpdate, error, loading } = useUser();
+  const { passwordUpdate, loading } = useUser();
 
   const [oldPass, setOldPass] = useState('');
   const [newPass, setNewPass] = useState('');
@@ -31,8 +31,13 @@ export default function ChangePasswordForm({ navigation }: any) {
     if (newPass.length < 6) {
       return Alert.alert('كلمة المرور يجب أن تكون 6 أحرف على الأقل');
     }
- const res=   await passwordUpdate({ newPass, oldPass });
- if(res !== 200)return;
+    try {
+      const res = await passwordUpdate({ newPass, oldPass });
+      if (res !== 200) return;
+    } catch (error: unknown) {
+      showErrorToast(getErrorMessage(error, 'تعذر تحديث كلمة المرور.'));
+      return;
+    }
 
     Alert.alert(
       'تم التحديث',
@@ -55,8 +60,6 @@ export default function ChangePasswordForm({ navigation }: any) {
 
   return (
     <View>
-      {error ? <Text style={styles.error}>{error.message}</Text> : null}
-
       <Text style={styles.label}>كلمة المرور الحالية</Text>
       <PasswordInput
         value={oldPass}
@@ -118,11 +121,4 @@ const styles = StyleSheet.create({
     minHeight: 52,
   },
   saveBtnText: { color: colors.gold, fontWeight: '900', fontSize: 16 },
-  error: {
-    color: colors.danger,
-    fontSize: 14,
-    textAlign: 'center',
-    marginBottom: spacing.md,
-    fontWeight: '700',
-  },
 });

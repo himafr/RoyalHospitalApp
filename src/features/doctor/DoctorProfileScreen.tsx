@@ -3,7 +3,6 @@ import {
   View,
   Text,
   StyleSheet,
-  ScrollView,
   TouchableOpacity,
   RefreshControl,
 } from 'react-native';
@@ -14,6 +13,7 @@ import useDoctor from './useDoctor';
 import AddCertificationForm from './AddCertificationForm';
 import EditCertificationForm from './EditCertificationForm';
 import EditCareerDetailsForm from './EditCareerDetailsForm';
+import SmoothScrollView from '../../components/SmoothScrollView';
 
 export default function DoctorProfileScreen({ navigation }: any) {
   const { email, signOut } = useAuth();
@@ -28,7 +28,7 @@ export default function DoctorProfileScreen({ navigation }: any) {
   );
 
   return (
-    <ScrollView style={styles.root}
+    <SmoothScrollView style={styles.root}
     refreshControl={<RefreshControl refreshing={loading} onRefresh={refetch} />}
     showsVerticalScrollIndicator={false}>
       <View style={styles.welcomeCard}>
@@ -210,7 +210,7 @@ export default function DoctorProfileScreen({ navigation }: any) {
       </TouchableOpacity>
 
       <View style={{ height: 100 }} />
-    </ScrollView>
+    </SmoothScrollView>
   );
 }
 

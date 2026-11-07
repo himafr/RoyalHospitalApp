@@ -29,6 +29,7 @@ export default function usePatient(): UsePatientResult {
         await updateEmergencyContact(v);
       } catch (e) {
         if (mountedRef.current) setError(e as Error);
+        throw e;
       } finally {
         if (mountedRef.current) setLoading(false);
       }
@@ -41,6 +42,7 @@ export default function usePatient(): UsePatientResult {
         await updateBloodType(bloodType);
       } catch (e) {
         if (mountedRef.current) setError(e as Error);
+        throw e;
       } finally {
         if (mountedRef.current) setLoading(false);
       }

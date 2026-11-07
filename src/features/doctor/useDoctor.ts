@@ -57,16 +57,17 @@ export default function useDoctor(): UseDoctorResult {
       await doctorUpdate(data);
     } catch (e) {
       if (mountedRef.current) setError(e as Error);
+      throw e;
     } finally {
       if (mountedRef.current) setLoading(false);
     }
   }
 
-  function getCertificationById(id: number) {
-    return doctor?.certifications.find(
-      (c: any) => c.id === id,
-    ) as Certification;
-  }
+  const getCertificationById = useCallback(
+    (id: number) =>
+      doctor?.certifications.find((certification: any) => certification.id === id) as Certification,
+    [doctor],
+  );
 
   async function editCertification({ id, fData }: { id: number; fData: any }) {
     setLoading(true);
@@ -76,6 +77,7 @@ export default function useDoctor(): UseDoctorResult {
       await editCertificationById({ id, data: fData });
     } catch (e) {
       if (mountedRef.current) setError(e as Error);
+      throw e;
     } finally {
       if (mountedRef.current) setLoading(false);
     }
@@ -88,6 +90,7 @@ export default function useDoctor(): UseDoctorResult {
       await certificationAdd(v);
     } catch (e) {
       if (mountedRef.current) setError(e as Error);
+      throw e;
     } finally {
       if (mountedRef.current) setLoading(false);
     }
@@ -100,6 +103,7 @@ export default function useDoctor(): UseDoctorResult {
       await certificationDelete({ id });
     } catch (e) {
       if (mountedRef.current) setError(e as Error);
+      throw e;
     } finally {
       if (mountedRef.current) setLoading(false);
     }

@@ -1,11 +1,12 @@
 import React from 'react';
-import { View, Text, StyleSheet, ScrollView } from 'react-native';
+import { View, Text, StyleSheet } from 'react-native';
 import  Ionicons  from 'react-native-vector-icons/Ionicons'; // تأكد من طريقة الاستيراد اللي ظبطتها
 import { colors, spacing, radius, shadow } from '../../theme';
+import SmoothScrollView from '../../components/SmoothScrollView';
 
 export default function AboutScreen() {
   return (
-    <ScrollView style={styles.root}>
+    <SmoothScrollView style={styles.root}>
       <View style={styles.hero}>
         <Text style={styles.heroTitle}>عيادة الشفاء</Text>
         <Text style={styles.heroSub}>إرث من الثقة ورؤية لمستقبل الرعاية الصحية</Text>
@@ -28,7 +29,7 @@ export default function AboutScreen() {
           </Text>
         </View>
       </View>
-    </ScrollView>
+    </SmoothScrollView>
   );
 }
 

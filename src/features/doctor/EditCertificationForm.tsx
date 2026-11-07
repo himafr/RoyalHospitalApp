@@ -3,6 +3,7 @@ import { ActivityIndicator, Alert, StyleSheet, Text, TextInput, TouchableOpacity
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import { colors, radius, spacing } from '../../theme';
 import useDoctor from './useDoctor';
+import { getErrorMessage, showErrorToast, showSuccessToast } from '../../utils/toast';
 
 export default function EditCertificationForm({ certId:id, navigation ,refetchData}: any) {
   const { doctor,loading,getCertificationById,editCertification,deleteCertificationById } = useDoctor();
@@ -24,15 +25,16 @@ export default function EditCertificationForm({ certId:id, navigation ,refetchDa
           photo: cert.photo || 'default.png',
         });
     }
-  }, [doctor, id]);
+  }, [doctor, getCertificationById, id]);
 
   const handleSave = async () => {
     try {
       await editCertification({id,fData:form})
       await refetchData();
+      showSuccessToast('تم تحديث الشهادة.');
       navigation.goBack();
     } catch (error: any) {
-      Alert.alert('خطأ', error.response?.data?.message || 'حدث خطأ');
+      showErrorToast(getErrorMessage(error, 'تعذر تحديث الشهادة.'));
     } 
   };
 
@@ -49,9 +51,10 @@ export default function EditCertificationForm({ certId:id, navigation ,refetchDa
             try {
              await deleteCertificationById(id)
               await refetchData();
+              showSuccessToast('تم حذف الشهادة.');
               navigation.goBack();
             } catch (error: any) {
-              Alert.alert('خطأ', error.response?.data?.message || 'حدث خطأ');
+              showErrorToast(getErrorMessage(error, 'تعذر حذف الشهادة.'));
             }
           }
         }

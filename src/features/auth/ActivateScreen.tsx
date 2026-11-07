@@ -3,7 +3,6 @@ import {
   View,
   Text,
   StyleSheet,
-  ScrollView,
   TextInput,
   TouchableOpacity,
   KeyboardAvoidingView,
@@ -14,6 +13,7 @@ import * as authApi from '../../api/auth';
 import { useAuth } from '../../context/AuthContext';
 import PrimaryButton from '../../components/PrimaryButton';
 import { colors, spacing, radius } from '../../theme';
+import SmoothScrollView from '../../components/SmoothScrollView';
 
 const COUNTDOWN = 90;
 
@@ -98,7 +98,7 @@ export default function ActivateScreen({ navigation }: any) {
       behavior={Platform.OS === 'ios' ? 'padding' : undefined}
       style={styles.root}
     >
-      <ScrollView
+      <SmoothScrollView
         contentContainerStyle={styles.scroll}
         keyboardShouldPersistTaps="handled"
       >
@@ -155,7 +155,7 @@ export default function ActivateScreen({ navigation }: any) {
             <Text style={styles.backText}>رجوع</Text>
           </TouchableOpacity>
         </View>
-      </ScrollView>
+      </SmoothScrollView>
     </KeyboardAvoidingView>
   );
 }

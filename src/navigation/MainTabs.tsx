@@ -17,7 +17,14 @@ export default function MainTabs() {
    return (
     <Tab.Navigator
       tabBar={(props) => <CustomTabBar {...props} />}
-      screenOptions={{ headerShown: false }}
+      screenOptions={{
+        headerShown: false,
+        animation: 'fade',
+        transitionSpec: {
+          animation: 'timing',
+          config: { duration: 220 },
+        },
+      }}
     >
       <Tab.Screen name="HomeTab" component={HomeScreen} />
       <Tab.Screen name="AppointmentTab" component={AppointmentScreen} />

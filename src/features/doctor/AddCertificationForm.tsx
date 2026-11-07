@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { Alert, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
 import { colors, radius, spacing } from '../../theme';
 import useDoctor from './useDoctor';
+import { getErrorMessage, showErrorToast, showSuccessToast } from '../../utils/toast';
 
 export default function AddCertificationForm({ navigation ,refetchData}: any) {
   const {  addCertification,loading } = useDoctor();
@@ -19,11 +20,11 @@ export default function AddCertificationForm({ navigation ,refetchData}: any) {
     
     try {
       await addCertification(form)
-      Alert.alert('تم', 'تم إضافة الشهادة بنجاح');
+      showSuccessToast('تم إضافة الشهادة بنجاح.');
       await refetchData();
       navigation.goBack();
     } catch (error: any) {
-      Alert.alert('خطأ', error.response?.data?.message || 'حدث خطأ');
+      showErrorToast(getErrorMessage(error, 'تعذر إضافة الشهادة.'));
     } finally {
     }
   };

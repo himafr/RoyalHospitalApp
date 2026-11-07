@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import {
   View,
   Text,
@@ -12,6 +12,8 @@ import FilterChips from '../../components/FilterChips';
 import PrimaryButton from '../../components/PrimaryButton';
 import { colors, spacing, radius, shadow } from '../../theme';
 import useInfiniteScroll from '../../hooks/useInfiniteScroll';
+import ErrorState from '../../components/ErrorState';
+import ScreenTransition from '../../components/ScreenTransition';
 
 export default function DoctorsScreen({ navigation }: any) {
   const [selectedSpec, setSelectedSpec] = useState('');
@@ -22,6 +24,7 @@ export default function DoctorsScreen({ navigation }: any) {
     loadMore,
     refreshing,
     onRefresh,
+    error,
   } = useInfiniteScroll({
     fetchApi: getDoctors,
     selectedSpec,
@@ -69,7 +72,7 @@ export default function DoctorsScreen({ navigation }: any) {
   );
 
   return (
-    <View style={styles.root}>
+    <ScreenTransition style={styles.root}>
       <View style={styles.header}>
         <Text style={styles.title}>
           نخبة <Text style={{ color: colors.gold }}>الأطباء</Text>
@@ -85,8 +88,13 @@ export default function DoctorsScreen({ navigation }: any) {
           color={colors.gold}
           style={{ marginTop: 50 }}
         />
+      ) : error ? (
+        <ErrorState message={error} onRetry={() => onRefresh()} />
       ) : (
         <FlatList
+          decelerationRate="normal"
+          scrollEventThrottle={16}
+          overScrollMode="never"
           data={doctors}
           renderItem={renderDoctor}
           keyExtractor={item => item.id.toString()}
@@ -104,7 +112,7 @@ export default function DoctorsScreen({ navigation }: any) {
           }
         />
       )}
-    </View>
+    </ScreenTransition>
   );
 }
 
@@ -112,7 +120,7 @@ const styles = StyleSheet.create({
   root: { flex: 1, backgroundColor: colors.white },
   header: { padding: spacing.lg, backgroundColor: colors.bgLight },
   title: {
-    fontSize: 28,
+    fontSize: 24,
     fontWeight: '900',
     color: colors.primary,
     textAlign: 'right',
@@ -146,15 +154,21 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
   },
-  specialty: { fontSize: 12, color: colors.gold, fontWeight: '700' },
-  name: { fontSize: 18, fontWeight: '900', color: colors.primary },
-  experience: { fontSize: 12, color: colors.textMuted, marginTop: 2 },
+  specialty: { fontSize: 14, color: colors.textSecondary, fontWeight: '700' },
+  name: { fontSize: 16, fontWeight: '900', color: colors.primary },
+  experience: { fontSize: 14, color: colors.textMuted, marginTop: spacing.xs },
   about: {
     fontSize: 14,
     color: colors.textSecondary,
-    lineHeight: 22,
+    lineHeight: 21,
     textAlign: 'right',
     marginBottom: spacing.md,
   },
-  empty: { textAlign: 'center', marginTop: 50, color: colors.textMuted },
+  empty: {
+    textAlign: 'center',
+    marginTop: spacing.xxl,
+    color: colors.textSecondary,
+    fontSize: 14,
+    lineHeight: 21,
+  },
 });
