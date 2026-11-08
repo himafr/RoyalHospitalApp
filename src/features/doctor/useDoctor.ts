@@ -7,6 +7,7 @@ import {
   editCertificationById,
 } from '../../api/certification';
 import { Certification } from '../../../types/sub';
+import type { Asset } from 'react-native-image-picker';
 
 interface UseDoctorResult {
   doctor: Doctor | null;
@@ -14,7 +15,10 @@ interface UseDoctorResult {
   loading: boolean;
   error: Error | null;
   refetch: () => Promise<void>;
-  addCertification: (v: any) => Promise<void>;
+  addCertification: (
+    data: Record<string, unknown>,
+    photo?: Asset | null,
+  ) => Promise<void>;
   editDoctorCareer: (v: any) => Promise<void>;
   getCertificationById: (id: number) => Certification;
   editCertification: ({
@@ -22,7 +26,8 @@ interface UseDoctorResult {
     fData,
   }: {
     id: number;
-    fData: any;
+    fData: Record<string, unknown>;
+    photo?: Asset | null;
   }) => Promise<void>;
   deleteCertificationById: (id: number) => Promise<void>;
   // bloodTypeUpdate: (bloodType:BloodType) => Promise<void>;
@@ -69,12 +74,20 @@ export default function useDoctor(): UseDoctorResult {
     [doctor],
   );
 
-  async function editCertification({ id, fData }: { id: number; fData: any }) {
+  async function editCertification({
+    id,
+    fData,
+    photo,
+  }: {
+    id: number;
+    fData: Record<string, unknown>;
+    photo?: Asset | null;
+  }) {
     setLoading(true);
     setError(null);
 
     try {
-      await editCertificationById({ id, data: fData });
+      await editCertificationById({ id, data: fData, photo });
     } catch (e) {
       if (mountedRef.current) setError(e as Error);
       throw e;
@@ -82,12 +95,15 @@ export default function useDoctor(): UseDoctorResult {
       if (mountedRef.current) setLoading(false);
     }
   }
-  async function addCertification(v: any) {
+  async function addCertification(
+    data: Record<string, unknown>,
+    photo?: Asset | null,
+  ) {
     setLoading(true);
     setError(null);
 
     try {
-      await certificationAdd(v);
+      await certificationAdd(data, photo);
     } catch (e) {
       if (mountedRef.current) setError(e as Error);
       throw e;

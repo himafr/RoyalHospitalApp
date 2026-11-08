@@ -4,6 +4,8 @@ import Ionicons from 'react-native-vector-icons/Ionicons';
 import { colors, radius, spacing } from '../../theme';
 import useDoctor from './useDoctor';
 import { getErrorMessage, showErrorToast, showSuccessToast } from '../../utils/toast';
+import type { Asset } from 'react-native-image-picker';
+import { pickImage } from '../../utils/pickImage';
 
 export default function EditCertificationForm({ certId:id, navigation ,refetchData}: any) {
   const { doctor,loading,getCertificationById,editCertification,deleteCertificationById } = useDoctor();
@@ -12,8 +14,8 @@ export default function EditCertificationForm({ certId:id, navigation ,refetchDa
     name: '',
     place: '',
     organization: '',
-    photo: 'default.png',
   });
+  const [photo, setPhoto] = useState<Asset | null>(null);
 
   useEffect(() => {
       const cert = getCertificationById(id);
@@ -22,20 +24,28 @@ export default function EditCertificationForm({ certId:id, navigation ,refetchDa
           name: cert.name || '',
           organization: cert.organization || '',
           place: cert.place || '',
-          photo: cert.photo || 'default.png',
         });
     }
   }, [doctor, getCertificationById, id]);
 
   const handleSave = async () => {
     try {
-      await editCertification({id,fData:form})
+      await editCertification({id,fData:form,photo})
       await refetchData();
       showSuccessToast('تم تحديث الشهادة.');
       navigation.goBack();
     } catch (error: any) {
       showErrorToast(getErrorMessage(error, 'تعذر تحديث الشهادة.'));
     } 
+  };
+
+  const handlePickPhoto = async () => {
+    try {
+      const selectedPhoto = await pickImage();
+      if (selectedPhoto) setPhoto(selectedPhoto);
+    } catch (error: unknown) {
+      showErrorToast(getErrorMessage(error, 'تعذر اختيار صورة الشهادة.'));
+    }
   };
 
   const handleDelete = async () => {
@@ -75,6 +85,12 @@ export default function EditCertificationForm({ certId:id, navigation ,refetchDa
       <Text style={styles.label}>المكان</Text>
       <TextInput style={styles.input} value={form.place} onChangeText={(t) => setForm({ ...form, place: t })} />
 
+      <TouchableOpacity style={styles.photoBtn} onPress={handlePickPhoto}>
+        <Text style={styles.photoBtnText}>
+          {photo?.fileName || 'استبدال صورة الشهادة (اختياري)'}
+        </Text>
+      </TouchableOpacity>
+
       <TouchableOpacity style={styles.saveBtn} onPress={handleSave} disabled={loading}>
         <Text style={styles.saveBtnText}>{loading ? 'جاري الحفظ...' : 'حفظ التعديلات'}</Text>
       </TouchableOpacity>
@@ -92,6 +108,8 @@ const styles = StyleSheet.create({
   label: { fontSize: 14, color: colors.primary, fontWeight: '700', marginBottom: spacing.xs, textAlign: 'right' },
   input: { borderWidth: 1, borderColor: colors.border, borderRadius: radius.md, padding: spacing.md, marginBottom: spacing.md, textAlign: 'right' },
   saveBtn: { backgroundColor: colors.primary, padding: spacing.md, borderRadius: radius.md, alignItems: 'center' },
+  photoBtn: { borderWidth: 1, borderColor: colors.primary, borderRadius: radius.md, padding: spacing.md, marginBottom: spacing.md, alignItems: 'center' },
+  photoBtnText: { color: colors.primary, fontWeight: '700' },
   saveBtnText: { color: colors.gold, fontWeight: '900', fontSize: 16 },
   deleteBtn: { flexDirection: 'row-reverse', alignItems: 'center', justifyContent: 'center', backgroundColor: colors.danger, padding: spacing.md, borderRadius: radius.md, marginTop: spacing.md, gap: spacing.sm },
   deleteBtnText: { color: colors.white, fontWeight: '700', fontSize: 16 },

@@ -10,9 +10,11 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
+import type { Asset } from 'react-native-image-picker';
 import useUser from '../../hooks/useUser';
 import { colors, radius, spacing } from '../../theme';
 import { getErrorMessage, showErrorToast, showSuccessToast } from '../../utils/toast';
+import { pickImage } from '../../utils/pickImage';
 
 export default function PersonalDetailsForm({ navigation, refreshData }: any) {
   const { data: user, updatePersonalDetails, loading } = useUser();
@@ -25,6 +27,7 @@ export default function PersonalDetailsForm({ navigation, refreshData }: any) {
   });
 
   const [showDatePicker, setShowDatePicker] = useState(false);
+  const [photo, setPhoto] = useState<Asset | null>(null);
   const [selectedDate, setSelectedDate] = useState(
     user?.dateOfBirth ? new Date(user.dateOfBirth) : new Date(),
   );
@@ -43,7 +46,7 @@ export default function PersonalDetailsForm({ navigation, refreshData }: any) {
 
   async function handleSave() {
     try {
-      await updatePersonalDetails(form);
+      await updatePersonalDetails(form, photo);
       showSuccessToast('تم تحديث بياناتك الشخصية.');
       refreshData();
       navigation.goBack();
@@ -51,6 +54,15 @@ export default function PersonalDetailsForm({ navigation, refreshData }: any) {
       showErrorToast(getErrorMessage(error, 'تعذر تحديث بياناتك الشخصية.'));
     }
   }
+
+  const handlePickPhoto = async () => {
+    try {
+      const selectedPhoto = await pickImage();
+      if (selectedPhoto) setPhoto(selectedPhoto);
+    } catch (error: unknown) {
+      showErrorToast(getErrorMessage(error, 'تعذر اختيار الصورة.'));
+    };
+  };
   // ✨ دالة التعامل مع اختيار التاريخ
   const onChangeDate = (event: any, date?: Date) => {
     // في الأندرويد، بنقفل الـ Picker بعد ما يختار
@@ -65,6 +77,12 @@ export default function PersonalDetailsForm({ navigation, refreshData }: any) {
   if (loading && !user) return <ActivityIndicator />;
   return (
     <View>
+      <TouchableOpacity style={styles.photoBtn} onPress={handlePickPhoto}>
+        <Text style={styles.photoBtnText}>
+          {photo?.fileName || 'اختيار صورة شخصية'}
+        </Text>
+      </TouchableOpacity>
+
       <Text style={styles.label}>الاسم بالكامل</Text>
       <TextInput
         style={styles.input}
@@ -158,5 +176,14 @@ const styles = StyleSheet.create({
     borderRadius: radius.md,
     alignItems: 'center',
   },
+  photoBtn: {
+    borderWidth: 1,
+    borderColor: colors.primary,
+    borderRadius: radius.md,
+    padding: spacing.md,
+    marginBottom: spacing.md,
+    alignItems: 'center',
+  },
+  photoBtnText: { color: colors.primary, fontWeight: '700' },
   saveBtnText: { color: colors.gold, fontWeight: '900', fontSize: 16 },
 });

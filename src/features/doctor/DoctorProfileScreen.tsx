@@ -1,5 +1,6 @@
 import React from 'react';
 import {
+  Image,
   View,
   Text,
   StyleSheet,
@@ -16,7 +17,7 @@ import EditCareerDetailsForm from './EditCareerDetailsForm';
 import SmoothScrollView from '../../components/SmoothScrollView';
 
 export default function DoctorProfileScreen({ navigation }: any) {
-  const { email, signOut } = useAuth();
+  const { email, signOut, photoUrl } = useAuth();
   const { doctor: user, loading, refetch,error } = useDoctor();
 
   // دالة مساعدة لعرض حقل
@@ -33,7 +34,11 @@ export default function DoctorProfileScreen({ navigation }: any) {
     showsVerticalScrollIndicator={false}>
       <View style={styles.welcomeCard}>
         <View style={styles.avatar}>
-          <Ionicons name="person" size={40} color={colors.gold} />
+          {photoUrl ? (
+            <Image source={{ uri: photoUrl }} style={styles.avatarImage} />
+          ) : (
+            <Ionicons name="person" size={40} color={colors.gold} />
+          )}
         </View>
         <View style={{ flex: 1, alignItems: 'flex-end' }}>
           <Text style={styles.welcomeTitle}>
@@ -167,9 +172,13 @@ export default function DoctorProfileScreen({ navigation }: any) {
           {user?.certifications && user.certifications.length > 0 ? (
             user.certifications.map((cert: any, index: number) => (
               <View key={index} style={styles.certItem}>
-                <View style={styles.certIcon}>
-                  <Ionicons name="school" size={18} color={colors.gold} />
-                </View>
+                {cert.photo ? (
+                  <Image source={{ uri: cert.photo }} style={styles.certPhoto} />
+                ) : (
+                  <View style={styles.certIcon}>
+                    <Ionicons name="school" size={18} color={colors.gold} />
+                  </View>
+                )}
                 <View style={{ flex: 1, alignItems: 'flex-end' }}>
                   <Text style={styles.certName}>{cert.name}</Text>
                   <Text style={styles.certOrg}>
@@ -237,7 +246,9 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     borderWidth: 3,
     borderColor: colors.gold,
+    overflow: 'hidden',
   },
+  avatarImage: { width: '100%', height: '100%' },
   welcomeTitle: { fontSize: 20, fontWeight: '900', color: colors.white },
   welcomeSub: {
     fontSize: 13,
@@ -428,6 +439,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
   },
+  certPhoto: { width: 36, height: 36, borderRadius: 18 },
   certName: {
     fontSize: 15,
     fontWeight: '900',

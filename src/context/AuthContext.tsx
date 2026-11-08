@@ -13,6 +13,7 @@ interface AuthContextData {
   email: string | null;
   role: string | null;
   token: string | null;
+  photoUrl: string | null;
   isVerified:()=>boolean;
   loading: boolean;
   isAuthenticated: boolean;
@@ -29,8 +30,12 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [fullName, setFullName] = useState<string | null>(null);
   const [email, setEmail] = useState<string | null>(null);
   const [token, setToken] = useState<string | null>(null);
+  const [photoUrl, setPhotoUrl] = useState<string | null>(null);
   const [role, setRole] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
+
+  const getPhotoUrl = (authToken: string) =>
+    decode<{ photoUrl?: string | null }>(authToken).photoUrl ?? null;
 
   useEffect(() => {
     (async () => {
@@ -39,11 +44,12 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         const storedEmail = await AsyncStorage.getItem('email');
         const storedRole = await AsyncStorage.getItem('role');
         const storedFullName = await AsyncStorage.getItem('full_name');
-        if (storedToken && storedEmail && storedEmail) {
+        if (storedToken && storedEmail) {
           setToken(storedToken);
+          setPhotoUrl(getPhotoUrl(storedToken));
           setEmail(storedEmail);
           setRole(storedRole);
-          setEmail(storedFullName);
+          setFullName(storedFullName);
         }
       } finally {
         setLoading(false);
@@ -55,6 +61,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
   const persist = async (newToken: string, fullName: string, email: string,role:string) => {
     setToken(newToken);
+    setPhotoUrl(getPhotoUrl(newToken));
     setEmail(email);
     setRole(role);
     setFullName(fullName);
@@ -65,6 +72,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   };
   const updateToken = async (newToken: string) => {
     setToken(newToken);
+    setPhotoUrl(getPhotoUrl(newToken));
     await AsyncStorage.setItem('auth_token', newToken);
   };
   const isVerified= ():boolean =>{
@@ -94,6 +102,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   
   const signOut = async () => {
     setToken(null);
+    setPhotoUrl(null);
     setEmail(null);
     setFullName(null);
     await AsyncStorage.removeItem('auth_token');
@@ -106,6 +115,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         fullName,
         email,
         token,
+        photoUrl,
         loading,
         isAuthenticated: !!token,
         login,

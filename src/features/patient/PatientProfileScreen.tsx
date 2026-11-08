@@ -1,5 +1,6 @@
 import React from 'react';
 import {
+  Image,
   RefreshControl,
   StyleSheet,
   Text,
@@ -19,13 +20,12 @@ import ChangePasswordForm from './ChangePasswordForm';
 import SmoothScrollView from '../../components/SmoothScrollView';
 
 export default function PatientProfileScreen({ navigation }: any) {
-  const { email, fullName } = useAuth();
-  const { data: user, loading, refetch, error: userError } = useUser();
+  const { email, fullName, photoUrl } = useAuth();
+  const { data: user, loading, refetch } = useUser();
   const {
     loading: patientLoading,
     patient,
     refetch: patientRefetch,
-    error: patientError,
     medicalRecord,
   } = usePatient();
 
@@ -33,7 +33,11 @@ export default function PatientProfileScreen({ navigation }: any) {
     <>
       <View style={styles.welcomeHeader}>
         <View style={styles.avatar}>
-          <Ionicons name="person" size={40} color={colors.gold} />
+          {photoUrl ? (
+            <Image source={{ uri: photoUrl }} style={styles.avatarImage} />
+          ) : (
+            <Ionicons name="person" size={40} color={colors.gold} />
+          )}
         </View>
         <View style={styles.flexAlignmentItem}>
           <Text style={styles.welcomeTitle}>
@@ -293,7 +297,9 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     borderWidth: 3,
     borderColor: colors.gold,
+    overflow: 'hidden',
   },
+  avatarImage: { width: '100%', height: '100%' },
   welcomeTitle: { fontSize: 20, fontWeight: '900', color: colors.white },
   welcomeSub: { fontSize: 14, color: colors.gold, fontWeight: '700' },
 

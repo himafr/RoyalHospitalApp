@@ -1,12 +1,14 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { User } from '../../types/user';
 import { getUser, updatePassword, updateUser } from '../api/users';
+import type { Asset } from 'react-native-image-picker';
+import { useAuth } from '../context/AuthContext';
 
 type UseUserResult = {
   data: User | null;
   loading: boolean;
   error: Error | null;
-  updatePersonalDetails: (v: any) => Promise<void>;
+  updatePersonalDetails: (v: User, photo?: Asset | null) => Promise<void>;
   passwordUpdate: ({
     newPass,
     oldPass,
@@ -18,19 +20,28 @@ type UseUserResult = {
 };
 
 export default function useUser(): UseUserResult {
+  const { updateToken } = useAuth();
   const [data, setData] = useState<User | null>(null);
   const [loading, setLoading] = useState<boolean>(true); // start as loading
   const [error, setError] = useState<Error | null>(null);
 
   const mountedRef = useRef<boolean>(true);
 
-  async function updatePersonalDetails(v: any) {
+  async function updatePersonalDetails(v: User, photo?: Asset | null) {
     setLoading(true);
     setError(null);
 
     try {
-      const res = await updateUser(v);
-      if (mountedRef.current) setData(res.data);
+      const res = await updateUser(v, photo);
+      const newToken = res.data?.token;
+      if (newToken) {
+        await updateToken(newToken);
+        if (mountedRef.current) {
+          setData(current => (current ? { ...current, ...v } : current));
+        }
+      } else if (mountedRef.current) {
+        setData(res.data);
+      }
     } catch (e) {
       if (mountedRef.current) setError(e as Error);
       throw e;

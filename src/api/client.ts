@@ -13,13 +13,21 @@ const client = axios.create({
 client.interceptors.request.use(async (config) => {
   const token = await AsyncStorage.getItem('auth_token');
   if (token) config.headers.Authorization = `Bearer ${token}`;
-   await new Promise((r) => setTimeout(r, 3000));
+  //  await new Promise((r) => setTimeout(r, 3000));
   return config;
 });
 
 client.interceptors.response.use(
   (res) => res.data,
   async (error) => {
+    console.error('API request failed', {
+      message: error.message,
+      code: error.code,
+      status: error.response?.status,
+      baseURL: error.config?.baseURL,
+      method: error.config?.method,
+      url: error.config?.url,
+    });
     if (error.response?.status === 401) {
       await AsyncStorage.removeItem('auth_token');
       await AsyncStorage.removeItem('user');
