@@ -14,7 +14,7 @@ export const updateUser = async (
 
   const body = await createImageFormData(form, photo);
   return client.put(BASE_URL, body, {
-    headers: { 'Content-Type': undefined },
+    headers: { 'Content-Type':'multipart/form-data' },
   });
 };
 

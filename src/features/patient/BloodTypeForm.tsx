@@ -22,7 +22,7 @@ export default function BloodTypeForm({ navigation,refreshData }: any) {
       await bloodTypeUpdate(bloodType);
       showSuccessToast('تم تحديث فصيلة الدم.');
       refreshData();
-      navigation.goBack();
+      if (navigation.isFocused()) navigation.goBack();
     } catch (error: unknown) {
       showErrorToast(getErrorMessage(error, 'تعذر تحديث فصيلة الدم.'));
     }

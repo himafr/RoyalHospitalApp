@@ -13,7 +13,7 @@ export const certificationAdd = async (
 
   const body = await createImageFormData(data, photo);
   return client.post('/doctors/certification', body, {
-    headers: { 'Content-Type': undefined },
+    headers: { 'Content-Type': 'multipart/form-data' },
   });
 };
 
@@ -28,7 +28,7 @@ export const editCertificationById = async (params: {
 
   const body = await createImageFormData(params.data, params.photo);
   return client.put(`/doctors/certification/${params.id}`, body, {
-    headers: { 'Content-Type': undefined },
+    headers: { 'Content-Type': "multipart/form-data" },
   });
 };
 

@@ -24,11 +24,10 @@ export default function AddCertificationForm({ navigation ,refetchData}: any) {
       await addCertification(form, photo)
       showSuccessToast('تم إضافة الشهادة بنجاح.');
       await refetchData();
-      navigation.goBack();
+      if (navigation.isFocused()) navigation.goBack();
     } catch (error: any) {
       showErrorToast(getErrorMessage(error, 'تعذر إضافة الشهادة.'));
-    } finally {
-    }
+    } 
   };
 
   const handlePickPhoto = async () => {

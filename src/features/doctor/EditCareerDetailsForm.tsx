@@ -40,7 +40,7 @@ export default function EditCareerDetailsForm({
       await editDoctorCareer({ data: form });
       await refetchData();
       showSuccessToast('تم تحديث المعلومات المهنية بنجاح.');
-      navigation.goBack();
+      if (navigation.isFocused()) navigation.goBack();
     } catch (error: unknown) {
       showErrorToast(getErrorMessage(error, 'تعذر تحديث المعلومات المهنية.'));
     }

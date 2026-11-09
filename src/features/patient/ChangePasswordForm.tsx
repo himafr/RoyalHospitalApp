@@ -50,7 +50,8 @@ export default function ChangePasswordForm({ navigation }: any) {
         },
         {
           text: 'البقاء',
-          onPress: () => navigation.goBack(), // نقفل الـ Modal ونرجع للـ Home
+          onPress: () =>{if (navigation.isFocused()) navigation.goBack();}
+            , // نقفل الـ Modal ونرجع للـ Home
           style: 'cancel',
         },
       ],

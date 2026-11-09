@@ -49,7 +49,7 @@ export default function PersonalDetailsForm({ navigation, refreshData }: any) {
       await updatePersonalDetails(form, photo);
       showSuccessToast('تم تحديث بياناتك الشخصية.');
       refreshData();
-      navigation.goBack();
+      if (navigation.isFocused()) navigation.goBack();
     } catch (error: unknown) {
       showErrorToast(getErrorMessage(error, 'تعذر تحديث بياناتك الشخصية.'));
     }

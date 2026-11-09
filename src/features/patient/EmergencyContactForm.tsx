@@ -25,7 +25,7 @@ export default function EmergencyContactForm({ navigation,refreshData }: any) {
       await emergencyContactUpdate(form);
       showSuccessToast('تم تحديث جهة اتصال الطوارئ.');
       refreshData();
-      navigation.goBack();
+      if (navigation.isFocused()) navigation.goBack();
     } catch (error: unknown) {
       showErrorToast(getErrorMessage(error, 'تعذر تحديث جهة اتصال الطوارئ.'));
     }
