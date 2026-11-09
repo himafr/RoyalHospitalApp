@@ -1,7 +1,7 @@
-import { useState, useEffect, useCallback } from 'react';
+import { useCallback, useEffect, useState } from 'react';
+import { createAppointment, getAvailableSlots, getBookedDates } from '../../api/appointments';
 import { getDoctors } from '../../api/doctors';
 import { getServices } from '../../api/services';
-import { getBookedDates, getAvailableSlots, createAppointment } from '../../api/appointments';
 import { showErrorToast } from '../../utils/toast';
 
 const DEFAULT_SLOTS = ['09:00', '11:30', '16:30', '19:00'];
@@ -78,7 +78,6 @@ const initialForm={
     }
   }, [form.doctorId]);
 
-  // ... جوه الـ useAppointment
 
 // 5. جلب الفترات المتاحة لما التاريخ يتغير
 useEffect(() => {

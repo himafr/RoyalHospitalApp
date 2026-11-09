@@ -69,46 +69,6 @@ export default function DoctorProfileScreen({ navigation }: any) {
         </View>
       </View>
 
-      {/* 🟢 جدول مواعيد اليوم */}
-      <View style={styles.section}>
-        <View style={styles.sectionHeader}>
-          <Text style={styles.sectionTitle}>جدول مواعيد اليوم</Text>
-          <TouchableOpacity
-            onPress={() => {
-              /* الانتقال لكل المواعيد */
-            }}
-          >
-            <Text style={styles.linkText}>عرض الكل</Text>
-          </TouchableOpacity>
-        </View>
-
-        {/* مواعيد وهمية للشكل */}
-        <View style={styles.appointmentCard}>
-          <View style={styles.doctorAvatarMini}>
-            <Text style={styles.avatarText}>سأ</Text>
-          </View>
-          <View style={{ flex: 1 }}>
-            <Text style={styles.patientName}>سارة الأحمد</Text>
-            <Text style={styles.appointmentTime}>10:00 ص</Text>
-          </View>
-          <View style={styles.badgeGreen}>
-            <Text style={styles.badgeText}>مؤكد</Text>
-          </View>
-        </View>
-
-        <View style={styles.appointmentCard}>
-          <View style={styles.doctorAvatarMini}>
-            <Text style={styles.avatarText}>خف</Text>
-          </View>
-          <View style={{ flex: 1 }}>
-            <Text style={styles.patientName}>خالد الفيصل</Text>
-            <Text style={styles.appointmentTime}>12:30 م</Text>
-          </View>
-          <View style={styles.badgeGray}>
-            <Text style={styles.badgeTextGray}>مكتمل</Text>
-          </View>
-        </View>
-      </View>
 
       {/* 3. المعلومات المهنية */}
       <View style={styles.card}>

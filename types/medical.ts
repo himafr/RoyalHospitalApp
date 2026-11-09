@@ -1,5 +1,10 @@
-import { Allergies, ChronicDiseases, Medications, ServiceFeatures } from "./sub";
-import { Specialty } from "./user";
+import {
+  Allergies,
+  ChronicDiseases,
+  Medications,
+  ServiceFeatures,
+} from './sub';
+import { Specialty } from './user';
 
 export type AppointmentStatus =
   | 'PENDING'
@@ -9,20 +14,27 @@ export type AppointmentStatus =
 
 export type Appointment = {
   id: number;
-//   patient: Patient | null;
+
+  //   patient: Patient | null;
   medicalService: MedicalServiceEntity | null;
-//   doctor: Doctor;
-  specialization: string | null;
+  // بيانات المريض اللي إنت محتاجها بس
   appointmentDate: string; // ISO date (YYYY-MM-DD)
   appointmentTime: string; // ISO time (HH:mm:ss)
-  notes: string | null;
   status: AppointmentStatus;
+  notes: string | null;
+
+  patientId: number;
+  patientFullName: string;
+  patientPhoneNumber: string;
+  patientPhoto: string;
+  
+  doctorFullName: string;
 };
 
 export type Diagnosis = {
   id: number;
-//   patient: Patient;
-//   doctor: Doctor | null;
+  //   patient: Patient;
+  //   doctor: Doctor | null;
   diagnosisName: string | null;
   date: string | null; // ISO date
   location: string | null;
@@ -39,7 +51,7 @@ export type LabResult = {
 
 export type MedicalRecord = {
   id: number;
-//   patient: Patient;
+  //   patient: Patient;
   allergies: Allergies[];
   chronicDiseases: ChronicDiseases[];
   medications: Medications[];
@@ -49,7 +61,7 @@ export type MedicalRecord = {
 export type Prescription = {
   id: number;
   medicalRecord: MedicalRecord;
-//   doctor: Doctor | null;
+  //   doctor: Doctor | null;
   date: string | null; // ISO date
   fileUrl: string | null;
   createdAt: string; // ISO date-time
@@ -65,5 +77,5 @@ export type MedicalServiceEntity = {
   specialization: Specialty | null;
   features: ServiceFeatures[];
   mostRequested: boolean;
-//   admin: Admin | null;
+  //   admin: Admin | null;
 };
