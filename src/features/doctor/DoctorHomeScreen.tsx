@@ -13,6 +13,7 @@ import Ionicons from 'react-native-vector-icons/Ionicons';
 import { colors, spacing, radius, shadow } from '../../theme';
 import { useAuth } from '../../context/AuthContext';
 import VerifyMessage from '../../components/VerifyMessage';
+import AppHeader from '../../components/AppHeader';
 
 // 1. بيانات وهمية
 const MOCK_NEXT_APPOINTMENT = {
@@ -61,7 +62,6 @@ const CLINIC_FEATURES = [
 
 export default function DoctorHomeScreen({ navigation }: any) {
   const { isVerified } = useAuth();
-  const [isAvailable, setIsAvailable] = useState(true);
 
   // دالة التواصل مع الإدارة
   const handleContactAdmin = () => {
@@ -79,23 +79,11 @@ export default function DoctorHomeScreen({ navigation }: any) {
   return (
     <ScrollView style={styles.root} showsVerticalScrollIndicator={false}>
       
+      <AppHeader />
       {/* 1. الهيدر */}
-      <View style={styles.header}>
-        <View style={styles.logoCircle}>
-          <Ionicons name="medkit" size={22} color={colors.gold} />
-        </View>
-        <Text style={styles.brand}>عيادة الشفاء</Text>
+     {!isVerified()&&<View style={styles.header}>
         <VerifyMessage isVerified={isVerified()} navigation={navigation} />
-        
-        {/* زرار حالة العيادة */}
-        <TouchableOpacity 
-          style={[styles.statusBtn, isAvailable ? styles.statusActive : styles.statusInactive]}
-          onPress={() => setIsAvailable(!isAvailable)}
-        >
-          <View style={[styles.statusDot, isAvailable ? styles.dotGreen : styles.dotRed]} />
-          <Text style={styles.statusText}>{isAvailable ? 'متاح' : 'إجازة'}</Text>
-        </TouchableOpacity>
-      </View>
+      </View>}
 
       {/* 2. الموعد القادم */}
       <View style={styles.nextAppointmentCard}>
@@ -283,25 +271,10 @@ const styles = StyleSheet.create({
     backgroundColor: colors.white,
     gap: spacing.sm,
   },
-  logoCircle: {
-    width: 40, height: 40, borderRadius: 20,
-    backgroundColor: colors.primary, justifyContent: 'center', alignItems: 'center',
-  },
+  
   brand: { fontSize: 16, fontWeight: '900', color: colors.primary },
 
-  // حالة العيادة
-  statusBtn: {
-    flexDirection: 'row-reverse', alignItems: 'center',
-    paddingHorizontal: spacing.sm, paddingVertical: 4,
-    borderRadius: radius.pill, gap: 4, marginRight: 'auto',
-  },
-  statusActive: { backgroundColor: colors.success + '20' },
-  statusInactive: { backgroundColor: colors.danger + '20' },
-  statusDot: { width: 8, height: 8, borderRadius: 4 },
-  dotGreen: { backgroundColor: colors.success },
-  dotRed: { backgroundColor: colors.danger },
-  statusText: { fontSize: 12, fontWeight: '700', color: colors.primary },
-
+  
   // الموعد القادم
   nextAppointmentCard: {
     backgroundColor: colors.primary,

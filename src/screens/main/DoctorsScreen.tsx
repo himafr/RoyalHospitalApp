@@ -15,6 +15,7 @@ import { colors, spacing, radius, shadow } from '../../theme';
 import useInfiniteScroll from '../../hooks/useInfiniteScroll';
 import ErrorState from '../../components/ErrorState';
 import ScreenTransition from '../../components/ScreenTransition';
+import { SPECIALTIES, SPECIALTIES_STRING } from '../../constants';
 
 export default function DoctorsScreen({ navigation }: any) {
   const [selectedSpec, setSelectedSpec] = useState('');
@@ -52,7 +53,7 @@ export default function DoctorsScreen({ navigation }: any) {
           )}
         <View style={{ flex: 1, alignItems: 'flex-end' }}>
           <Text style={styles.specialty}>
-            {item.specialtyString || item.specialty}
+            {item.specialtyString || SPECIALTIES_STRING[item.specialty]}
           </Text>
           <Text style={styles.name}>د. {item.fullName}</Text>
           <Text style={styles.experience}>

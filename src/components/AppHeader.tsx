@@ -1,33 +1,74 @@
 import React, { useState } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, Modal, TouchableWithoutFeedback } from 'react-native';
+import {
+  View,
+  Text,
+  StyleSheet,
+  TouchableOpacity,
+  Modal,
+  TouchableWithoutFeedback,
+} from 'react-native';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import { useAuth } from '../context/AuthContext';
 import { colors, spacing, radius, shadow } from '../theme';
 
-export default function AppHeader({ title = 'عيادة الشفاء' }: { title?: string }) {
-  const { fullName,email,photoUrl, signOut } = useAuth();
+export default function AppHeader({
+  title = 'عيادة الشفاء',
+}: {
+  title?: string;
+}) {
+  const { fullName, email, photoUrl, signOut } = useAuth();
   const [menuVisible, setMenuVisible] = useState(false);
+  const [isAvailable, setIsAvailable] = useState(true);
 
   const userInitial = (fullName || email || 'U').charAt(0).toUpperCase();
 
   return (
     <View style={styles.headerContainer}>
-      
       <View style={styles.rightSection}>
-        <View style={styles.avatar}>
-          {photoUrl ? (
-            <Text style={styles.avatarText}>{userInitial}</Text> 
-          ) : (
-            <Ionicons name="person" size={22} color={colors.gold} />
-          )}
-        </View>
-
-        <TouchableOpacity onPress={() => setMenuVisible(true)} style={styles.menuBtn}>
-          <Ionicons name="menu" size={28} color={colors.primary} />
+        <TouchableOpacity
+          onPress={() => setMenuVisible(true)}
+          style={styles.menuBtn}
+        >
+          <Ionicons
+            name={`caret-${menuVisible ? 'up' : 'down'}-outline`}
+            size={18}
+            color={colors.primary}
+          />
+          <View style={styles.avatar}>
+            {photoUrl ? (
+              <Text style={styles.avatarText}>{userInitial}</Text>
+            ) : (
+              <Ionicons name="person" size={22} color={colors.gold} />
+            )}
+          </View>
+        </TouchableOpacity>
+      </View>
+      <View>
+        <TouchableOpacity
+          style={[
+            styles.statusBtn,
+            isAvailable ? styles.statusActive : styles.statusInactive,
+          ]}
+          onPress={() => setIsAvailable(!isAvailable)}
+        >
+          <View
+            style={[
+              styles.statusDot,
+              isAvailable ? styles.dotGreen : styles.dotRed,
+            ]}
+          />
+          <Text style={styles.statusText}>
+            {isAvailable ? 'متاح' : 'إجازة'}
+          </Text>
         </TouchableOpacity>
       </View>
 
-      <Text style={styles.title}>{title}</Text>
+      <View style={styles.rightSection}>
+        <View style={styles.logoCircle}>
+          <Ionicons name="medkit" size={22} color={colors.gold} />
+        </View>
+        <Text style={styles.title}>{title}</Text>
+      </View>
 
       <Modal
         visible={menuVisible}
@@ -38,30 +79,38 @@ export default function AppHeader({ title = 'عيادة الشفاء' }: { title
         <TouchableWithoutFeedback onPress={() => setMenuVisible(false)}>
           <View style={styles.modalOverlay}>
             <View style={styles.dropdown}>
-              
-              <TouchableOpacity style={styles.menuItem} onPress={() => { setMenuVisible(false); /* كودك هنا */ }}>
+              <TouchableOpacity
+                style={styles.menuItem}
+                onPress={() => {
+                  setMenuVisible(false); /* كودك هنا */
+                }}
+              >
                 <Ionicons name="apps" size={20} color={colors.primary} />
                 <Text style={styles.menuItemText}>عنصر تجريبي</Text>
               </TouchableOpacity>
 
               <View style={styles.divider} />
 
-              <TouchableOpacity 
-                style={styles.menuItem} 
+              <TouchableOpacity
+                style={styles.menuItem}
                 onPress={() => {
                   setMenuVisible(false);
                   signOut();
                 }}
               >
-                <Ionicons name="log-out-outline" size={20} color={colors.danger} />
-                <Text style={[styles.menuItemText, { color: colors.danger }]}>تسجيل الخروج</Text>
+                <Ionicons
+                  name="log-out-outline"
+                  size={20}
+                  color={colors.danger}
+                />
+                <Text style={[styles.menuItemText, { color: colors.danger }]}>
+                  تسجيل الخروج
+                </Text>
               </TouchableOpacity>
-
             </View>
           </View>
         </TouchableWithoutFeedback>
       </Modal>
-
     </View>
   );
 }
@@ -77,16 +126,40 @@ const styles = StyleSheet.create({
     borderBottomWidth: 1,
     borderBottomColor: colors.goldBorder,
     // ✨ لو التطبيق بيستخدم SafeArea
-    // paddingTop: insets.top, 
+    // paddingTop: insets.top,
   },
-  
+
+  // حالة العيادة
+  statusBtn: {
+    flexDirection: 'row-reverse',
+    alignItems: 'center',
+    paddingHorizontal: spacing.sm,
+    paddingVertical: 4,
+    borderRadius: radius.pill,
+    gap: 4,
+    marginRight: 'auto',
+  },
+  statusActive: { backgroundColor: colors.success + '20' },
+  statusInactive: { backgroundColor: colors.danger + '20' },
+  statusDot: { width: 8, height: 8, borderRadius: 4 },
+  dotGreen: { backgroundColor: colors.success },
+  dotRed: { backgroundColor: colors.danger },
+  statusText: { fontSize: 12, fontWeight: '700', color: colors.primary },
+
   // الجزء الشمال (الصورة والقائمة)
   rightSection: {
     flexDirection: 'row-reverse',
     alignItems: 'center',
     gap: spacing.md,
   },
-  
+  logoCircle: {
+    width: 40,
+    height: 40,
+    borderRadius: 20,
+    backgroundColor: colors.primary,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
   // صورة المستخدم (الدائرة الذهبية)
   avatar: {
     width: 40,
@@ -103,12 +176,15 @@ const styles = StyleSheet.create({
     fontWeight: '900',
     fontSize: 18,
   },
-  
+
   // زرار القائمة
   menuBtn: {
     padding: spacing.xs,
+    display: 'flex',
+    flexDirection: 'row-reverse',
+    alignItems: 'center',
   },
-  
+
   // العنوان (عيادة الشفاء)
   title: {
     fontSize: 18,
