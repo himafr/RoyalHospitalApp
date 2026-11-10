@@ -10,20 +10,23 @@ import {
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import { useAuth } from '../context/AuthContext';
 import { colors, spacing, radius, shadow } from '../theme';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { useNavigation } from '@react-navigation/native';
 
 export default function AppHeader({
   title = 'عيادة الشفاء',
 }: {
   title?: string;
 }) {
+  const insets = useSafeAreaInsets();
   const { fullName, email, photoUrl, signOut } = useAuth();
+  const navigation =useNavigation()
   const [menuVisible, setMenuVisible] = useState(false);
   const [isAvailable, setIsAvailable] = useState(true);
 
   const userInitial = (fullName || email || 'U').charAt(0).toUpperCase();
-
   return (
-    <View style={styles.headerContainer}>
+    <View style={[styles.headerContainer, { paddingTop: insets.top }]}>
       <View style={styles.rightSection}>
         <TouchableOpacity
           onPress={() => setMenuVisible(true)}
@@ -79,14 +82,17 @@ export default function AppHeader({
         <TouchableWithoutFeedback onPress={() => setMenuVisible(false)}>
           <View style={styles.modalOverlay}>
             <View style={styles.dropdown}>
+
+
               <TouchableOpacity
                 style={styles.menuItem}
                 onPress={() => {
-                  setMenuVisible(false); /* كودك هنا */
+                  setMenuVisible(false); 
+                  navigation.navigate('Profile')
                 }}
               >
-                <Ionicons name="apps" size={20} color={colors.primary} />
-                <Text style={styles.menuItemText}>عنصر تجريبي</Text>
+                <Ionicons name="person-circle" size={24} color={colors.primary} />
+                <Text style={styles.menuItemText}>الملف الشخصي</Text>
               </TouchableOpacity>
 
               <View style={styles.divider} />
@@ -117,19 +123,16 @@ export default function AppHeader({
 
 const styles = StyleSheet.create({
   headerContainer: {
-    height: 65,
+    height: 85,
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
     paddingHorizontal: spacing.md,
-    backgroundColor: colors.white,
+    backgroundColor: colors.dark+70,
     borderBottomWidth: 1,
     borderBottomColor: colors.goldBorder,
-    // ✨ لو التطبيق بيستخدم SafeArea
-    // paddingTop: insets.top,
   },
 
-  // حالة العيادة
   statusBtn: {
     flexDirection: 'row-reverse',
     alignItems: 'center',
@@ -146,7 +149,6 @@ const styles = StyleSheet.create({
   dotRed: { backgroundColor: colors.danger },
   statusText: { fontSize: 12, fontWeight: '700', color: colors.primary },
 
-  // الجزء الشمال (الصورة والقائمة)
   rightSection: {
     flexDirection: 'row-reverse',
     alignItems: 'center',
@@ -156,7 +158,7 @@ const styles = StyleSheet.create({
     width: 40,
     height: 40,
     borderRadius: 20,
-    backgroundColor: colors.primary,
+    backgroundColor: colors.dark+30,
     justifyContent: 'center',
     alignItems: 'center',
   },
@@ -165,7 +167,7 @@ const styles = StyleSheet.create({
     width: 40,
     height: 40,
     borderRadius: 20,
-    backgroundColor: colors.goldLight,
+    backgroundColor: colors.bg,
     justifyContent: 'center',
     alignItems: 'center',
     borderWidth: 1.5,
@@ -185,28 +187,26 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
 
-  // العنوان (عيادة الشفاء)
   title: {
     fontSize: 18,
     fontWeight: '900',
     color: colors.primary,
   },
 
-  // ✨ تصميم القائمة المنسدلة
   modalOverlay: {
     flex: 1,
-    backgroundColor: 'rgba(0,0,0,0.3)', // خلفية شفافة عشان تبرز القائمة
+    backgroundColor: 'rgba(0,0,0,0.3)', 
     justifyContent: 'flex-start',
     alignItems: 'flex-start',
-    paddingTop: 70, // مسافة من فوق عشان تظهر تحت الهيدر
-    paddingLeft: 16, // مسافة من الشمال
+    paddingTop: 70, 
+    paddingLeft: 16, 
   },
   dropdown: {
     width: 200,
     backgroundColor: colors.white,
     borderRadius: radius.md,
     paddingVertical: spacing.sm,
-    ...shadow.card, // بنستخدم الظل بتاع التصميم بتاعنا
+    ...shadow.card, 
     borderWidth: 1,
     borderColor: colors.borderLight,
   },

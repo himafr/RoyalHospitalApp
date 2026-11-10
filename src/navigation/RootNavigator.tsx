@@ -8,12 +8,14 @@ import MainTabs from './MainTabs';
 import { colors } from '../theme';
 import ActivateScreen from '../features/auth/ActivateScreen';
 import EditModalScreen from '../screens/EditModalScreen';
+import DoctorProfileScreen from '../features/doctor/DoctorProfileScreen';
+import PatientHomeScreen from '../screens/main/HomeScreen';
 
 const Stack = createNativeStackNavigator();
 export const navigationRef = createNavigationContainerRef();
 
 export default function RootNavigator() {
-  const { loading, isAuthenticated } = useAuth();
+  const { loading, isAuthenticated,role } = useAuth();
   if (loading)
     return (
       <View style={styles.loader}>
@@ -35,6 +37,7 @@ export default function RootNavigator() {
         ) : (
           <>
             <Stack.Screen name="Main" component={MainTabs} />
+            <Stack.Screen name="Profile" component={role==="DOCTOR"?DoctorProfileScreen:PatientHomeScreen} />
 
             <Stack.Screen
               name="Activate"
@@ -55,7 +58,7 @@ export default function RootNavigator() {
                 presentation: 'modal',
                 headerShown: true,
                 animationDuration: 250,
-                title: route.params?.title || 'تعديل', // بناخد العنوان من الـ Params
+                title: route.params?.title || 'تعديل', 
               })}
             />
           </>

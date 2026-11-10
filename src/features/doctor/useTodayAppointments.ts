@@ -20,9 +20,23 @@ export default function useTodayAppointments() {
     }
   }, []);
 
+  function getDoneAppointments() {
+    return appointments.filter(app => app.status === 'COMPLETED');
+  }
+  function getStillAppointments() {
+    return appointments.filter(app => app.status !== 'COMPLETED');
+  }
+
   useEffect(() => {
     fetchAppointments();
   }, [fetchAppointments]);
 
-  return { appointments, loading, refetch: fetchAppointments };
+  return {
+    appointments,
+    loading,
+    refetch: fetchAppointments,
+    count: appointments.length,
+    done: getDoneAppointments(),
+    still: getStillAppointments(),
+  };
 }

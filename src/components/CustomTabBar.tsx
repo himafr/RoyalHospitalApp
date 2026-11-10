@@ -81,7 +81,7 @@ export default function CustomTabBar({
 
             const icons: any = {
               HomeTab: 'home',
-              // AboutTab: 'information-circle',
+              AboutTab: 'information-circle',
               Profile:"person-circle",
               DoctorsTab: 'people',
               ServicesTab: 'medkit',
@@ -91,7 +91,7 @@ export default function CustomTabBar({
             const labels: any = {
               HomeTab: 'الرئيسية',
               Profile:"الملف الشخصي",
-              // AboutTab: 'عن العيادة',
+              AboutTab: 'عن العيادة',
               DoctorsTab: 'الأطباء',
               ServicesTab: 'الخدمات',
               AppointmentTab: 'حجز',
