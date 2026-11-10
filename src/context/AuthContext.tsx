@@ -120,7 +120,6 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         isAuthenticated: !!token,
         login,
         signup,
-        // doctorSignup,
         signOut,
         updateToken,
         isVerified,

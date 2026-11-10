@@ -5,6 +5,7 @@ import {
   StyleSheet,
   FlatList,
   ActivityIndicator,
+  Image,
 } from 'react-native';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import { getDoctors } from '../../api/doctors';
@@ -42,9 +43,13 @@ export default function DoctorsScreen({ navigation }: any) {
   const renderDoctor = ({ item }: any) => (
     <View style={styles.card}>
       <View style={styles.cardHeader}>
-        <View style={styles.avatar}>
-          <Ionicons name="person" size={32} color={colors.gold} />
+          {item.photo !== "default.png" ? (
+            <Image style={styles.avatar} source={{ uri: item.photo }} />
+          ) : (
+            <View style={styles.avatar}>
+            <Ionicons name="person" size={32} color={colors.gold} />
         </View>
+          )}
         <View style={{ flex: 1, alignItems: 'flex-end' }}>
           <Text style={styles.specialty}>
             {item.specialtyString || item.specialty}

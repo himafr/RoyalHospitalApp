@@ -1,6 +1,7 @@
 import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { Alert, Platform } from 'react-native';
+import { navigationRef } from '../navigation/RootNavigator';
 
 export const BASE_URL = Platform.OS === 'android' ? 'http://10.0.2.2:8080/api' : 'http://localhost:8080/api';
 
@@ -31,6 +32,13 @@ client.interceptors.response.use(
     if (error.response?.status === 401) {
       await AsyncStorage.removeItem('auth_token');
       await AsyncStorage.removeItem('user');
+      if (navigationRef.isReady()) {
+    navigationRef.reset({
+      index: 0,
+      routes: [{ name: 'Auth' }],
+    });
+  }
+
     }
     if(error.response?.status === 404) {
       Alert.alert('Not Found', error.response.data.message);

@@ -47,7 +47,6 @@ export default function DoctorProfileScreen({ navigation }: any) {
           <Text style={styles.welcomeSub}>
             نتمنى لك يوماً سعيداً وموفقاً في خدمة مرضاك.
           </Text>
-          <Text>{JSON.stringify(error)}</Text>
         </View>
       </View>
 

@@ -1,5 +1,5 @@
 import React from 'react';
-import { NavigationContainer } from '@react-navigation/native';
+import { createNavigationContainerRef, NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { View, ActivityIndicator, StyleSheet } from 'react-native';
 import { useAuth } from '../context/AuthContext';
@@ -10,10 +10,16 @@ import ActivateScreen from '../features/auth/ActivateScreen';
 import EditModalScreen from '../screens/EditModalScreen';
 
 const Stack = createNativeStackNavigator();
+export const navigationRef = createNavigationContainerRef();
 
 export default function RootNavigator() {
   const { loading, isAuthenticated } = useAuth();
-  if (loading) return <View style={styles.loader}><ActivityIndicator size="large" color={colors.gold} /></View>;
+  if (loading)
+    return (
+      <View style={styles.loader}>
+        <ActivityIndicator size="large" color={colors.gold} />
+      </View>
+    );
 
   return (
     <NavigationContainer>
@@ -24,42 +30,46 @@ export default function RootNavigator() {
           animationDuration: 250,
         }}
       >
-          {!isAuthenticated ? (
+        {!isAuthenticated ? (
           <Stack.Screen name="Auth" component={AuthStack} />
         ) : (
           <>
             <Stack.Screen name="Main" component={MainTabs} />
-            
-            <Stack.Screen 
-              name="Activate" 
-              component={ActivateScreen} 
-              options={{ 
-                presentation: 'modal', 
+
+            <Stack.Screen
+              name="Activate"
+              component={ActivateScreen}
+              options={{
+                presentation: 'modal',
                 headerShown: true,
                 animationDuration: 250,
                 title: 'تفعيل الحساب',
                 headerTintColor: colors.primary,
                 headerStyle: { backgroundColor: colors.white },
-              }} 
+              }}
             />
-            <Stack.Screen 
-  name="EditModal" 
-  component={EditModalScreen} 
-  options={({ route }) => ({ 
-    presentation: 'modal', 
-    headerShown: true, 
-    animationDuration: 250,
-    title: route.params?.title || 'تعديل' // بناخد العنوان من الـ Params
-  })} 
-/>
+            <Stack.Screen
+              name="EditModal"
+              component={EditModalScreen}
+              options={({ route }) => ({
+                presentation: 'modal',
+                headerShown: true,
+                animationDuration: 250,
+                title: route.params?.title || 'تعديل', // بناخد العنوان من الـ Params
+              })}
+            />
           </>
         )}
-
       </Stack.Navigator>
     </NavigationContainer>
   );
 }
 
 const styles = StyleSheet.create({
-  loader: { flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor: colors.bg },
+  loader: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: colors.bg,
+  },
 });
