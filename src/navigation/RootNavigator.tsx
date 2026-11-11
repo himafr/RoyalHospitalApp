@@ -29,6 +29,7 @@ export default function RootNavigator() {
         screenOptions={{
           headerShown: false,
           animation: 'fade_from_bottom',
+          
           animationDuration: 250,
         }}
       >

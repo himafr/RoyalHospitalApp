@@ -10,7 +10,8 @@ import React, { useEffect } from 'react';
 import { BottomTabBarProps } from '@react-navigation/bottom-tabs';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { colors, spacing } from '../theme';
+import {  lightMode, spacing } from '../theme';
+import { useTheme } from '../context/ModeContext';
 
 function AnimatedTabIcon({
   name,
@@ -20,7 +21,7 @@ function AnimatedTabIcon({
   focused: boolean;
 }) {
   const scale = React.useRef(new Animated.Value(1)).current;
-
+  const {colors}=useTheme();
   useEffect(() => {
     Animated.spring(scale, {
       toValue: focused ? 1.12 : 1,
@@ -35,7 +36,7 @@ function AnimatedTabIcon({
       <Ionicons
         name={focused ? name : `${name}-outline`}
         size={24}
-        color={focused ? colors.gold : colors.textLight}
+        color={focused ? colors.textSecondary : colors.tabInactive}
       />
     </Animated.View>
   );
@@ -47,19 +48,23 @@ export default function CustomTabBar({
 }: BottomTabBarProps) {
   const insets = useSafeAreaInsets();
   const isIOS = Platform.OS === 'ios';
-  const barHeight = 50;
+  const {colors}=useTheme();
+  const styles=getStyles(colors)
+  const barHeight = 110 + (isIOS ? insets.bottom : 0);
 
   return (
     <View
       style={[
         styles.container,
-        { height: barHeight, marginBottom: insets.bottom },
+        { height: barHeight, paddingBottom: insets.bottom,
+          backgroundColor: colors.background
+         },
       ]}
     >
       <View
         style={[
           styles.bg,
-          { height: barHeight, paddingBottom: isIOS ? insets.bottom : 10 },
+          { height: 60, paddingBottom: isIOS ? insets.bottom : 10 },
         ]}
       >
         {/* <View style={styles.curvedCutout} /> */}
@@ -121,82 +126,137 @@ export default function CustomTabBar({
   );
 }
 
-const styles = StyleSheet.create({
-  container: {
-    paddingHorizontal: 16,
-    paddingBottom: Platform.OS === 'ios' ? 20 : 12,
-  },
-  bg: {
-    // height:80,
-    backgroundColor: colors.primary,
-    borderRadius:15 ,
-    // borderTopEndRadius: 25,
-    // borderTopStartRadius: 25,
-    paddingTop: 5,
-    paddingHorizontal: spacing.sm,
-    position: 'relative',
-    overflow: 'visible',
-    // ظل خفيف
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: -4 },
-    shadowOpacity: 0.1,
-    shadowRadius: 8,
-    elevation: 15,
-  },
-  // curvedCutout: {
-  //   position: 'absolute',
-  //   top: -35,
-  //   left: width / 2 - 50,
-  //   width: 100,
-  //   height: 100,
-  //   borderRadius: 50,
-  //   backgroundColor: colors.white,
-  //   zIndex: -1,
-  // },
-  tabsRow: {
-    flexDirection: 'row-reverse',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-  },
-  tabItem: {
-    flex: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
-    paddingTop: 8,
-    paddingBottom: 8,
-    gap: 4,
-    borderRadius: 100,
-  },
-  label: {
-    fontSize: 10,
-    fontWeight: '600',
-    color: colors.textLight,
-    marginTop: 2,
-  },
-  labelActive: {
-    color: colors.gold,
-    fontWeight: '900',
-  },
-  centerButtonWrapper: {
-    width: 50,
-    alignItems: 'center',
-    justifyContent: 'flex-end',
-  },
-  centerButton: {
-    position: 'absolute',
-    width: 64,
-    height: 64,
-    borderRadius: 32,
-    backgroundColor: colors.gold,
-    justifyContent: 'center',
-    alignItems: 'center',
-    borderWidth: 5,
-    borderColor: colors.primary,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.3,
-    shadowRadius: 6,
-    elevation: 8,
-    zIndex: 20,
-  },
-});
+// const getStyle =(colors:any)=> StyleSheet.create({
+//   container: {
+//     paddingHorizontal: 16,
+//     paddingBottom: Platform.OS === 'ios' ? 20 : 12,
+//   },
+//   bg: {
+//     // height:80,
+//     backgroundColor: colors.primary,
+//     borderRadius:15 ,
+//     // borderTopEndRadius: 25,
+//     // borderTopStartRadius: 25,
+//     paddingTop: 5,
+//     paddingHorizontal: spacing.sm,
+//     position: 'relative',
+//     overflow: 'visible',
+//     shadowColor: '#000',
+//     shadowOffset: { width: 0, height: -4 },
+//     shadowOpacity: 0.1,
+//     shadowRadius: 8,
+//     elevation: 15,
+//   },
+//   // curvedCutout: {
+//   //   position: 'absolute',
+//   //   top: -35,
+//   //   left: width / 2 - 50,
+//   //   width: 100,
+//   //   height: 100,
+//   //   borderRadius: 50,
+//   //   backgroundColor: colors.white,
+//   //   zIndex: -1,
+//   // },
+//   tabsRow: {
+//     flexDirection: 'row-reverse',
+//     justifyContent: 'space-between',
+//     alignItems: 'center',
+//   },
+//   tabItem: {
+//     flex: 1,
+//     alignItems: 'center',
+//     justifyContent: 'center',
+//     paddingTop: 8,
+//     paddingBottom: 8,
+//     gap: 4,
+//     borderRadius: 100,
+//   },
+//   label: {
+//     fontSize: 10,
+//     fontWeight: '600',
+//     color: colors.textLight,
+//     marginTop: 2,
+//   },
+//   labelActive: {
+//     color: colors.textSecondary,
+//     fontWeight: '900',
+//   },
+//   centerButtonWrapper: {
+//     width: 50,
+//     alignItems: 'center',
+//     justifyContent: 'flex-end',
+//   },
+//   centerButton: {
+//     position: 'absolute',
+//     width: 64,
+//     height: 64,
+//     borderRadius: 32,
+//     backgroundColor: colors.gold,
+//     justifyContent: 'center',
+//     alignItems: 'center',
+//     borderWidth: 5,
+//     borderColor: colors.primary,
+//     shadowColor: '#000',
+//     shadowOffset: { width: 0, height: 4 },
+//     shadowOpacity: 0.3,
+//     shadowRadius: 6,
+//     elevation: 8,
+//     zIndex: 20,
+//   },
+// });
+
+const getStyles = (colors: typeof lightMode) =>
+  StyleSheet.create({
+    container: {
+      paddingHorizontal: 16,
+      paddingBottom: Platform.OS === 'ios' ? 20 : 12,
+    },
+    bg: {
+      backgroundColor: colors.tabBarBackground,
+      borderRadius: 15,
+      borderWidth: 1,
+      borderColor: colors.tabBarBorder,
+      paddingTop: 5,
+      paddingHorizontal: spacing.sm,
+      position: 'relative',
+      overflow: 'visible',
+      shadowColor: colors.shadow,
+      shadowOffset: { width: 0, height: -4 },
+      shadowOpacity: 0.1,
+      shadowRadius: 8,
+      elevation: 15,
+    },
+    tabsRow: {
+      flexDirection: 'row-reverse',
+      justifyContent: 'space-between',
+      alignItems: 'center',
+    },
+    tabItem: {
+      flex: 1,
+      alignItems: 'center',
+      justifyContent: 'center',
+      paddingTop: 8,
+      paddingBottom: 8,
+      gap: 4,
+      borderRadius: 100,
+    },
+    indicator: {
+      position: 'absolute',
+      top: 0,
+      width: 20,
+      height: 3,
+      borderRadius: 2,
+      backgroundColor: colors.tabIndicator,
+    },
+    label: {
+      fontSize: 10,
+      fontWeight: '600',
+      color: colors.tabInactive,
+      marginTop: 2,
+    },
+    labelActive: {
+      color: colors.tabActive,
+      fontWeight: '900',
+    },
+  });
+ 

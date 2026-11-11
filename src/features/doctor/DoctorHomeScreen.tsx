@@ -1,21 +1,23 @@
-import React, { useState } from 'react';
+import React, { useMemo } from 'react';
 import {
-  View,
-  Text,
-  StyleSheet,
-  TouchableOpacity,
-  FlatList,
-  ScrollView,
   Alert,
+  FlatList,
   Linking,
+  ScrollView,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
 } from 'react-native';
 import Ionicons from 'react-native-vector-icons/Ionicons';
-import { colors, spacing, radius, shadow } from '../../theme';
-import { useAuth } from '../../context/AuthContext';
-import VerifyMessage from '../../components/VerifyMessage';
 import AppHeader from '../../components/AppHeader';
-import useTodayAppointments from './useTodayAppointments';
+import AppointmentsList from '../../components/AppointmentsList';
 import Rotate from '../../components/state/Rotate';
+import VerifyMessage from '../../components/VerifyMessage';
+import { useAuth } from '../../context/AuthContext';
+import { useTheme } from '../../context/ModeContext';
+import { lightMode, radius, shadow, spacing } from '../../theme';
+import useTodayAppointments from './useTodayAppointments';
 
 // 1. بيانات وهمية
 const MOCK_NEXT_APPOINTMENT = {
@@ -90,8 +92,10 @@ const CLINIC_FEATURES = [
 
 export default function DoctorHomeScreen({ navigation }: any) {
   const { isVerified } = useAuth();
-  const { appointments, count, done, loading, still, refetch } =
+  const { colors } = useTheme();
+  const { appointments, count, done, loading, still } =
     useTodayAppointments();
+  const styles = useMemo(() => getStyles(colors), [colors]);
 
   // دالة التواصل مع الإدارة
   const handleContactAdmin = () => {
@@ -108,7 +112,7 @@ export default function DoctorHomeScreen({ navigation }: any) {
   return (
     <ScrollView style={styles.root} showsVerticalScrollIndicator={false}>
       <AppHeader />
-      
+
       {/* 1. الهيدر */}
       {!isVerified() && (
         <View style={styles.header}>
@@ -119,7 +123,7 @@ export default function DoctorHomeScreen({ navigation }: any) {
       {/* 2. الموعد القادم */}
       <View style={styles.nextAppointmentCard}>
         <View style={styles.nextHeader}>
-          <Ionicons name="time" size={20} color={colors.gold} />
+          <Ionicons name="time" size={20} color={colors.onPrimary} />
           <Text style={styles.nextTitle}>الموعد القادم</Text>
           <Text style={styles.nextTime}>
             بعد {MOCK_NEXT_APPOINTMENT.remainingMinutes} دقيقة
@@ -158,7 +162,7 @@ export default function DoctorHomeScreen({ navigation }: any) {
           <Text style={styles.statLabel}>مكتمل</Text>
         </View>
         <View style={styles.statCard}>
-          <Text style={[styles.statValue, { color: colors.gold }]}>
+          <Text style={[styles.statValue, { color: colors.warning }]}>
             {still.length}
           </Text>
           <Text style={styles.statLabel}>في الانتظار</Text>
@@ -168,7 +172,7 @@ export default function DoctorHomeScreen({ navigation }: any) {
       {/* 4. موجز الأخبار */}
       <View style={styles.newsCard}>
         <View style={styles.newsHeader}>
-          <Ionicons name="megaphone" size={20} color={colors.gold} />
+          <Ionicons name="megaphone" size={20} color={colors.icon} />
           <Text style={styles.newsTitle}>موجز أخبار المستشفى</Text>
         </View>
         <FlatList
@@ -177,7 +181,7 @@ export default function DoctorHomeScreen({ navigation }: any) {
           keyExtractor={item => item.id.toString()}
           renderItem={({ item }) => (
             <View style={styles.newsRow}>
-              <Ionicons name={item.icon as any} size={16} color={colors.gold} />
+              <Ionicons name={item.icon as any} size={16} color={colors.icon} />
               <View style={{ flex: 1 }}>
                 <Text style={styles.newsText}>{item.title}</Text>
                 <Text style={styles.newsDate}>{item.date}</Text>
@@ -188,65 +192,21 @@ export default function DoctorHomeScreen({ navigation }: any) {
       </View>
 
       {/* 5. جدول مواعيد اليوم */}
-      <View style={styles.section}>
-        <View style={styles.sectionHeader}>
-          <Text style={styles.sectionTitle}>جدول مواعيد اليوم</Text>
-          <TouchableOpacity onPress={refetch}>
-            <Text style={styles.linkText}>
-              <Rotate
-                component={
-                  <Ionicons
-                    name="refresh-outline"
-                    color={colors.gold}
-                    size={24}
-                  />
-                }
-                rotate={loading}
+      <AppointmentsList
+        loader={
+          <Rotate
+            component={
+              <Ionicons
+                name="refresh-outline"
+                color={colors.icon}
+                size={24}
               />
-            </Text>
-          </TouchableOpacity>
-        </View>
-
-        {MOCK_APPOINTMENTS.length > 0 ? (
-          <FlatList
-            data={MOCK_APPOINTMENTS}
-            scrollEnabled={false}
-            keyExtractor={item => item.id.toString()}
-            renderItem={({ item }) => (
-              <View style={styles.appointmentCard}>
-                <View style={styles.avatarMini}>
-                  <Text style={styles.avatarText}>
-                    {item.patientName.charAt(0)}
-                  </Text>
-                </View>
-                <View style={{ flex: 1 }}>
-                  <Text style={styles.patientName}>{item.patientName}</Text>
-                  <Text style={styles.appointmentTime}>{item.time}</Text>
-                </View>
-                <View
-                  style={
-                    item.status === 'مؤكد'
-                      ? styles.badgeGreen
-                      : styles.badgeGray
-                  }
-                >
-                  <Text
-                    style={
-                      item.status === 'مؤكد'
-                        ? styles.badgeText
-                        : styles.badgeTextGray
-                    }
-                  >
-                    {item.status}
-                  </Text>
-                </View>
-              </View>
-            )}
+            }
+            rotate={loading}
           />
-        ) : (
-          <Text style={styles.emptyText}>لا توجد مواعيد اليوم.</Text>
-        )}
-      </View>
+        }
+        data={appointments}
+      />
 
       {/* 6. آخر تقييم */}
       <View style={styles.card}>
@@ -272,7 +232,7 @@ export default function DoctorHomeScreen({ navigation }: any) {
                       s <= MOCK_LATEST_REVIEW.rating ? 'star' : 'star-outline'
                     }
                     size={14}
-                    color={colors.gold}
+                    color={colors.iconActive}
                   />
                 ))}
               </View>
@@ -339,7 +299,7 @@ export default function DoctorHomeScreen({ navigation }: any) {
                 <Ionicons
                   name={feature.icon as any}
                   size={24}
-                  color={colors.gold}
+                  color={colors.onPrimary}
                 />
               </View>
               <Text style={styles.featureTitle}>{feature.title}</Text>
@@ -354,7 +314,7 @@ export default function DoctorHomeScreen({ navigation }: any) {
         style={styles.contactAdminBtn}
         onPress={handleContactAdmin}
       >
-        <Ionicons name="headset" size={20} color={colors.white} />
+        <Ionicons name="headset" size={20} color={colors.buttonPrimaryText} />
         <Text style={styles.contactAdminText}>تواصل مع الإدارة</Text>
       </TouchableOpacity>
 
@@ -363,312 +323,332 @@ export default function DoctorHomeScreen({ navigation }: any) {
   );
 }
 
-const styles = StyleSheet.create({
-  root: { flex: 1, backgroundColor: colors.bgLight },
+const getStyles = (colors: typeof lightMode) =>
+  StyleSheet.create({
+    root: { flex: 1, backgroundColor: colors.background },
 
-  // الهيدر
-  header: {
-    height: 65,
-    flexDirection: 'row-reverse',
-    alignItems: 'center',
-    paddingHorizontal: spacing.md,
-    borderBottomWidth: 1,
-    borderBottomColor: colors.goldBorder,
-    backgroundColor: colors.white,
-    gap: spacing.sm,
-  },
+    // الهيدر
+    header: {
+      height: 65,
+      flexDirection: 'row-reverse',
+      alignItems: 'center',
+      paddingHorizontal: spacing.md,
+      borderBottomWidth: 1,
+      borderBottomColor: colors.border,
+      gap: spacing.sm,
+    },
 
-  brand: { fontSize: 16, fontWeight: '900', color: colors.primary },
+    brand: { fontSize: 16, fontWeight: '900', color: colors.text },
 
-  // الموعد القادم
-  nextAppointmentCard: {
-    backgroundColor: colors.primary,
-    marginHorizontal: spacing.lg,
-    marginTop: spacing.md,
-    borderRadius: radius.xl,
-    padding: spacing.lg,
-    borderWidth: 2,
-    borderColor: colors.gold,
-    ...shadow.card,
-  },
-  nextHeader: {
-    flexDirection: 'row-reverse',
-    alignItems: 'center',
-    gap: spacing.sm,
-    marginBottom: spacing.md,
-  },
-  nextTitle: { fontSize: 14, fontWeight: '700', color: colors.gold },
-  nextTime: { fontSize: 12, color: colors.textLight, marginRight: 'auto' },
-  nextBody: {
-    flexDirection: 'row-reverse',
-    alignItems: 'center',
-    gap: spacing.md,
-  },
-  avatarMiniLarge: {
-    width: 50,
-    height: 50,
-    borderRadius: 25,
-    backgroundColor: colors.white,
-    justifyContent: 'center',
-    alignItems: 'center',
-    borderWidth: 2,
-    borderColor: colors.gold,
-  },
-  avatarTextLarge: { color: colors.gold, fontWeight: '900', fontSize: 20 },
-  nextPatientName: { fontSize: 18, fontWeight: '900', color: colors.white },
-  nextDetails: { fontSize: 13, color: colors.textLight, marginTop: 2 },
-  startSessionBtn: {
-    backgroundColor: colors.gold,
-    paddingHorizontal: spacing.md,
-    paddingVertical: spacing.sm,
-    borderRadius: radius.md,
-  },
-  startSessionText: { color: colors.primary, fontWeight: '900', fontSize: 13 },
+    // الموعد القادم
+    nextAppointmentCard: {
+      backgroundColor: colors.primary,
+      marginHorizontal: spacing.lg,
+      marginTop: spacing.md,
+      borderRadius: radius.xl,
+      padding: spacing.lg,
+      borderWidth: 2,
+      borderColor: colors.border,
+      ...shadow.card,
+    },
+    nextHeader: {
+      flexDirection: 'row-reverse',
+      alignItems: 'center',
+      gap: spacing.sm,
+      marginBottom: spacing.md,
+    },
+    nextTitle: { fontSize: 14, fontWeight: '700', color: colors.onPrimary },
+    nextTime: {
+      fontSize: 12,
+      color: colors.onPrimary,
+      opacity: 0.8,
+      marginRight: 'auto',
+    },
+    nextBody: {
+      flexDirection: 'row-reverse',
+      alignItems: 'center',
+      gap: spacing.md,
+    },
+    avatarMiniLarge: {
+      width: 50,
+      height: 50,
+      borderRadius: 25,
+      backgroundColor: colors.primaryLight,
+      justifyContent: 'center',
+      alignItems: 'center',
+      borderWidth: 2,
+      borderColor: colors.border,
+    },
+    avatarTextLarge: {
+      color: colors.onPrimary,
+      fontWeight: '900',
+      fontSize: 20,
+    },
+    nextPatientName: {
+      fontSize: 18,
+      fontWeight: '900',
+      color: colors.onPrimary,
+    },
+    nextDetails: {
+      fontSize: 13,
+      color: colors.onPrimary,
+      opacity: 0.8,
+      marginTop: 2,
+    },
+    startSessionBtn: {
+      backgroundColor: colors.secondary,
+      paddingHorizontal: spacing.md,
+      paddingVertical: spacing.sm,
+      borderRadius: radius.md,
+    },
+    startSessionText: {
+      color: colors.onSecondary,
+      fontWeight: '900',
+      fontSize: 13,
+    },
 
-  // إحصائيات اليوم
-  todayStatsContainer: {
-    flexDirection: 'row-reverse',
-    justifyContent: 'space-between',
-    padding: spacing.lg,
-    marginTop: -20,
-    zIndex: 10,
-  },
-  statCard: {
-    flex: 1,
-    backgroundColor: colors.white,
-    padding: spacing.md,
-    borderRadius: radius.lg,
-    alignItems: 'center',
-    marginHorizontal: 4,
-    ...shadow.card,
-  },
-  statValue: { fontSize: 22, fontWeight: '900', color: colors.primary },
-  statLabel: { fontSize: 11, color: colors.textMuted, marginTop: 4 },
+    // إحصائيات اليوم
+    todayStatsContainer: {
+      flexDirection: 'row-reverse',
+      justifyContent: 'space-between',
+      padding: spacing.lg,
+      marginTop: -20,
+      zIndex: 10,
+    },
+    statCard: {
+      flex: 1,
+      backgroundColor: colors.card,
+      padding: spacing.md,
+      borderRadius: radius.lg,
+      alignItems: 'center',
+      marginHorizontal: 4,
+      ...shadow.card,
+    },
+    statValue: { fontSize: 22, fontWeight: '900', color: colors.text },
+    statLabel: { fontSize: 11, color: colors.textMuted, marginTop: 4 },
 
-  // موجز الأخبار
-  newsCard: {
-    backgroundColor: colors.white,
-    marginHorizontal: spacing.lg,
-    marginTop: spacing.md,
-    borderRadius: radius.lg,
-    padding: spacing.md,
-    borderWidth: 1,
-    borderColor: colors.goldBorder,
-    ...shadow.card,
-  },
-  newsHeader: {
-    flexDirection: 'row-reverse',
-    alignItems: 'center',
-    gap: spacing.sm,
-    marginBottom: spacing.md,
-    borderBottomWidth: 1,
-    borderBottomColor: colors.borderLight,
-    paddingBottom: spacing.sm,
-  },
-  newsTitle: { fontSize: 16, fontWeight: '900', color: colors.primary },
-  newsRow: {
-    flexDirection: 'row-reverse',
-    alignItems: 'center',
-    gap: spacing.sm,
-    marginBottom: spacing.sm,
-  },
-  newsText: {
-    fontSize: 14,
-    color: colors.primary,
-    fontWeight: '700',
-    textAlign: 'right',
-  },
-  newsDate: { fontSize: 11, color: colors.textMuted, textAlign: 'right' },
+    // موجز الأخبار
+    newsCard: {
+      backgroundColor: colors.card,
+      marginHorizontal: spacing.lg,
+      marginTop: spacing.md,
+      borderRadius: radius.lg,
+      padding: spacing.md,
+      borderWidth: 1,
+      borderColor: colors.border,
+      ...shadow.card,
+    },
+    newsHeader: {
+      flexDirection: 'row-reverse',
+      alignItems: 'center',
+      gap: spacing.sm,
+      marginBottom: spacing.md,
+      borderBottomWidth: 1,
+      borderBottomColor: colors.border,
+      paddingBottom: spacing.sm,
+    },
+    newsTitle: { fontSize: 16, fontWeight: '900', color: colors.text },
+    newsRow: {
+      flexDirection: 'row-reverse',
+      alignItems: 'center',
+      gap: spacing.sm,
+      marginBottom: spacing.sm,
+    },
+    newsText: {
+      fontSize: 14,
+      color: colors.text,
+      fontWeight: '700',
+      textAlign: 'right',
+    },
+    newsDate: { fontSize: 11, color: colors.textMuted, textAlign: 'right' },
 
-  // الأقسام
-  section: { padding: spacing.lg },
-  sectionHeader: {
-    flexDirection: 'row-reverse',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    marginBottom: spacing.md,
-  },
-  sectionTitle: { fontSize: 20, fontWeight: '900', color: colors.primary },
-  sectionSub: {
-    fontSize: 14,
-    color: colors.textSecondary,
-    marginBottom: spacing.md,
-    textAlign: 'right',
-  },
-  linkText: { color: colors.gold, fontWeight: '700', fontSize: 13 },
+    // الأقسام
+    section: { padding: spacing.lg, backgroundColor: colors.backgroundAlt },
+    sectionHeader: {
+      flexDirection: 'row-reverse',
+      justifyContent: 'space-between',
+      alignItems: 'center',
+      marginBottom: spacing.md,
+    },
+    sectionTitle: { fontSize: 20, fontWeight: '900', color: colors.text },
+    sectionSub: {
+      fontSize: 14,
+      color: colors.textSecondary,
+      marginBottom: spacing.md,
+      textAlign: 'right',
+    },
+    linkText: { color: colors.link, fontWeight: '700', fontSize: 13 },
 
-  // المواعيد
-  appointmentCard: {
-    flexDirection: 'row-reverse',
-    alignItems: 'center',
-    backgroundColor: colors.white,
-    padding: spacing.md,
-    borderRadius: radius.md,
-    marginBottom: spacing.sm,
-    borderWidth: 1,
-    borderColor: colors.borderLight,
-  },
-  avatarMini: {
-    width: 40,
-    height: 40,
-    borderRadius: 20,
-    backgroundColor: colors.goldLight,
-    justifyContent: 'center',
-    alignItems: 'center',
-    marginLeft: spacing.md,
-  },
-  avatarText: { color: colors.primary, fontWeight: '700', fontSize: 14 },
-  patientName: {
-    fontSize: 16,
-    fontWeight: '700',
-    color: colors.primary,
-    textAlign: 'right',
-  },
-  appointmentTime: {
-    fontSize: 12,
-    color: colors.textMuted,
-    textAlign: 'right',
-  },
-  badgeGreen: {
-    backgroundColor: colors.success + '20',
-    paddingHorizontal: spacing.sm,
-    paddingVertical: 4,
-    borderRadius: radius.pill,
-    borderWidth: 1,
-    borderColor: colors.success + '40',
-  },
-  badgeText: { color: '#0a7c2b', fontSize: 12, fontWeight: '700' },
-  badgeGray: {
-    backgroundColor: colors.bgGray,
-    paddingHorizontal: spacing.sm,
-    paddingVertical: 4,
-    borderRadius: radius.pill,
-  },
-  badgeTextGray: { color: colors.textMuted, fontSize: 12, fontWeight: '700' },
+    // المواعيد
+    appointmentCard: {
+      flexDirection: 'row-reverse',
+      alignItems: 'center',
+      backgroundColor: colors.card,
+      padding: spacing.md,
+      borderRadius: radius.md,
+      marginBottom: spacing.sm,
+      borderWidth: 1,
+      borderColor: colors.border,
+    },
+    avatarMini: {
+      width: 40,
+      height: 40,
+      borderRadius: 20,
+      backgroundColor: colors.primary,
+      justifyContent: 'center',
+      alignItems: 'center',
+      marginLeft: spacing.md,
+    },
+    avatarText: { color: colors.onPrimary, fontWeight: '700', fontSize: 14 },
+    patientName: {
+      fontSize: 16,
+      fontWeight: '700',
+      color: colors.text,
+      textAlign: 'right',
+    },
+    appointmentTime: {
+      fontSize: 12,
+      color: colors.textMuted,
+      textAlign: 'right',
+    },
+    badgeGreen: {
+      backgroundColor: colors.success + '20',
+      paddingHorizontal: spacing.sm,
+      paddingVertical: 4,
+      borderRadius: radius.pill,
+      borderWidth: 1,
+      borderColor: colors.success + '40',
+    },
+    badgeText: { color: colors.success, fontSize: 12, fontWeight: '700' },
+    badgeGray: {
+      backgroundColor: colors.backgroundAlt,
+      paddingHorizontal: spacing.sm,
+      paddingVertical: 4,
+      borderRadius: radius.pill,
+    },
+    badgeTextGray: { color: colors.textMuted, fontSize: 12, fontWeight: '700' },
 
-  // الكروت
-  card: {
-    backgroundColor: colors.white,
-    borderRadius: radius.lg,
-    marginBottom: spacing.md,
-    marginHorizontal: spacing.lg,
-    ...shadow.card,
-    overflow: 'hidden',
-  },
-  cardHeader: {
-    flexDirection: 'row-reverse',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    padding: spacing.md,
-    backgroundColor: colors.white,
-    borderBottomWidth: 1,
-    borderBottomColor: colors.borderLight,
-  },
-  cardTitle: { fontSize: 16, fontWeight: '900', color: colors.primary },
-  cardBody: { padding: spacing.md },
+    // الكروت
+    card: {
+      backgroundColor: colors.card,
+      borderRadius: radius.lg,
+      marginBottom: spacing.md,
+      marginHorizontal: spacing.lg,
+      ...shadow.card,
+      overflow: 'hidden',
+    },
+    cardHeader: {
+      flexDirection: 'row-reverse',
+      justifyContent: 'space-between',
+      alignItems: 'center',
+      padding: spacing.md,
+      backgroundColor: colors.cardAlt,
+      borderBottomWidth: 1,
+      borderBottomColor: colors.border,
+    },
+    cardTitle: { fontSize: 16, fontWeight: '900', color: colors.text },
+    cardBody: { padding: spacing.md },
 
-  // التقييم
-  reviewHeader: {
-    flexDirection: 'row-reverse',
-    alignItems: 'center',
-    gap: spacing.md,
-    marginBottom: spacing.sm,
-  },
-  reviewPatientName: { fontSize: 15, fontWeight: '900', color: colors.primary },
-  reviewComment: {
-    fontSize: 14,
-    color: colors.textSecondary,
-    textAlign: 'right',
-    fontStyle: 'italic',
-    lineHeight: 22,
-  },
+    // التقييم
+    reviewHeader: {
+      flexDirection: 'row-reverse',
+      alignItems: 'center',
+      gap: spacing.md,
+      marginBottom: spacing.sm,
+    },
+    reviewPatientName: { fontSize: 15, fontWeight: '900', color: colors.text },
+    reviewComment: {
+      fontSize: 14,
+      color: colors.textSecondary,
+      textAlign: 'right',
+      fontStyle: 'italic',
+      lineHeight: 22,
+    },
 
-  // الأداء
-  performanceRow: {
-    flexDirection: 'row-reverse',
-    justifyContent: 'space-between',
-  },
-  performanceItem: { width: '48%' },
-  performanceLabel: {
-    fontSize: 12,
-    color: colors.textMuted,
-    textAlign: 'right',
-    marginBottom: 4,
-  },
-  performanceValue: {
-    fontSize: 18,
-    fontWeight: '900',
-    color: colors.primary,
-    textAlign: 'right',
-    marginBottom: spacing.sm,
-  },
-  progressBar: {
-    height: 8,
-    backgroundColor: colors.bgGray,
-    borderRadius: 4,
-    overflow: 'hidden',
-  },
-  progressFill: {
-    height: '100%',
-    backgroundColor: colors.gold,
-    borderRadius: 4,
-  },
+    // الأداء
+    performanceRow: {
+      flexDirection: 'row-reverse',
+      justifyContent: 'space-between',
+    },
+    performanceItem: { width: '48%' },
+    performanceLabel: {
+      fontSize: 12,
+      color: colors.textMuted,
+      textAlign: 'right',
+      marginBottom: 4,
+    },
+    performanceValue: {
+      fontSize: 18,
+      fontWeight: '900',
+      color: colors.text,
+      textAlign: 'right',
+      marginBottom: spacing.sm,
+    },
+    progressBar: {
+      height: 8,
+      backgroundColor: colors.border,
+      borderRadius: 4,
+      overflow: 'hidden',
+    },
+    progressFill: {
+      height: '100%',
+      backgroundColor: colors.secondary,
+      borderRadius: 4,
+    },
 
-  // المزايا
-  featuresGrid: {
-    flexDirection: 'row-reverse',
-    flexWrap: 'wrap',
-    justifyContent: 'space-between',
-  },
-  featureCard: {
-    width: '48%',
-    backgroundColor: colors.white,
-    padding: spacing.md,
-    borderRadius: radius.lg,
-    marginBottom: spacing.md,
-    borderWidth: 1,
-    borderColor: colors.goldBorder,
-    alignItems: 'center',
-  },
-  featureIcon: {
-    width: 48,
-    height: 48,
-    borderRadius: 24,
-    backgroundColor: colors.goldLight,
-    justifyContent: 'center',
-    alignItems: 'center',
-    marginBottom: spacing.sm,
-  },
-  featureTitle: {
-    fontSize: 14,
-    fontWeight: '900',
-    color: colors.primary,
-    textAlign: 'center',
-    marginBottom: 4,
-  },
-  featureDesc: {
-    fontSize: 12,
-    color: colors.textSecondary,
-    textAlign: 'center',
-    lineHeight: 18,
-  },
+    // المزايا
+    featuresGrid: {
+      flexDirection: 'row-reverse',
+      flexWrap: 'wrap',
+      justifyContent: 'space-between',
+    },
+    featureCard: {
+      width: '48%',
+      backgroundColor: colors.card,
+      padding: spacing.md,
+      borderRadius: radius.lg,
+      marginBottom: spacing.md,
+      borderWidth: 1,
+      borderColor: colors.border,
+      alignItems: 'center',
+    },
+    featureIcon: {
+      width: 48,
+      height: 48,
+      borderRadius: 24,
+      backgroundColor: colors.primary,
+      justifyContent: 'center',
+      alignItems: 'center',
+      marginBottom: spacing.sm,
+    },
+    featureTitle: {
+      fontSize: 14,
+      fontWeight: '900',
+      color: colors.text,
+      textAlign: 'center',
+      marginBottom: 4,
+    },
+    featureDesc: {
+      fontSize: 12,
+      color: colors.textSecondary,
+      textAlign: 'center',
+      lineHeight: 18,
+    },
 
-  // تواصل مع الإدارة
-  contactAdminBtn: {
-    flexDirection: 'row-reverse',
-    alignItems: 'center',
-    justifyContent: 'center',
-    backgroundColor: colors.primary,
-    marginHorizontal: spacing.lg,
-    padding: spacing.md,
-    borderRadius: radius.md,
-    gap: spacing.sm,
-  },
-  contactAdminText: { color: colors.white, fontWeight: '700', fontSize: 16 },
-
-  emptyText: {
-    textAlign: 'center',
-    color: colors.textMuted,
-    marginVertical: spacing.md,
-  },
-});
+    // تواصل مع الإدارة
+    contactAdminBtn: {
+      flexDirection: 'row-reverse',
+      alignItems: 'center',
+      justifyContent: 'center',
+      backgroundColor: colors.buttonPrimary,
+      marginHorizontal: spacing.lg,
+      padding: spacing.md,
+      borderRadius: radius.md,
+      gap: spacing.sm,
+    },
+    contactAdminText: {
+      color: colors.buttonPrimaryText,
+      fontWeight: '700',
+      fontSize: 16,
+    },
+  });

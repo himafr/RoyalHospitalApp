@@ -6,14 +6,17 @@ import Toast from 'react-native-toast-message';
 import { AuthProvider } from './src/context/AuthContext';
 import RootNavigator from './src/navigation/RootNavigator';
 import { toastConfig } from './src/utils/toast';
+import { ThemeProvider } from './src/context/ModeContext';
 (globalThis as any).atob = base64Decode;
 export default function App() {
   return (
     <SafeAreaProvider>
       <StatusBar barStyle="light-content" />
       <AuthProvider>
-        <RootNavigator />
-        <Toast config={toastConfig} />
+        <ThemeProvider>
+          <RootNavigator />
+          <Toast config={toastConfig} />
+        </ThemeProvider>
       </AuthProvider>
     </SafeAreaProvider>
   );

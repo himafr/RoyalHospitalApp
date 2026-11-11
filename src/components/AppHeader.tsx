@@ -1,17 +1,18 @@
-import React, { useState } from 'react';
+import { useNavigation } from '@react-navigation/native';
+import React, { useMemo, useState } from 'react';
 import {
-  View,
-  Text,
-  StyleSheet,
-  TouchableOpacity,
   Modal,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
   TouchableWithoutFeedback,
+  View,
 } from 'react-native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import { useAuth } from '../context/AuthContext';
-import { colors, spacing, radius, shadow } from '../theme';
-import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { useNavigation } from '@react-navigation/native';
+import { useTheme } from '../context/ModeContext';
+import { lightMode, radius, shadow, spacing } from '../theme';
 
 export default function AppHeader({
   title = 'عيادة الشفاء',
@@ -19,10 +20,12 @@ export default function AppHeader({
   title?: string;
 }) {
   const insets = useSafeAreaInsets();
+  const {colors}=useTheme()
   const { fullName, email, photoUrl, signOut } = useAuth();
   const navigation =useNavigation()
   const [menuVisible, setMenuVisible] = useState(false);
   const [isAvailable, setIsAvailable] = useState(true);
+  const styles=useMemo(()=>getStyles(colors),[colors])
 
   const userInitial = (fullName || email || 'U').charAt(0).toUpperCase();
   return (
@@ -41,7 +44,7 @@ export default function AppHeader({
             {photoUrl ? (
               <Text style={styles.avatarText}>{userInitial}</Text>
             ) : (
-              <Ionicons name="person" size={22} color={colors.gold} />
+              <Ionicons name="person" size={22} color={colors.navIcon} />
             )}
           </View>
         </TouchableOpacity>
@@ -68,7 +71,7 @@ export default function AppHeader({
 
       <View style={styles.rightSection}>
         <View style={styles.logoCircle}>
-          <Ionicons name="medkit" size={22} color={colors.gold} />
+          <Ionicons name="medkit" size={22} color={colors.navIcon} />
         </View>
         <Text style={styles.title}>{title}</Text>
       </View>
@@ -107,9 +110,9 @@ export default function AppHeader({
                 <Ionicons
                   name="log-out-outline"
                   size={20}
-                  color={colors.danger}
+                  color={colors.error}
                 />
-                <Text style={[styles.menuItemText, { color: colors.danger }]}>
+                <Text style={[styles.menuItemText, { color: colors.error }]}>
                   تسجيل الخروج
                 </Text>
               </TouchableOpacity>
@@ -120,111 +123,112 @@ export default function AppHeader({
     </View>
   );
 }
-
-const styles = StyleSheet.create({
-  headerContainer: {
-    height: 85,
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    paddingHorizontal: spacing.md,
-    backgroundColor: colors.dark+70,
-    borderBottomWidth: 1,
-    borderBottomColor: colors.goldBorder,
-  },
-
-  statusBtn: {
-    flexDirection: 'row-reverse',
-    alignItems: 'center',
-    paddingHorizontal: spacing.sm,
-    paddingVertical: 4,
-    borderRadius: radius.pill,
-    gap: 4,
-    marginRight: 'auto',
-  },
-  statusActive: { backgroundColor: colors.success + '20' },
-  statusInactive: { backgroundColor: colors.danger + '20' },
-  statusDot: { width: 8, height: 8, borderRadius: 4 },
-  dotGreen: { backgroundColor: colors.success },
-  dotRed: { backgroundColor: colors.danger },
-  statusText: { fontSize: 12, fontWeight: '700', color: colors.primary },
-
-  rightSection: {
-    flexDirection: 'row-reverse',
-    alignItems: 'center',
-    gap: spacing.md,
-  },
-  logoCircle: {
-    width: 40,
-    height: 40,
-    borderRadius: 20,
-    backgroundColor: colors.dark+30,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  // صورة المستخدم (الدائرة الذهبية)
-  avatar: {
-    width: 40,
-    height: 40,
-    borderRadius: 20,
-    backgroundColor: colors.bg,
-    justifyContent: 'center',
-    alignItems: 'center',
-    borderWidth: 1.5,
-    borderColor: colors.gold,
-  },
-  avatarText: {
-    color: colors.gold,
-    fontWeight: '900',
-    fontSize: 18,
-  },
-
-  // زرار القائمة
-  menuBtn: {
-    padding: spacing.xs,
-    display: 'flex',
-    flexDirection: 'row-reverse',
-    alignItems: 'center',
-  },
-
-  title: {
-    fontSize: 18,
-    fontWeight: '900',
-    color: colors.primary,
-  },
-
-  modalOverlay: {
-    flex: 1,
-    backgroundColor: 'rgba(0,0,0,0.3)', 
-    justifyContent: 'flex-start',
-    alignItems: 'flex-start',
-    paddingTop: 70, 
-    paddingLeft: 16, 
-  },
-  dropdown: {
-    width: 200,
-    backgroundColor: colors.white,
-    borderRadius: radius.md,
-    paddingVertical: spacing.sm,
-    ...shadow.card, 
-    borderWidth: 1,
-    borderColor: colors.borderLight,
-  },
-  menuItem: {
-    flexDirection: 'row-reverse',
-    alignItems: 'center',
-    paddingVertical: spacing.sm,
-    paddingHorizontal: spacing.md,
-    gap: spacing.sm,
-  },
-  menuItemText: {
-    fontSize: 15,
-    fontWeight: '700',
-    color: colors.primary,
-  },
-  divider: {
-    height: 1,
-    backgroundColor: colors.borderLight,
-    marginVertical: spacing.xs,
-  },
-});
+const getStyles = (colors: typeof lightMode) =>
+  StyleSheet.create({
+    headerContainer: {
+      height: 85,
+      flexDirection: 'row',
+      alignItems: 'center',
+      justifyContent: 'space-between',
+      paddingHorizontal: spacing.md,
+      backgroundColor: colors.navBackground,
+      borderBottomWidth: 1,
+      borderBottomColor: colors.tabBarBorder,
+    },
+ 
+    statusBtn: {
+      flexDirection: 'row-reverse',
+      alignItems: 'center',
+      paddingHorizontal: spacing.sm,
+      paddingVertical: 4,
+      borderRadius: radius.pill,
+      gap: 4,
+      marginRight: 'auto',
+    },
+    statusActive: { backgroundColor: colors.success + '40' },
+    statusInactive: { backgroundColor: colors.error + '40' },
+    statusDot: { width: 8, height: 8, borderRadius: 4 },
+    dotGreen: { backgroundColor: colors.success },
+    dotRed: { backgroundColor: colors.error },
+    statusText: { fontSize: 12, fontWeight: '700', color: colors.navText },
+ 
+    rightSection: {
+      flexDirection: 'row-reverse',
+      alignItems: 'center',
+      gap: spacing.md,
+    },
+    logoCircle: {
+      width: 40,
+      height: 40,
+      borderRadius: 20,
+      backgroundColor: 'rgba(255,255,255,0.1)',
+      justifyContent: 'center',
+      alignItems: 'center',
+    },
+    // صورة المستخدم (الدائرة الذهبية)
+    avatar: {
+      width: 40,
+      height: 40,
+      borderRadius: 20,
+      backgroundColor: 'rgba(255,255,255,0.1)',
+      justifyContent: 'center',
+      alignItems: 'center',
+      borderWidth: 1.5,
+      borderColor: colors.navIcon,
+    },
+    avatarText: {
+      color: colors.navIcon,
+      fontWeight: '900',
+      fontSize: 18,
+    },
+ 
+    // زرار القائمة
+    menuBtn: {
+      padding: spacing.xs,
+      display: 'flex',
+      flexDirection: 'row-reverse',
+      alignItems: 'center',
+    },
+ 
+    title: {
+      fontSize: 18,
+      fontWeight: '900',
+      color: colors.navText,
+    },
+ 
+    modalOverlay: {
+      flex: 1,
+      backgroundColor: colors.overlay,
+      justifyContent: 'flex-start',
+      alignItems: 'flex-start',
+      paddingTop: 70,
+      paddingLeft: 16,
+    },
+    dropdown: {
+      width: 200,
+      backgroundColor: colors.modal,
+      borderRadius: radius.md,
+      paddingVertical: spacing.sm,
+      ...shadow.card,
+      borderWidth: 1,
+      borderColor: colors.border,
+    },
+    menuItem: {
+      flexDirection: 'row-reverse',
+      alignItems: 'center',
+      paddingVertical: spacing.sm,
+      paddingHorizontal: spacing.md,
+      gap: spacing.sm,
+    },
+    menuItemText: {
+      fontSize: 15,
+      fontWeight: '700',
+      color: colors.text,
+    },
+    divider: {
+      height: 1,
+      backgroundColor: colors.divider,
+      marginVertical: spacing.xs,
+    },
+  });
+ 

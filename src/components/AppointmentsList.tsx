@@ -1,8 +1,9 @@
 import { Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { colors, radius, spacing } from '../theme';
 import { Appointment } from '../../types/medical';
+import { ReactNode } from 'react';
 
-const AppointmentsList: React.FC<{ data: Appointment[] }> = ({ data }) => {
+const AppointmentsList: React.FC<{ data: Appointment[],loader?:ReactNode }> = ({ data,loader }) => {
   function getStatusBadge(status: string) {
     switch (status) {
       case 'PENDING':
@@ -41,16 +42,10 @@ const AppointmentsList: React.FC<{ data: Appointment[] }> = ({ data }) => {
           جدول مواعيد اليوم
           {JSON.stringify(AppointmentsList)}
         </Text>
-        <TouchableOpacity
-          onPress={() => {
-            /* الانتقال لكل المواعيد */
-          }}
-        >
-          <Text style={styles.linkText}>عرض الكل</Text>
-        </TouchableOpacity>
+        {loader&& loader}
       </View>
 
-      {data.map(appointment => (
+      {data.length?data.map(appointment => (
         <View  key={appointment.id} style={styles.appointmentCard}>
             <Image source={{uri:appointment.patientPhoto}} style={styles.doctorAvatarMini} />
           <View style={{ flex: 1 }}>
@@ -61,7 +56,9 @@ const AppointmentsList: React.FC<{ data: Appointment[] }> = ({ data }) => {
           </View>
           {getStatusBadge(appointment.status)}
         </View>
-      ))}
+      )): (
+                <Text style={styles.emptyText}>لا توجد مواعيد اليوم.</Text>
+              )}
 
     </View>
   );
@@ -84,7 +81,11 @@ const styles = StyleSheet.create({
     textAlign: 'right',
   },
   linkText: { color: colors.gold, fontWeight: '700', fontSize: 13 },
-
+ emptyText: {
+    textAlign: 'center',
+    color: colors.textMuted,
+    marginVertical: spacing.md,
+  },
   appointmentCard: {
     flexDirection: 'row-reverse',
     alignItems: 'center',

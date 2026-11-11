@@ -24,6 +24,7 @@ export default function MainTabs() {
           animation: 'timing',
           config: { duration: 220 },
         },
+        
       }}
     >
       <Tab.Screen name="HomeTab" component={isDoctor?DoctorHomeScreen:HomeScreen} />
