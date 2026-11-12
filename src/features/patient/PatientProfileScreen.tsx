@@ -19,6 +19,7 @@ import ChangePasswordForm from './ChangePasswordForm';
 import EmergencyContactForm from './EmergencyContactForm';
 import PersonalDetailsForm from './PersonalDetailsForm';
 import usePatient from './usePatient';
+import NavBar from '../../components/layout/NavBar';
 
 export default function PatientProfileScreen({ navigation }: any) {
   const { colors } = useTheme();
@@ -34,6 +35,8 @@ const styles = useMemo(() => getStyles(colors), [colors]);
 
   return (
     <>
+    <NavBar navigation={navigation} title='الملف الشخصي' />
+
     <View style={styles.appHeader}>
       <View style={styles.welcomeHeader}>
         <View style={styles.avatar}>
@@ -283,7 +286,7 @@ const styles = useMemo(() => getStyles(colors), [colors]);
 const getStyles = (colors: typeof lightMode) =>
   StyleSheet.create({
     appHeader:{backgroundColor:colors.background},
-    root: { flex: 1, backgroundColor: colors.background, padding: spacing.md },
+    root: { flex: 1, backgroundColor: colors.background, padding: spacing.md,paddingTop:spacing.xs },
 
     welcomeHeader: {
       flexDirection: 'row-reverse',

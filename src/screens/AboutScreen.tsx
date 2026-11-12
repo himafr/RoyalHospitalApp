@@ -4,12 +4,14 @@ import Ionicons from 'react-native-vector-icons/Ionicons'; // تأكد من طر
 import SmoothScrollView from '../components/SmoothScrollView';
 import { useTheme } from '../context/ModeContext';
 import { lightMode, radius, shadow, spacing } from '../theme';
+import NavBar from '../components/layout/NavBar';
 
-export default function AboutScreen() {
+export default function AboutScreen({navigation}:any) {
   const { colors } = useTheme();
 const styles = useMemo(() => getStyles(colors), [colors]);
   return (
     <SmoothScrollView style={styles.root}>
+      <NavBar navigation={navigation} title='عن العيادة' />
       <View style={styles.hero}>
         <Text style={styles.heroTitle}>عيادة الشفاء</Text>
         <Text style={styles.heroSub}>إرث من الثقة ورؤية لمستقبل الرعاية الصحية</Text>
@@ -32,6 +34,7 @@ const styles = useMemo(() => getStyles(colors), [colors]);
           </Text>
         </View>
       </View>
+      <View style={{height:100}}/>
     </SmoothScrollView>
   );
 }

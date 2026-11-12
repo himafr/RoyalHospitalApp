@@ -4,7 +4,7 @@ import {
 } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import React from 'react';
-import { ActivityIndicator, StyleSheet, View } from 'react-native';
+import { ActivityIndicator, Settings, StyleSheet, View } from 'react-native';
 import { useAuth } from '../context/AuthContext';
 import { useTheme } from '../context/ModeContext';
 import ActivateScreen from '../features/auth/ActivateScreen';
@@ -15,6 +15,7 @@ import AuthStack from './AuthStack';
 import MainTabs from './MainTabs';
 import AboutScreen from '../screens/AboutScreen';
 import ServiceDetailsScreen from '../features/services/ServiceDetailsScreen';
+import SettingsScreen from '../screens/SettingsScreen';
 
 const Stack = createNativeStackNavigator();
 export const navigationRef = createNavigationContainerRef();
@@ -54,6 +55,10 @@ export default function RootNavigator() {
             <Stack.Screen 
             name="About" 
             component={AboutScreen} 
+            options={{headerShown:false}} />
+            <Stack.Screen 
+            name="Settings" 
+            component={SettingsScreen} 
             options={{headerShown:false}} />
             <Stack.Screen
               name="ServiceDetails"

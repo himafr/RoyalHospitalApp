@@ -130,7 +130,6 @@ export default function AppointmentScreen({ route, navigation }: any) {
           </Picker>
         </View>
 
-        {/* الطبيب (بيظهر لو مش جاي من خدمة) */}
         <Text style={styles.label}>الطبيب المختص</Text>
         <View style={styles.pickerWrapper}>
           <Picker
@@ -144,7 +143,7 @@ export default function AppointmentScreen({ route, navigation }: any) {
             dropdownIconColor={colors.icon}
             itemStyle={{ color: colors.text }}
           >
-            <Picker.Item label="اختر الطبيب المفضل" value={null}
+            <Picker.Item label={doctors.length?"اختر الطبيب المفضل":"لا يوجد أطباء متاحين"} value={null}
                 color={colors.placeholder}
               style={{ backgroundColor: colors.modal }} />
             {doctors.map(d => (
@@ -161,14 +160,15 @@ export default function AppointmentScreen({ route, navigation }: any) {
             selectedValue={form.serviceId}
             onValueChange={v => {
               setField('serviceId', v);
-              loadDoctorsForService(v, form.specialty); // فلترة الأطباء
+              loadDoctorsForService(v, form.specialty); 
             }}
             enabled={!loading && services.length > 0}
            style={{ color: colors.text }}
             dropdownIconColor={colors.icon}
             itemStyle={{ color: colors.text }}
           >
-            <Picker.Item label="اختر الخدمة المناسبة" value={null}
+            <Picker.Item label={services.length?"اختر الخدمة المناسبة":"لا يوجد خدمات متاحه"} value={null}
+                
                 color={colors.placeholder}
               style={{ backgroundColor: colors.modal }} />
             {services.map(s => (

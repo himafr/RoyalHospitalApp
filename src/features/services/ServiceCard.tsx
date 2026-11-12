@@ -5,6 +5,7 @@ import Ionicons from 'react-native-vector-icons/Ionicons';
 import { useTheme } from '../../context/ModeContext';
 import PrimaryButton from '../../components/PrimaryButton';
 import { lightMode, radius, shadow, spacing } from '../../theme';
+import { SPECIALTIES_STRING } from '../../constants';
 
 interface ServiceCardProps {
   service: any;
@@ -26,11 +27,13 @@ export default function ServiceCard({ service }: ServiceCardProps) {
     <TouchableOpacity
       style={styles.card}
       activeOpacity={0.85}
-      onPress={() => navigation.navigate('ServiceDetails', { serviceId: service.id })}
+      onPress={() =>
+        navigation.navigate('ServiceDetails', { serviceId: service.id })
+      }
     >
-         <View style={styles.alertBadge}>
-    <Ionicons name="alert-circle" size={16} color={colors.warning} />
-  </View>
+      <View style={styles.alertBadge}>
+        <Ionicons name="alert-circle" size={16} color={colors.warning} />
+      </View>
       {/* 1. الأيقونة والعنوان */}
       <View style={styles.header}>
         <View style={styles.iconHolder}>
@@ -39,7 +42,9 @@ export default function ServiceCard({ service }: ServiceCardProps) {
         <View style={{ flex: 1, alignItems: 'flex-end' }}>
           <Text style={styles.name}>{service.name}</Text>
           {service.specialization && (
-            <Text style={styles.specialty}>{service.specialization}</Text>
+            <Text style={styles.specialty}>
+              {SPECIALTIES_STRING[service.specialization]}
+            </Text>
           )}
         </View>
       </View>
@@ -87,19 +92,19 @@ export default function ServiceCard({ service }: ServiceCardProps) {
 const getStyles = (colors: typeof lightMode) =>
   StyleSheet.create({
     alertBadge: {
-  position: 'absolute',
-  top: spacing.sm,
-  left: spacing.sm,
-  width: 28,
-  height: 28,
-  borderRadius: 14,
-  backgroundColor: colors.backgroundAlt,
-  justifyContent: 'center',
-  alignItems: 'center',
-  borderWidth: 1,
-  borderColor: colors.warning,
-  zIndex: 10,
-},
+      position: 'absolute',
+      top: spacing.sm,
+      left: spacing.sm,
+      width: 28,
+      height: 28,
+      borderRadius: 14,
+      backgroundColor: colors.backgroundAlt,
+      justifyContent: 'center',
+      alignItems: 'center',
+      borderWidth: 1,
+      borderColor: colors.warning,
+      zIndex: 10,
+    },
     card: {
       backgroundColor: colors.card,
       borderRadius: radius.lg,
@@ -110,7 +115,6 @@ const getStyles = (colors: typeof lightMode) =>
       ...shadow.card,
     },
 
-    // الهيدر (الأيقونة + الاسم)
     header: {
       flexDirection: 'row-reverse',
       alignItems: 'center',
@@ -133,13 +137,13 @@ const getStyles = (colors: typeof lightMode) =>
       marginBottom: 2,
     },
     specialty: {
+      marginTop: 5,
       fontSize: 12,
       color: colors.secondary,
       fontWeight: '700',
       textAlign: 'right',
     },
 
-    // الوصف
     desc: {
       fontSize: 14,
       color: colors.textSecondary,
@@ -148,7 +152,6 @@ const getStyles = (colors: typeof lightMode) =>
       marginBottom: spacing.md,
     },
 
-    // المميزات
     featuresRow: {
       flexDirection: 'row-reverse',
       alignItems: 'center',
@@ -162,7 +165,6 @@ const getStyles = (colors: typeof lightMode) =>
       textAlign: 'right',
     },
 
-    // الفوتر (السعر + الحجز)
     footer: {
       flexDirection: 'row-reverse',
       justifyContent: 'space-between',
