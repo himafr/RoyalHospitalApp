@@ -10,8 +10,8 @@ import {
 } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import Ionicons from 'react-native-vector-icons/Ionicons';
-import { useTheme } from '../context/ModeContext';
-import { lightMode, spacing } from '../theme';
+import { useTheme } from '../../context/ModeContext';
+import { lightMode, spacing } from '../../theme';
 
 function AnimatedTabIcon({
   name,

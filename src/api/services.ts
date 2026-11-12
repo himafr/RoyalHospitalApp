@@ -7,3 +7,6 @@ interface GetServicesParams {
 
 export const getServices = (params: GetServicesParams) =>
   client.get('/services', { params });
+
+export const getServiceById=(id:number)=>
+  client.get("/services/"+id )

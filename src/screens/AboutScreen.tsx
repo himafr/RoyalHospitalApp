@@ -1,9 +1,9 @@
 import React, { useMemo } from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 import Ionicons from 'react-native-vector-icons/Ionicons'; // تأكد من طريقة الاستيراد اللي ظبطتها
-import SmoothScrollView from '../../components/SmoothScrollView';
-import { useTheme } from '../../context/ModeContext';
-import { lightMode, radius, shadow, spacing } from '../../theme';
+import SmoothScrollView from '../components/SmoothScrollView';
+import { useTheme } from '../context/ModeContext';
+import { lightMode, radius, shadow, spacing } from '../theme';
 
 export default function AboutScreen() {
   const { colors } = useTheme();

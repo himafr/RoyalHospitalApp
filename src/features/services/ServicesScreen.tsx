@@ -15,6 +15,7 @@ import ScreenTransition from '../../components/ScreenTransition';
 import { useTheme } from '../../context/ModeContext';
 import useInfiniteScroll from '../../hooks/useInfiniteScroll';
 import { lightMode, radius, shadow, spacing } from '../../theme';
+import ServiceCard from './ServiceCard';
 
 export default function ServicesScreen({ navigation }: any) {
   const { colors } = useTheme();
@@ -42,38 +43,6 @@ const styles = useMemo(() => getStyles(colors), [colors]);
     );
   };
 
-  const renderService = ({ item }: any) => (
-    <View style={styles.card}>
-      <View style={styles.iconHolder}>
-        <Ionicons name="medkit-outline" size={28} color={colors.primary} />
-      </View>
-      <Text style={styles.name}>{item.name}</Text>
-      <Text style={styles.desc}>{item.description}</Text>
-
-      <View style={styles.priceRow}>
-        <Text style={styles.price}>
-          {item.consulating
-            ? `استشارة ${item.consulating}`
-            : item.startFrom
-            ? `تبدأ من ${item.startFrom}`
-            : `الكشف ${item.price}`}{' '}
-          <Text style={styles.currency}>ر.س</Text>
-        </Text>
-        <PrimaryButton
-          title="احجز الآن"
-          variant="secondary"
-          style={{ width: 120, height: 40 }}
-          onPress={() =>
-            navigation.navigate('AppointmentTab', {
-              serviceId: item.id,
-              specialty: item.specialization,
-            })
-          }
-        />
-      </View>
-    </View>
-  );
-
   return (
     <ScreenTransition style={styles.root}>
       <View style={styles.header}>
@@ -99,7 +68,7 @@ const styles = useMemo(() => getStyles(colors), [colors]);
         scrollEventThrottle={16}
         overScrollMode="never"
         data={services}
-        renderItem={renderService}
+        renderItem={({ item }) => <ServiceCard service={item} />}
         keyExtractor={item => item.id.toString()}
           
          

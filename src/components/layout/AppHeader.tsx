@@ -11,9 +11,9 @@ import {
 } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import Ionicons from 'react-native-vector-icons/Ionicons';
-import { useAuth } from '../context/AuthContext';
-import { useTheme } from '../context/ModeContext';
-import { lightMode, radius, shadow, spacing } from '../theme';
+import { useAuth } from '../../context/AuthContext';
+import { useTheme } from '../../context/ModeContext';
+import { lightMode, radius, shadow, spacing } from '../../theme';
 
 export default function AppHeader({
   title = 'عيادة الشفاء',
@@ -21,7 +21,8 @@ export default function AppHeader({
   title?: string;
 }) {
   const insets = useSafeAreaInsets();
-  const { colors } = useTheme();
+  const { colors ,toggleMode} = useTheme();
+  
   const { fullName, email, photoUrl, signOut } = useAuth();
   const navigation = useNavigation();
   const [menuVisible, setMenuVisible] = useState(false);
@@ -39,7 +40,7 @@ export default function AppHeader({
           <Ionicons
             name={`caret-${menuVisible ? 'up' : 'down'}-outline`}
             size={18}
-            color={colors.primary}
+            color={colors.navIcon}
           />
           {photoUrl ? (
             <Image source={{ uri: photoUrl }} style={styles.avatar} />
@@ -56,7 +57,9 @@ export default function AppHeader({
             styles.statusBtn,
             isAvailable ? styles.statusActive : styles.statusInactive,
           ]}
-          onPress={() => setIsAvailable(!isAvailable)}
+          onPress={() =>{ setIsAvailable(!isAvailable)
+            toggleMode()
+          }}
         >
           <View
             style={[
@@ -90,19 +93,6 @@ export default function AppHeader({
                 style={styles.menuItem}
                 onPress={() => {
                   setMenuVisible(false);
-                  navigation.navigate('Settings');
-                }}
-              >
-                <Ionicons name="cog" size={24} color={colors.primary} />
-                <Text style={styles.menuItemText}> الاعدادات</Text>
-              </TouchableOpacity>
-
-              <View style={styles.divider} />
-
-              <TouchableOpacity
-                style={styles.menuItem}
-                onPress={() => {
-                  setMenuVisible(false);
                   navigation.navigate('Profile');
                 }}
               >
@@ -112,6 +102,37 @@ export default function AppHeader({
                   color={colors.primary}
                 />
                 <Text style={styles.menuItemText}>الملف الشخصي</Text>
+              </TouchableOpacity>
+
+              <View style={styles.divider} />
+              {/* settings */}
+              <TouchableOpacity
+                style={styles.menuItem}
+                onPress={() => {
+                  setMenuVisible(false);
+                  navigation.navigate('Settings');
+                }}
+              >
+                <Ionicons name="cog" size={24} color={colors.primary} />
+                <Text style={styles.menuItemText}> الاعدادات</Text>
+              </TouchableOpacity>
+
+              <View style={styles.divider} />
+
+              {/* about */}
+              <TouchableOpacity
+                style={styles.menuItem}
+                onPress={() => {
+                  setMenuVisible(false);
+                  navigation.navigate('About');
+                }}
+              >
+                <Ionicons
+                  name="information-circle"
+                  size={24}
+                  color={colors.primary}
+                />
+                <Text style={styles.menuItemText}> عن العيادة</Text>
               </TouchableOpacity>
 
               <View style={styles.divider} />

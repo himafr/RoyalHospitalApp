@@ -12,7 +12,7 @@ import VerifyMessage from '../../components/VerifyMessage';
 import { useAuth } from '../../context/AuthContext';
 import { useTheme } from '../../context/ModeContext';
 import { lightMode, radius, shadow, spacing } from '../../theme';
-import AppHeader from '../../components/AppHeader';
+import AppHeader from '../../components/layout/AppHeader';
 
 const features = [
   {
@@ -256,11 +256,7 @@ const styles = useMemo(() => getStyles(colors), [colors]);
           </TouchableOpacity>
         </View>
       </View>
-      <TouchableOpacity style={styles.logoutBtn} onPress={signOut}>
-        <Ionicons name="log-out-outline" size={20} color={colors.iconSecondary} />
-        <Text style={styles.logoutText}>تسجيل الخروج</Text>
-      </TouchableOpacity>
-      <View style={{ height: 100 }} />
+    
     </SmoothScrollView>
   );
 }

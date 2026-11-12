@@ -1,13 +1,13 @@
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import React from 'react';
-import CustomTabBar from '../components/CustomTabBar';
+import CustomTabBar from '../components/layout/CustomTabBar';
 import { useAuth } from '../context/AuthContext';
 import AppointmentScreen from '../features/appointment/AppointmentScreen';
 import DoctorHomeScreen from '../features/doctor/DoctorHomeScreen';
-import AboutScreen from '../screens/main/AboutScreen';
+import AboutScreen from '../screens/AboutScreen';
 import DoctorsScreen from '../screens/main/DoctorsScreen';
 import HomeScreen from '../screens/main/HomeScreen';
-import ServicesScreen from '../screens/main/ServicesScreen';
+import ServicesScreen from '../features/services/ServicesScreen';
 
 const Tab = createBottomTabNavigator();
 
@@ -29,7 +29,6 @@ export default function MainTabs() {
     >
       <Tab.Screen name="HomeTab" component={isDoctor?DoctorHomeScreen:HomeScreen} />
       <Tab.Screen name="AppointmentTab" component={AppointmentScreen} />
-      <Tab.Screen name="AboutTab" component={AboutScreen} />
       <Tab.Screen name="ServicesTab" component={ServicesScreen} />
       <Tab.Screen name="DoctorsTab" component={DoctorsScreen} />
     </Tab.Navigator>

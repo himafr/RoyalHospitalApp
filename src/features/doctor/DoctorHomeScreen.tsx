@@ -10,7 +10,7 @@ import {
   View,
 } from 'react-native';
 import Ionicons from 'react-native-vector-icons/Ionicons';
-import AppHeader from '../../components/AppHeader';
+import AppHeader from '../../components/layout/AppHeader';
 import AppointmentsList from '../../components/AppointmentsList';
 import Rotate from '../../components/state/Rotate';
 import VerifyMessage from '../../components/VerifyMessage';
