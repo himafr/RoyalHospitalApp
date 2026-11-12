@@ -1,7 +1,8 @@
-import React, { useState } from 'react';
-import { View, TextInput, TouchableOpacity, StyleSheet, TextInputProps } from 'react-native';
+import React, { useMemo, useState } from 'react';
+import { StyleSheet, TextInput, TextInputProps, TouchableOpacity, View } from 'react-native';
 import Ionicons from 'react-native-vector-icons/Ionicons';
-import { colors, spacing, radius } from '../theme';
+import { useTheme } from '../context/ModeContext';
+import { lightMode, radius, spacing } from '../theme';
 
 interface Props extends TextInputProps {
   value: string;
@@ -10,6 +11,8 @@ interface Props extends TextInputProps {
 }
 
 export default function PasswordInput({ value, onChangeText, placeholder, ...rest }: Props) {
+  const { colors } = useTheme();
+const styles = useMemo(() => getStyles(colors), [colors]);
   const [show, setShow] = useState(false);
 
   return (
@@ -27,30 +30,30 @@ export default function PasswordInput({ value, onChangeText, placeholder, ...res
         <Ionicons 
           name={show ? 'eye-off' : 'eye'} 
           size={22} 
-          color={colors.gold} 
+          color={colors.primary} 
         />
       </TouchableOpacity>
     </View>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flexDirection: 'row-reverse',
-    alignItems: 'center',
-    borderWidth: 1,
-    borderColor: colors.border,
-    borderRadius: radius.md,
-    marginBottom: spacing.md,
-    backgroundColor: colors.white,
-  },
-  input: {
-    flex: 1,
-    padding: spacing.md,
-    textAlign: 'right',
-    color: colors.primary,
-  },
-  iconBtn: {
-    paddingHorizontal: spacing.md,
-  },
-});
+const getStyles = (colors: typeof lightMode) =>
+  StyleSheet.create({
+    container: {
+      flexDirection: 'row-reverse',
+      alignItems: 'center',
+      borderWidth: 1,
+      borderColor: colors.inputBorder,
+      borderRadius: radius.md,
+      marginBottom: spacing.md,
+      backgroundColor: colors.inputBackground,
+    },
+    input: {
+      flex: 1,
+      padding: spacing.md,
+      textAlign: 'right',
+      color: colors.text,
+    },
+    iconBtn: {
+      paddingHorizontal: spacing.md,
+    },
+  });

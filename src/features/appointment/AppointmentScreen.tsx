@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import {
   View,
   Text,
@@ -13,12 +13,14 @@ import InputField from '../../components/InputField';
 import PrimaryButton from '../../components/PrimaryButton';
 import useAppointment from './useAppointment';
 import { SPECIALTIES } from '../../constants';
-import { colors, spacing, radius } from '../../theme';
+import { spacing, radius, lightMode } from '../../theme';
 import { showErrorToast, showSuccessToast } from '../../utils/toast';
 import SmoothScrollView from '../../components/SmoothScrollView';
+import { useTheme } from '../../context/ModeContext';
 
 export default function AppointmentScreen({ route, navigation }: any) {
-  // 1. بنشوف إحنا جايين منين
+  const { colors } = useTheme();
+
   const {
     doctorId: initialDoctorId,
     serviceId: initialServiceId,
@@ -85,12 +87,13 @@ export default function AppointmentScreen({ route, navigation }: any) {
   ]);
 
   const isDateFullyBooked = form.date ? bookedDates.includes(form.date) : false;
+  const styles = useMemo(() => getStyles(colors), [colors]);
 
   return (
     <SmoothScrollView style={styles.root} showsVerticalScrollIndicator={false}>
       {/* الهيدر */}
       <View style={styles.header}>
-        <Ionicons name="calendar" size={48} color={colors.gold} />
+        <Ionicons name="calendar" size={48} color={colors.primary} />
         <Text style={styles.title}>نموذج حجز المواعيد</Text>
         <Text style={styles.sub}>
           يرجى تعبئة البيانات المطلوبة بدقة لضمان حصولكم على أفضل رعاية طبية.
@@ -105,10 +108,24 @@ export default function AppointmentScreen({ route, navigation }: any) {
             selectedValue={form.specialty}
             onValueChange={v => setSpecialty(v)}
             enabled={!loading}
+            style={{ color: colors.text }}
+            dropdownIconColor={colors.icon}
+            itemStyle={{ color: colors.text }}
           >
-            <Picker.Item label="اختر القسم المطلوب" value="" />
+            <Picker.Item
+              label="اختر القسم المطلوب"
+              color={colors.placeholder}
+              style={{ backgroundColor: colors.modal }}
+              value=""
+            />
             {SPECIALTIES.map(s => (
-              <Picker.Item key={s.id} label={s.label} value={s.id} />
+              <Picker.Item
+                key={s.id}
+                label={s.label}
+                value={s.id}
+                color={colors.text}
+                style={{ backgroundColor: colors.modal }}
+              />
             ))}
           </Picker>
         </View>
@@ -120,13 +137,20 @@ export default function AppointmentScreen({ route, navigation }: any) {
             selectedValue={form.doctorId}
             onValueChange={v => {
               setField('doctorId', v);
-              loadServicesForDoctor(v, form.specialty); // فلترة الخدمات
+              loadServicesForDoctor(v, form.specialty);
             }}
             enabled={!loading && doctors.length > 0}
+            style={{ color: colors.text }}
+            dropdownIconColor={colors.icon}
+            itemStyle={{ color: colors.text }}
           >
-            <Picker.Item label="اختر الطبيب المفضل" value={null} />
+            <Picker.Item label="اختر الطبيب المفضل" value={null}
+                color={colors.placeholder}
+              style={{ backgroundColor: colors.modal }} />
             {doctors.map(d => (
-              <Picker.Item key={d.id} label={`د. ${d.fullName}`} value={d.id} />
+              <Picker.Item key={d.id} label={`د. ${d.fullName}`} value={d.id}
+               color={colors.text}
+                style={{ backgroundColor: colors.modal }} />
             ))}
           </Picker>
         </View>
@@ -140,10 +164,17 @@ export default function AppointmentScreen({ route, navigation }: any) {
               loadDoctorsForService(v, form.specialty); // فلترة الأطباء
             }}
             enabled={!loading && services.length > 0}
+           style={{ color: colors.text }}
+            dropdownIconColor={colors.icon}
+            itemStyle={{ color: colors.text }}
           >
-            <Picker.Item label="اختر الخدمة المناسبة" value={null} />
+            <Picker.Item label="اختر الخدمة المناسبة" value={null}
+                color={colors.placeholder}
+              style={{ backgroundColor: colors.modal }} />
             {services.map(s => (
-              <Picker.Item key={s.id} label={s.name} value={s.id} />
+              <Picker.Item key={s.id} label={s.name} value={s.id}
+               color={colors.text}
+                style={{ backgroundColor: colors.modal }} />
             ))}
           </Picker>
         </View>
@@ -153,7 +184,8 @@ export default function AppointmentScreen({ route, navigation }: any) {
         <TouchableOpacity
           style={styles.dateInput}
           onPress={() => {
-          if (form.doctorId && form.serviceId && form.specialty) setShowDatePicker(true);
+            if (form.doctorId && form.serviceId && form.specialty)
+              setShowDatePicker(true);
           }}
         >
           <Text
@@ -164,7 +196,7 @@ export default function AppointmentScreen({ route, navigation }: any) {
           >
             {form.date || 'اختر تاريخ الزيارة'}
           </Text>
-          <Ionicons name="calendar-outline" size={20} color={colors.gold} />
+          <Ionicons name="calendar-outline" size={20} color={colors.primary} />
         </TouchableOpacity>
 
         {showDatePicker && (
@@ -174,6 +206,7 @@ export default function AppointmentScreen({ route, navigation }: any) {
             display="default"
             minimumDate={new Date()}
             onChange={onChangeDate}
+            
           />
         )}
 
@@ -251,84 +284,89 @@ export default function AppointmentScreen({ route, navigation }: any) {
     </SmoothScrollView>
   );
 }
-
-const styles = StyleSheet.create({
-  root: { flex: 1, backgroundColor: colors.white },
-  header: {
-    padding: spacing.lg,
-    backgroundColor: colors.bgLight,
-    alignItems: 'center',
-  },
-  title: {
-    fontSize: 24,
-    fontWeight: '900',
-    color: colors.primary,
-    marginTop: spacing.sm,
-  },
-  sub: {
-    fontSize: 14,
-    color: colors.textSecondary,
-    textAlign: 'center',
-    marginTop: spacing.xs,
-  },
-  form: { padding: spacing.lg },
-  label: {
-    fontSize: 14,
-    color: colors.primary,
-    fontWeight: '700',
-    textAlign: 'right',
-    marginBottom: spacing.xs,
-    marginTop: spacing.md,
-  },
-  pickerWrapper: {
-    borderWidth: 1,
-    borderColor: colors.border,
-    borderRadius: radius.md,
-    marginBottom: spacing.md,
-    overflow: 'hidden',
-  },
-  picker: { color: colors.primary },
-  dateInput: {
-    flexDirection: 'row-reverse',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    borderWidth: 1,
-    borderColor: colors.border,
-    borderRadius: radius.md,
-    padding: spacing.md,
-    marginBottom: spacing.md,
-  },
-  error: {
-    color: colors.danger,
-    fontSize: 12,
-    textAlign: 'right',
-    marginTop: -spacing.sm,
-    marginBottom: spacing.sm,
-  },
-  timeGrid: {
-    flexDirection: 'row-reverse',
-    flexWrap: 'wrap',
-    gap: spacing.sm,
-    marginBottom: spacing.md,
-  },
-  timeSlot: {
-    flex: 1,
-    minWidth: '45%',
-    padding: spacing.md,
-    borderRadius: radius.md,
-    borderWidth: 2,
-    borderColor: colors.border,
-    backgroundColor: colors.bgGray,
-    alignItems: 'center',
-  },
-  timeSlotActive: { backgroundColor: colors.primary, borderColor: colors.gold },
-  timeText: { fontWeight: '700', color: colors.textSecondary },
-  timeTextActive: { color: colors.gold },
-  noSlots: {
-    color: colors.textMuted,
-    fontSize: 14,
-    textAlign: 'right',
-    width: '100%',
-    padding: spacing.md,
-  },
-});
+const getStyles = (colors: typeof lightMode) =>
+  StyleSheet.create({
+    root: { flex: 1, backgroundColor: colors.background },
+    header: {
+      padding: spacing.lg,
+      backgroundColor: colors.backgroundAlt,
+      alignItems: 'center',
+    },
+    title: {
+      fontSize: 24,
+      fontWeight: '900',
+      color: colors.text,
+      marginTop: spacing.sm,
+    },
+    sub: {
+      fontSize: 14,
+      color: colors.textSecondary,
+      textAlign: 'center',
+      marginTop: spacing.xs,
+    },
+    form: { padding: spacing.lg },
+    label: {
+      fontSize: 14,
+      color: colors.text,
+      fontWeight: '700',
+      textAlign: 'right',
+      marginBottom: spacing.xs,
+      marginTop: spacing.md,
+    },
+    pickerWrapper: {
+      borderWidth: 1,
+      borderColor: colors.inputBorder,
+      backgroundColor: colors.inputBackground,
+      borderRadius: radius.md,
+      marginBottom: spacing.md,
+      overflow: 'hidden',
+    },
+    picker: { color: colors.text },
+    dateInput: {
+      flexDirection: 'row-reverse',
+      alignItems: 'center',
+      justifyContent: 'space-between',
+      borderWidth: 1,
+      borderColor: colors.inputBorder,
+      backgroundColor: colors.inputBackground,
+      borderRadius: radius.md,
+      padding: spacing.md,
+      marginBottom: spacing.md,
+    },
+    error: {
+      color: colors.error,
+      fontSize: 12,
+      textAlign: 'right',
+      marginTop: -spacing.sm,
+      marginBottom: spacing.sm,
+    },
+    timeGrid: {
+      flexDirection: 'row-reverse',
+      flexWrap: 'wrap',
+      gap: spacing.sm,
+      marginBottom: spacing.md,
+    },
+    timeSlot: {
+      flex: 1,
+      minWidth: '45%',
+      padding: spacing.md,
+      borderRadius: radius.md,
+      borderWidth: 2,
+      borderColor: colors.border,
+      backgroundColor: colors.card,
+      alignItems: 'center',
+    },
+    timeSlotActive: {
+      backgroundColor: colors.primary,
+      borderColor: colors.iconActive,
+    },
+    timeText: { fontWeight: '700', color: colors.textSecondary },
+    timeTextActive: { color: colors.onPrimary },
+    noSlots: {
+      color: colors.textMuted,
+      fontSize: 14,
+      textAlign: 'right',
+      width: '100%',
+      padding: spacing.md,
+    },
+  });

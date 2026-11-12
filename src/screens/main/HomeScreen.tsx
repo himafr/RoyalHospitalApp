@@ -1,16 +1,18 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import {
-  View,
-  Text,
-  StyleSheet,
-  TouchableOpacity,
   FlatList,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
 } from 'react-native';
 import Ionicons from 'react-native-vector-icons/Ionicons';
-import { colors, spacing, radius, shadow } from '../../theme';
+import SmoothScrollView from '../../components/SmoothScrollView';
 import VerifyMessage from '../../components/VerifyMessage';
 import { useAuth } from '../../context/AuthContext';
-import SmoothScrollView from '../../components/SmoothScrollView';
+import { useTheme } from '../../context/ModeContext';
+import { lightMode, radius, shadow, spacing } from '../../theme';
+import AppHeader from '../../components/AppHeader';
 
 const features = [
   {
@@ -74,21 +76,17 @@ const testimonials = [
 ];
 
 export default function PatientHomeScreen({ navigation }: any) {
+  const { colors } = useTheme();
+const styles = useMemo(() => getStyles(colors), [colors]);
   const { isVerified , signOut} = useAuth();
   return (
     <SmoothScrollView style={styles.root} showsVerticalScrollIndicator={false}>
-      <View style={styles.header}>
-        <View style={styles.logoCircle}>
-          <Ionicons name="medkit" size={22} color={colors.gold} />
-        </View>
-        <Text style={styles.brand}>عيادة الشفاء </Text>
-        <VerifyMessage isVerified={isVerified()} navigation={navigation} />
-      </View>
+      <AppHeader />
 
       <View style={styles.hero}>
         <Text style={styles.heroTitle}>
           رعاية طبية
-          <Text style={{ color: colors.gold }}>باحترافية وثقة</Text>
+          <Text style={{ color: colors.primary }}>باحترافية وثقة</Text>
         </Text>
         <Text style={styles.heroSub}>
           نقدم أفضل الخدمات الطبية بأحدث التقنيات لضمان صحتكم وسلامتكم. فريقنا
@@ -115,14 +113,14 @@ export default function PatientHomeScreen({ navigation }: any) {
           <View style={styles.avatarGroup}>
             {[1, 2, 3].map(i => (
               <View key={i} style={styles.avatarMini}>
-                <Ionicons name="person" size={14} color={colors.gold} />
+                <Ionicons name="person" size={14} color={colors.primary} />
               </View>
             ))}
           </View>
           <View style={{ alignItems: 'flex-end' }}>
             <View style={{ flexDirection: 'row-reverse' }}>
               {[1, 2, 3, 4, 5].map(i => (
-                <Ionicons key={i} name="star" size={12} color={colors.gold} />
+                <Ionicons key={i} name="star" size={12} color={colors.primary} />
               ))}
             </View>
             <Text style={styles.ratingText}>أكثر من 5000 مريض سعيد</Text>
@@ -148,7 +146,7 @@ export default function PatientHomeScreen({ navigation }: any) {
                 <Ionicons
                   name={item.icon as any}
                   size={24}
-                  color={colors.gold}
+                  color={colors.primary}
                 />
               </View>
               <View style={{ flex: 1 }}>
@@ -161,7 +159,7 @@ export default function PatientHomeScreen({ navigation }: any) {
       </View>
 
       {/* 4. خدماتنا الطبية (Services) */}
-      <View style={[styles.section, { backgroundColor: colors.bgGray }]}>
+      <View style={[styles.section, { backgroundColor: colors.backgroundAlt }]}>
         <View style={styles.servicesHeader}>
           <Text style={styles.sectionTitle}>خدماتنا الطبية</Text>
           <TouchableOpacity onPress={() => navigation.navigate('ServicesTab')}>
@@ -182,7 +180,7 @@ export default function PatientHomeScreen({ navigation }: any) {
                 <Ionicons
                   name={item.icon as any}
                   size={28}
-                  color={colors.gold}
+                  color={colors.primary}
                 />
               </View>
               <Text style={styles.serviceTitle}>{item.title}</Text>
@@ -192,7 +190,7 @@ export default function PatientHomeScreen({ navigation }: any) {
                 onPress={() => navigation.navigate('ServicesTab')}
               >
                 <Text style={styles.detailsText}>التفاصيل</Text>
-                <Ionicons name="arrow-back" size={14} color={colors.gold} />
+                <Ionicons name="arrow-back" size={14} color={colors.primary} />
               </TouchableOpacity>
             </View>
           )}
@@ -212,7 +210,7 @@ export default function PatientHomeScreen({ navigation }: any) {
           <View key={i} style={styles.testimonialCard}>
             <View style={styles.testimonialHeader}>
               <View style={styles.avatarMini}>
-                <Ionicons name="person" size={18} color={colors.gold} />
+                <Ionicons name="person" size={18} color={colors.primary} />
               </View>
               <View style={{ alignItems: 'flex-end' }}>
                 <Text style={styles.testimonialName}>{t.name}</Text>
@@ -222,7 +220,7 @@ export default function PatientHomeScreen({ navigation }: any) {
                       key={s}
                       name="star"
                       size={10}
-                      color={colors.gold}
+                      color={colors.primary}
                     />
                   ))}
                 </View>
@@ -253,13 +251,13 @@ export default function PatientHomeScreen({ navigation }: any) {
               /* اتصال */
             }}
           >
-            <Ionicons name="call" size={20} color={colors.white} />
+            <Ionicons name="call" size={20} color={colors.iconSecondary} />
             <Text style={styles.ctaBtnSecondaryText}>اتصل بنا</Text>
           </TouchableOpacity>
         </View>
       </View>
       <TouchableOpacity style={styles.logoutBtn} onPress={signOut}>
-        <Ionicons name="log-out-outline" size={20} color={colors.white} />
+        <Ionicons name="log-out-outline" size={20} color={colors.iconSecondary} />
         <Text style={styles.logoutText}>تسجيل الخروج</Text>
       </TouchableOpacity>
       <View style={{ height: 100 }} />
@@ -267,269 +265,271 @@ export default function PatientHomeScreen({ navigation }: any) {
   );
 }
 
-const styles = StyleSheet.create({
-  root: { flex: 1, backgroundColor: colors.white },
+const getStyles = (colors: typeof lightMode) =>
+  StyleSheet.create({
+    root: { flex: 1, backgroundColor: colors.background },
 
-  header: {
-    height: 65,
-    flexDirection: 'row-reverse',
-    alignItems: 'center',
-    paddingHorizontal: spacing.md,
-    borderBottomWidth: 1,
-    borderBottomColor: colors.goldBorder,
-    gap: spacing.sm,
-  },
-  logoCircle: {
-    width: 40,
-    height: 40,
-    borderRadius: 20,
-    backgroundColor: colors.primary,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  brand: { fontSize: 16, fontWeight: '900', color: colors.primary },
+    header: {
+      height: 65,
+      flexDirection: 'row-reverse',
+      alignItems: 'center',
+      paddingHorizontal: spacing.md,
+      borderBottomWidth: 1,
+      borderBottomColor: colors.border,
+      gap: spacing.sm,
+    },
+    logoCircle: {
+      width: 40,
+      height: 40,
+      borderRadius: 20,
+      backgroundColor: colors.primary,
+      justifyContent: 'center',
+      alignItems: 'center',
+    },
+    brand: { fontSize: 16, fontWeight: '900', color: colors.text },
 
-  hero: {
-    padding: spacing.lg,
-    backgroundColor: colors.bgLight,
-    borderBottomLeftRadius: radius.lg,
-    borderBottomRightRadius: radius.lg,
-  },
-  heroTitle: {
-    fontSize: 32,
-    fontWeight: '900',
-    color: colors.primary,
-    lineHeight: 38,
-    textAlign: 'right',
-  },
-  heroSub: {
-    fontSize: 14,
-    color: colors.textSecondary,
-    lineHeight: 21,
-    marginTop: spacing.md,
-    textAlign: 'right',
-  },
+    hero: {
+      padding: spacing.lg,
+      backgroundColor: colors.backgroundAlt,
+      borderBottomLeftRadius: radius.lg,
+      borderBottomRightRadius: radius.lg,
+    },
+    heroTitle: {
+      fontSize: 32,
+      fontWeight: '900',
+      color: colors.text,
+      lineHeight: 38,
+      textAlign: 'right',
+    },
+    heroSub: {
+      fontSize: 14,
+      color: colors.textSecondary,
+      lineHeight: 21,
+      marginTop: spacing.md,
+      textAlign: 'right',
+    },
 
-  heroBtns: {
-    flexDirection: 'row-reverse',
-    gap: spacing.sm,
-    marginTop: spacing.lg,
-  },
-  btnPrimary: {
-    backgroundColor: colors.primary,
-    paddingHorizontal: spacing.lg,
-    paddingVertical: spacing.sm,
-    borderRadius: radius.md,
-  },
-  btnPrimaryText: { color: colors.gold, fontWeight: '700', fontSize: 14 },
-  btnSecondary: {
-    backgroundColor: colors.white,
-    borderWidth: 1,
-    borderColor: colors.goldBorder,
-    paddingHorizontal: spacing.lg,
-    paddingVertical: spacing.sm,
-    borderRadius: radius.md,
-  },
-  btnSecondaryText: { color: colors.primary, fontWeight: '700', fontSize: 14 },
+    heroBtns: {
+      flexDirection: 'row-reverse',
+      gap: spacing.sm,
+      marginTop: spacing.lg,
+    },
+    btnPrimary: {
+      backgroundColor: colors.buttonPrimary,
+      paddingHorizontal: spacing.lg,
+      paddingVertical: spacing.sm,
+      borderRadius: radius.md,
+    },
+    btnPrimaryText: { color: colors.buttonPrimaryText, fontWeight: '700', fontSize: 14 },
+    btnSecondary: {
+      backgroundColor: colors.card,
+      borderWidth: 1,
+      borderColor: colors.border,
+      paddingHorizontal: spacing.lg,
+      paddingVertical: spacing.sm,
+      borderRadius: radius.md,
+    },
+    btnSecondaryText: { color: colors.text, fontWeight: '700', fontSize: 14 },
 
-  ratingRow: {
-    flexDirection: 'row-reverse',
-    alignItems: 'center',
-    marginTop: spacing.lg,
-    gap: spacing.md,
-  },
-  avatarGroup: { flexDirection: 'row-reverse' },
-  avatarMini: {
-    width: 32,
-    height: 32,
-    borderRadius: 16,
-    backgroundColor: colors.white,
-    borderWidth: 2,
-    borderColor: colors.gold,
-    justifyContent: 'center',
-    alignItems: 'center',
-    marginLeft: -10,
-  },
-  ratingText: { color: colors.primary, fontSize: 14, fontWeight: '700' },
+    ratingRow: {
+      flexDirection: 'row-reverse',
+      alignItems: 'center',
+      marginTop: spacing.lg,
+      gap: spacing.md,
+    },
+    avatarGroup: { flexDirection: 'row-reverse' },
+    avatarMini: {
+      width: 32,
+      height: 32,
+      borderRadius: 16,
+      backgroundColor: colors.card,
+      borderWidth: 2,
+      borderColor: colors.iconActive,
+      justifyContent: 'center',
+      alignItems: 'center',
+      marginLeft: -10,
+    },
+    ratingText: { color: colors.text, fontSize: 14, fontWeight: '700' },
 
-  section: { padding: spacing.lg },
-  sectionTitle: {
-    fontSize: 24,
-    fontWeight: '900',
-    color: colors.primary,
-    textAlign: 'right',
-    marginBottom: spacing.xs,
-  },
-  sectionSub: {
-    fontSize: 14,
-    color: colors.textSecondary,
-    textAlign: 'right',
-    marginBottom: spacing.lg,
-    lineHeight: 22,
-  },
+    section: { padding: spacing.lg },
+    sectionTitle: {
+      fontSize: 24,
+      fontWeight: '900',
+      color: colors.text,
+      textAlign: 'right',
+      marginBottom: spacing.xs,
+    },
+    sectionSub: {
+      fontSize: 14,
+      color: colors.textSecondary,
+      textAlign: 'right',
+      marginBottom: spacing.lg,
+      lineHeight: 22,
+    },
 
-  featureCard: {
-    flexDirection: 'row-reverse',
-    alignItems: 'center',
-    gap: spacing.md,
-    backgroundColor: colors.white,
-    padding: spacing.md,
-    borderRadius: radius.lg,
-    borderWidth: 1,
-    borderColor: colors.goldBorder,
-    marginBottom: spacing.md,
-    ...shadow.card,
-  },
-  featureIcon: {
-    width: 48,
-    height: 48,
-    borderRadius: radius.md,
-    backgroundColor: colors.goldLight,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  featureTitle: {
-    fontSize: 16,
-    fontWeight: '900',
-    color: colors.primary,
-    textAlign: 'right',
-  },
-  featureDesc: {
-    fontSize: 14,
-    color: colors.textSecondary,
-    textAlign: 'right',
-    marginTop: 4,
-    lineHeight: 21,
-  },
+    featureCard: {
+      flexDirection: 'row-reverse',
+      alignItems: 'center',
+      gap: spacing.md,
+      backgroundColor: colors.card,
+      padding: spacing.md,
+      borderRadius: radius.lg,
+      borderWidth: 1,
+      borderColor: colors.border,
+      marginBottom: spacing.md,
+      ...shadow.card,
+    },
+    featureIcon: {
+      width: 48,
+      height: 48,
+      borderRadius: radius.md,
+      backgroundColor: colors.secondaryLight,
+      justifyContent: 'center',
+      alignItems: 'center',
+    },
+    featureTitle: {
+      fontSize: 16,
+      fontWeight: '900',
+      color: colors.text,
+      textAlign: 'right',
+    },
+    featureDesc: {
+      fontSize: 14,
+      color: colors.textSecondary,
+      textAlign: 'right',
+      marginTop: 4,
+      lineHeight: 21,
+    },
 
-  servicesHeader: {
-    flexDirection: 'row-reverse',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-  },
-  linkText: { color: colors.gold, fontWeight: '700', fontSize: 14 },
-  detailsBtn: {
-    flexDirection: 'row-reverse',
-    alignItems: 'center',
-    marginTop: spacing.sm,
-    gap: 4,
-  },
-  detailsText: { color: colors.gold, fontWeight: '700', fontSize: 14 },
+    servicesHeader: {
+      flexDirection: 'row-reverse',
+      justifyContent: 'space-between',
+      alignItems: 'center',
+    },
+    linkText: { color: colors.link, fontWeight: '700', fontSize: 14 },
+    detailsBtn: {
+      flexDirection: 'row-reverse',
+      alignItems: 'center',
+      marginTop: spacing.sm,
+      gap: 4,
+    },
+    detailsText: { color: colors.link, fontWeight: '700', fontSize: 14 },
 
-  serviceCard: {
-    backgroundColor: colors.white,
-    padding: spacing.lg,
-    borderRadius: radius.lg,
-    borderWidth: 1,
-    borderColor: colors.goldBorder,
-    marginBottom: spacing.md,
-  },
-  serviceIconBox: {
-    width: 56,
-    height: 56,
-    borderRadius: radius.md,
-    backgroundColor: colors.bgLight,
-    justifyContent: 'center',
-    alignItems: 'center',
-    marginBottom: spacing.md,
-    alignSelf: 'flex-start',
-  },
-  serviceTitle: {
-    fontSize: 16,
-    fontWeight: '900',
-    color: colors.primary,
-    textAlign: 'right',
-    marginBottom: spacing.xs,
-  },
-  serviceDesc: {
-    fontSize: 14,
-    color: colors.textSecondary,
-    textAlign: 'right',
-    lineHeight: 22,
-  },
+    serviceCard: {
+      backgroundColor: colors.card,
+      padding: spacing.lg,
+      borderRadius: radius.lg,
+      borderWidth: 1,
+      borderColor: colors.border,
+      marginBottom: spacing.md,
+    },
+    serviceIconBox: {
+      width: 56,
+      height: 56,
+      borderRadius: radius.md,
+      backgroundColor: colors.cardAlt,
+      justifyContent: 'center',
+      alignItems: 'center',
+      marginBottom: spacing.md,
+      alignSelf: 'flex-start',
+    },
+    serviceTitle: {
+      fontSize: 16,
+      fontWeight: '900',
+      color: colors.text,
+      textAlign: 'right',
+      marginBottom: spacing.xs,
+    },
+    serviceDesc: {
+      fontSize: 14,
+      color: colors.textSecondary,
+      textAlign: 'right',
+      lineHeight: 22,
+    },
 
-  testimonialCard: {
-    backgroundColor: colors.bgGray,
-    padding: spacing.lg,
-    borderRadius: radius.lg,
-    borderWidth: 1,
-    borderColor: colors.goldBorder,
-    marginBottom: spacing.md,
-  },
-  testimonialHeader: {
-    flexDirection: 'row-reverse',
-    alignItems: 'center',
-    gap: spacing.md,
-    marginBottom: spacing.sm,
-  },
-  testimonialName: { fontSize: 16, fontWeight: '900', color: colors.primary },
-  testimonialText: {
-    fontSize: 14,
-    color: colors.textSecondary,
-    lineHeight: 21,
-    textAlign: 'right',
-    fontStyle: 'italic',
-  },
+    testimonialCard: {
+      backgroundColor: colors.cardAlt,
+      padding: spacing.lg,
+      borderRadius: radius.lg,
+      borderWidth: 1,
+      borderColor: colors.border,
+      marginBottom: spacing.md,
+    },
+    testimonialHeader: {
+      flexDirection: 'row-reverse',
+      alignItems: 'center',
+      gap: spacing.md,
+      marginBottom: spacing.sm,
+    },
+    testimonialName: { fontSize: 16, fontWeight: '900', color: colors.text },
+    testimonialText: {
+      fontSize: 14,
+      color: colors.textSecondary,
+      lineHeight: 21,
+      textAlign: 'right',
+      fontStyle: 'italic',
+    },
 
-  cta: {
-    margin: spacing.lg,
-    padding: spacing.xl,
-    backgroundColor: colors.primary,
-    borderRadius: radius.xl,
-    borderWidth: 2,
-    borderColor: colors.goldBorder,
-    alignItems: 'center',
-  },
-  ctaTitle: {
-    fontSize: 22,
-    fontWeight: '900',
-    color: colors.white,
-    textAlign: 'center',
-    lineHeight: 29,
-  },
-  ctaSub: {
-    fontSize: 14,
-    color: colors.textLight,
-    textAlign: 'center',
-    marginVertical: spacing.sm,
-    lineHeight: 21,
-  },
-  ctaBtns: {
-    flexDirection: 'row',
-    gap: spacing.sm,
-    marginTop: spacing.md,
-    flexWrap: 'wrap',
-    justifyContent: 'center',
-  },
-  ctaBtn: {
-    backgroundColor: colors.gold,
-    paddingHorizontal: spacing.xl,
-    paddingVertical: spacing.md,
-    borderRadius: radius.md,
-  },
-  ctaBtnText: { color: colors.primary, fontWeight: '900', fontSize: 16 },
-  ctaBtnSecondary: {
-    flexDirection: 'row-reverse',
-    alignItems: 'center',
-    backgroundColor: 'transparent',
-    borderWidth: 1,
-    borderColor: colors.white,
-    paddingHorizontal: spacing.xl,
-    paddingVertical: spacing.md,
-    borderRadius: radius.md,
-    gap: spacing.sm,
-  },
-  ctaBtnSecondaryText: { color: colors.white, fontWeight: '700', fontSize: 16 },
-  
-  logoutBtn: {
-    flexDirection: 'row-reverse',
-    alignItems: 'center',
-    justifyContent: 'center',
-    backgroundColor: colors.danger,
-    margin: spacing.lg,
-    padding: spacing.md,
-    borderRadius: radius.md,
-    gap: spacing.sm,
-  },
-  logoutText: { color: colors.white, fontWeight: '700', fontSize: 16 }
-});
+    cta: {
+      margin: spacing.lg,
+      padding: spacing.xl,
+      backgroundColor: colors.primary,
+      borderRadius: radius.xl,
+      borderWidth: 2,
+      borderColor: colors.onPrimary + '40',
+      alignItems: 'center',
+    },
+    ctaTitle: {
+      fontSize: 22,
+      fontWeight: '900',
+      color: colors.onPrimary,
+      textAlign: 'center',
+      lineHeight: 29,
+    },
+    ctaSub: {
+      fontSize: 14,
+      color: colors.onPrimary,
+      opacity: 0.8,
+      textAlign: 'center',
+      marginVertical: spacing.sm,
+      lineHeight: 21,
+    },
+    ctaBtns: {
+      flexDirection: 'row',
+      gap: spacing.sm,
+      marginTop: spacing.md,
+      flexWrap: 'wrap',
+      justifyContent: 'center',
+    },
+    ctaBtn: {
+      backgroundColor: colors.onPrimary,
+      paddingHorizontal: spacing.xl,
+      paddingVertical: spacing.md,
+      borderRadius: radius.md,
+    },
+    ctaBtnText: { color: colors.primary, fontWeight: '900', fontSize: 16 },
+    ctaBtnSecondary: {
+      flexDirection: 'row-reverse',
+      alignItems: 'center',
+      backgroundColor: 'transparent',
+      borderWidth: 1,
+      borderColor: colors.onPrimary,
+      paddingHorizontal: spacing.xl,
+      paddingVertical: spacing.md,
+      borderRadius: radius.md,
+      gap: spacing.sm,
+    },
+    ctaBtnSecondaryText: { color: colors.onPrimary, fontWeight: '700', fontSize: 16 },
+
+    logoutBtn: {
+      flexDirection: 'row-reverse',
+      alignItems: 'center',
+      justifyContent: 'center',
+      backgroundColor: colors.error,
+      margin: spacing.lg,
+      padding: spacing.md,
+      borderRadius: radius.md,
+      gap: spacing.sm,
+    },
+    logoutText: { color: '#FFFFFF', fontWeight: '700', fontSize: 16 },
+  });

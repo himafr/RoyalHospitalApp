@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import {
   Image,
   RefreshControl,
@@ -9,17 +9,20 @@ import {
 } from 'react-native';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import SmallIndicator from '../../components/SmallIndicator';
+import SmoothScrollView from '../../components/SmoothScrollView';
 import { useAuth } from '../../context/AuthContext';
+import { useTheme } from '../../context/ModeContext';
 import useUser from '../../hooks/useUser';
-import { colors, radius, shadow, spacing } from '../../theme';
-import usePatient from './usePatient';
-import PersonalDetailsForm from './PersonalDetailsForm';
-import EmergencyContactForm from './EmergencyContactForm';
+import { lightMode, radius, shadow, spacing } from '../../theme';
 import BloodTypeForm from './BloodTypeForm';
 import ChangePasswordForm from './ChangePasswordForm';
-import SmoothScrollView from '../../components/SmoothScrollView';
+import EmergencyContactForm from './EmergencyContactForm';
+import PersonalDetailsForm from './PersonalDetailsForm';
+import usePatient from './usePatient';
 
 export default function PatientProfileScreen({ navigation }: any) {
+  const { colors } = useTheme();
+const styles = useMemo(() => getStyles(colors), [colors]);
   const { email, fullName, photoUrl } = useAuth();
   const { data: user, loading, refetch } = useUser();
   const {
@@ -31,12 +34,13 @@ export default function PatientProfileScreen({ navigation }: any) {
 
   return (
     <>
+    <View style={styles.appHeader}>
       <View style={styles.welcomeHeader}>
         <View style={styles.avatar}>
           {photoUrl ? (
             <Image source={{ uri: photoUrl }} style={styles.avatarImage} />
           ) : (
-            <Ionicons name="person" size={40} color={colors.gold} />
+            <Ionicons name="person" size={40} color={colors.primary} />
           )}
         </View>
         <View style={styles.flexAlignmentItem}>
@@ -46,6 +50,7 @@ export default function PatientProfileScreen({ navigation }: any) {
           <Text style={styles.welcomeSub}>مريض ذهبي</Text>
         </View>
       </View>
+    </View>
 
       <SmoothScrollView
         style={styles.root}
@@ -71,7 +76,7 @@ export default function PatientProfileScreen({ navigation }: any) {
                 })
               }
             >
-              <Ionicons name="pencil" size={20} color={colors.gold} />
+              <Ionicons name="pencil" size={20} color={colors.primary} />
             </TouchableOpacity>
           </View>
           <View style={styles.infoGrid}>
@@ -118,7 +123,7 @@ export default function PatientProfileScreen({ navigation }: any) {
           <View style={styles.cardHeader}>
             <Text style={styles.cardTitle}>مواعيدي القادمة والسابقة</Text>
             <TouchableOpacity>
-              <Ionicons name="eye" size={20} color={colors.gold} />
+              <Ionicons name="eye" size={20} color={colors.primary} />
             </TouchableOpacity>
           </View>
           <View style={styles.emptyBox}>
@@ -143,7 +148,7 @@ export default function PatientProfileScreen({ navigation }: any) {
                 })
               }
             >
-              <Ionicons name="pencil" size={20} color={colors.gold} />
+              <Ionicons name="pencil" size={20} color={colors.primary} />
             </TouchableOpacity>
           </View>
           <View style={styles.cardBody}>
@@ -212,7 +217,7 @@ export default function PatientProfileScreen({ navigation }: any) {
                 })
               }
             >
-              <Ionicons name="pencil" size={20} color={colors.gold} />
+              <Ionicons name="pencil" size={20} color={colors.primary} />
             </TouchableOpacity>
           </View>
           <View style={styles.cardBody}>
@@ -263,7 +268,7 @@ export default function PatientProfileScreen({ navigation }: any) {
                 });
               }}
             >
-              <Ionicons name="lock-closed" size={20} color={colors.gold} />
+              <Ionicons name="lock-closed" size={20} color={colors.primary} />
               <Text style={styles.actionText}>تحديث كلمة المرور</Text>
             </TouchableOpacity>
           </View>
@@ -275,119 +280,128 @@ export default function PatientProfileScreen({ navigation }: any) {
   );
 }
 
-const styles = StyleSheet.create({
-  root: { flex: 1, backgroundColor: colors.bgLight, padding: spacing.md },
+const getStyles = (colors: typeof lightMode) =>
+  StyleSheet.create({
+    appHeader:{backgroundColor:colors.background},
+    root: { flex: 1, backgroundColor: colors.background, padding: spacing.md },
 
-  welcomeHeader: {
-    flexDirection: 'row-reverse',
-    alignItems: 'center',
-    backgroundColor: colors.primary,
-    marginTop: spacing.md,
-    padding: spacing.lg,
-    borderRadius: radius.xl,
-    gap: spacing.md,
-    marginHorizontal: spacing.md,
-  },
-  avatar: {
-    width: 70,
-    height: 70,
-    borderRadius: 35,
-    backgroundColor: colors.white,
-    justifyContent: 'center',
-    alignItems: 'center',
-    borderWidth: 3,
-    borderColor: colors.gold,
-    overflow: 'hidden',
-  },
-  avatarImage: { width: '100%', height: '100%' },
-  welcomeTitle: { fontSize: 20, fontWeight: '900', color: colors.white },
-  welcomeSub: { fontSize: 14, color: colors.gold, fontWeight: '700' },
+    welcomeHeader: {
+      flexDirection: 'row-reverse',
+      alignItems: 'center',
+      backgroundColor: colors.primary,
+      marginTop: spacing.md,
+      padding: spacing.lg,
+      borderRadius: radius.xl,
+      gap: spacing.md,
+      marginHorizontal: spacing.md,
+    },
+    avatar: {
+      width: 70,
+      height: 70,
+      borderRadius: 35,
+      backgroundColor: colors.primaryLight,
+      justifyContent: 'center',
+      alignItems: 'center',
+      borderWidth: 3,
+      borderColor: colors.onPrimary,
+      overflow: 'hidden',
+    },
+    avatarImage: { width: '100%', height: '100%' },
+    welcomeTitle: { fontSize: 20, fontWeight: '900', color: colors.onPrimary },
+    welcomeSub: {
+      fontSize: 14,
+      color: colors.onPrimary,
+      opacity: 0.8,
+      fontWeight: '700',
+    },
 
-  card: {
-    backgroundColor: colors.white,
-    borderRadius: radius.lg,
-    marginBottom: spacing.md,
-    ...shadow.card,
-    overflow: 'hidden',
-  },
-  flexAlignmentItem: { flex: 1, alignItems: 'flex-end' },
-  cardHeader: {
-    flexDirection: 'row-reverse',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    padding: spacing.md,
-    backgroundColor: colors.white,
-    borderBottomWidth: 1,
-    borderBottomColor: colors.borderLight,
-  },
+    card: {
+      backgroundColor: colors.card,
+      borderRadius: radius.lg,
+      marginBottom: spacing.md,
+      borderWidth: 1,
+      borderColor: colors.border,
+      ...shadow.card,
+      overflow: 'hidden',
+    },
+    flexAlignmentItem: { flex: 1, alignItems: 'flex-end' },
+    cardHeader: {
+      flexDirection: 'row-reverse',
+      justifyContent: 'space-between',
+      alignItems: 'center',
+      padding: spacing.md,
+      backgroundColor: colors.cardAlt,
+      borderBottomWidth: 1,
+      borderBottomColor: colors.border,
+    },
 
-  cardTitle: { fontSize: 16, fontWeight: '900', color: colors.primary },
-  cardBody: { padding: spacing.md },
+    cardTitle: { fontSize: 16, fontWeight: '900', color: colors.text },
+    cardBody: { padding: spacing.md },
 
-  infoGrid: {
-    padding: spacing.md,
-    flexDirection: 'row-reverse',
-    flexWrap: 'wrap',
-    justifyContent: 'space-between',
-  },
-  infoItem: { width: '48%', marginBottom: spacing.md },
-  infoLabel: {
-    fontSize: 12,
-    color: colors.textMuted,
-    textAlign: 'right',
-    marginBottom: 4,
-  },
-  infoValue: {
-    fontSize: 14,
-    color: colors.primary,
-    fontWeight: '700',
-    textAlign: 'right',
-  },
+    infoGrid: {
+      padding: spacing.md,
+      flexDirection: 'row-reverse',
+      flexWrap: 'wrap',
+      justifyContent: 'space-between',
+    },
+    infoItem: { width: '48%', marginBottom: spacing.md },
+    infoLabel: {
+      fontSize: 12,
+      color: colors.textMuted,
+      textAlign: 'right',
+      marginBottom: 4,
+    },
+    infoValue: {
+      fontSize: 14,
+      color: colors.text,
+      fontWeight: '700',
+      textAlign: 'right',
+    },
 
-  rowBetween: {
-    flexDirection: 'row-reverse',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    marginBottom: spacing.sm,
-    borderBottomWidth: 1,
-    borderBottomColor: colors.borderLight,
-    paddingBottom: 8,
-  },
-  badgeGreen: {
-    backgroundColor: colors.success + '20',
-    paddingHorizontal: spacing.sm,
-    paddingVertical: 2,
-    borderRadius: radius.sm,
-  },
-  badgeGreenText: { color: '#0a7c2b', fontWeight: '700', fontSize: 12 },
+    rowBetween: {
+      flexDirection: 'row-reverse',
+      justifyContent: 'space-between',
+      alignItems: 'center',
+      marginBottom: spacing.sm,
+      borderBottomWidth: 1,
+      borderBottomColor: colors.divider,
+      paddingBottom: 8,
+    },
+    badgeGreen: {
+      backgroundColor: colors.success + '20',
+      paddingHorizontal: spacing.sm,
+      paddingVertical: 2,
+      borderRadius: radius.sm,
+    },
+    badgeGreenText: { color: colors.success, fontWeight: '700', fontSize: 12 },
 
-  warningBox: {
-    backgroundColor: colors.goldLight,
-    padding: spacing.sm,
-    borderRadius: radius.md,
-    borderWidth: 1,
-    borderColor: colors.goldBorder,
-    marginTop: spacing.sm,
-  },
-  warningText: {
-    fontSize: 12,
-    color: colors.primary,
-    textAlign: 'right',
-    fontWeight: '700',
-  },
+    warningBox: {
+      backgroundColor: colors.warning + '20',
+      padding: spacing.sm,
+      borderRadius: radius.md,
+      borderWidth: 1,
+      borderColor: colors.warning + '60',
+      marginTop: spacing.sm,
+    },
+    warningText: {
+      fontSize: 12,
+      color: colors.warning,
+      textAlign: 'right',
+      fontWeight: '700',
+    },
 
-  emptyBox: { padding: spacing.lg, alignItems: 'center' },
-  emptyText: { color: colors.textMuted, fontSize: 14 },
+    emptyBox: { padding: spacing.lg, alignItems: 'center' },
+    emptyText: { color: colors.textMuted, fontSize: 14 },
 
-  actionButton: {
-    flexDirection: 'row-reverse',
-    alignItems: 'center',
-    justifyContent: 'center',
-    backgroundColor: colors.bgGray,
-    padding: spacing.md,
-    borderRadius: radius.md,
-    gap: spacing.sm,
-  },
-  actionText: { color: colors.primary, fontWeight: '700', fontSize: 16 },
-  bottomHeight: { height: 120 },
-});
+    actionButton: {
+      flexDirection: 'row-reverse',
+      alignItems: 'center',
+      justifyContent: 'center',
+      backgroundColor: colors.cardAlt,
+      padding: spacing.md,
+      borderRadius: radius.md,
+      gap: spacing.sm,
+    },
+    actionText: { color: colors.text, fontWeight: '700', fontSize: 16 },
+    bottomHeight: { height: 120 },
+  });

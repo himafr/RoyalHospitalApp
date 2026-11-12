@@ -1,6 +1,7 @@
 import { useNavigation } from '@react-navigation/native';
 import React, { useMemo, useState } from 'react';
 import {
+  Image,
   Modal,
   StyleSheet,
   Text,
@@ -20,14 +21,14 @@ export default function AppHeader({
   title?: string;
 }) {
   const insets = useSafeAreaInsets();
-  const {colors}=useTheme()
+  const { colors } = useTheme();
   const { fullName, email, photoUrl, signOut } = useAuth();
-  const navigation =useNavigation()
+  const navigation = useNavigation();
   const [menuVisible, setMenuVisible] = useState(false);
   const [isAvailable, setIsAvailable] = useState(true);
-  const styles=useMemo(()=>getStyles(colors),[colors])
+  const styles = useMemo(() => getStyles(colors), [colors]);
 
-  const userInitial = (fullName || email || 'U').charAt(0).toUpperCase();
+  const userInitial = (fullName || email || 'U').trim().charAt(0).toUpperCase();
   return (
     <View style={[styles.headerContainer, { paddingTop: insets.top }]}>
       <View style={styles.rightSection}>
@@ -40,13 +41,13 @@ export default function AppHeader({
             size={18}
             color={colors.primary}
           />
-          <View style={styles.avatar}>
-            {photoUrl ? (
+          {photoUrl ? (
+            <Image source={{ uri: photoUrl }} style={styles.avatar} />
+          ) : (
+            <View style={styles.avatar}>
               <Text style={styles.avatarText}>{userInitial}</Text>
-            ) : (
-              <Ionicons name="person" size={22} color={colors.navIcon} />
-            )}
-          </View>
+            </View>
+          )}
         </TouchableOpacity>
       </View>
       <View>
@@ -85,16 +86,31 @@ export default function AppHeader({
         <TouchableWithoutFeedback onPress={() => setMenuVisible(false)}>
           <View style={styles.modalOverlay}>
             <View style={styles.dropdown}>
+              <TouchableOpacity
+                style={styles.menuItem}
+                onPress={() => {
+                  setMenuVisible(false);
+                  navigation.navigate('Settings');
+                }}
+              >
+                <Ionicons name="cog" size={24} color={colors.primary} />
+                <Text style={styles.menuItemText}> الاعدادات</Text>
+              </TouchableOpacity>
 
+              <View style={styles.divider} />
 
               <TouchableOpacity
                 style={styles.menuItem}
                 onPress={() => {
-                  setMenuVisible(false); 
-                  navigation.navigate('Profile')
+                  setMenuVisible(false);
+                  navigation.navigate('Profile');
                 }}
               >
-                <Ionicons name="person-circle" size={24} color={colors.primary} />
+                <Ionicons
+                  name="person-circle"
+                  size={24}
+                  color={colors.primary}
+                />
                 <Text style={styles.menuItemText}>الملف الشخصي</Text>
               </TouchableOpacity>
 
@@ -135,7 +151,7 @@ const getStyles = (colors: typeof lightMode) =>
       borderBottomWidth: 1,
       borderBottomColor: colors.tabBarBorder,
     },
- 
+
     statusBtn: {
       flexDirection: 'row-reverse',
       alignItems: 'center',
@@ -151,7 +167,7 @@ const getStyles = (colors: typeof lightMode) =>
     dotGreen: { backgroundColor: colors.success },
     dotRed: { backgroundColor: colors.error },
     statusText: { fontSize: 12, fontWeight: '700', color: colors.navText },
- 
+
     rightSection: {
       flexDirection: 'row-reverse',
       alignItems: 'center',
@@ -177,11 +193,11 @@ const getStyles = (colors: typeof lightMode) =>
       borderColor: colors.navIcon,
     },
     avatarText: {
-      color: colors.navIcon,
+      color: colors.primary,
       fontWeight: '900',
       fontSize: 18,
     },
- 
+
     // زرار القائمة
     menuBtn: {
       padding: spacing.xs,
@@ -189,13 +205,13 @@ const getStyles = (colors: typeof lightMode) =>
       flexDirection: 'row-reverse',
       alignItems: 'center',
     },
- 
+
     title: {
       fontSize: 18,
       fontWeight: '900',
       color: colors.navText,
     },
- 
+
     modalOverlay: {
       flex: 1,
       backgroundColor: colors.overlay,
@@ -231,4 +247,3 @@ const getStyles = (colors: typeof lightMode) =>
       marginVertical: spacing.xs,
     },
   });
- 

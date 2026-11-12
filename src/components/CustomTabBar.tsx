@@ -1,17 +1,17 @@
+import { BottomTabBarProps } from '@react-navigation/bottom-tabs';
+import React, { useEffect } from 'react';
 import {
   Animated,
-  View,
+  Platform,
+  StyleSheet,
   Text,
   TouchableOpacity,
-  StyleSheet,
-  Platform,
+  View,
 } from 'react-native';
-import React, { useEffect } from 'react';
-import { BottomTabBarProps } from '@react-navigation/bottom-tabs';
-import Ionicons from 'react-native-vector-icons/Ionicons';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import {  lightMode, spacing } from '../theme';
+import Ionicons from 'react-native-vector-icons/Ionicons';
 import { useTheme } from '../context/ModeContext';
+import { lightMode, spacing } from '../theme';
 
 function AnimatedTabIcon({
   name,
@@ -125,85 +125,6 @@ export default function CustomTabBar({
     </View>
   );
 }
-
-// const getStyle =(colors:any)=> StyleSheet.create({
-//   container: {
-//     paddingHorizontal: 16,
-//     paddingBottom: Platform.OS === 'ios' ? 20 : 12,
-//   },
-//   bg: {
-//     // height:80,
-//     backgroundColor: colors.primary,
-//     borderRadius:15 ,
-//     // borderTopEndRadius: 25,
-//     // borderTopStartRadius: 25,
-//     paddingTop: 5,
-//     paddingHorizontal: spacing.sm,
-//     position: 'relative',
-//     overflow: 'visible',
-//     shadowColor: '#000',
-//     shadowOffset: { width: 0, height: -4 },
-//     shadowOpacity: 0.1,
-//     shadowRadius: 8,
-//     elevation: 15,
-//   },
-//   // curvedCutout: {
-//   //   position: 'absolute',
-//   //   top: -35,
-//   //   left: width / 2 - 50,
-//   //   width: 100,
-//   //   height: 100,
-//   //   borderRadius: 50,
-//   //   backgroundColor: colors.white,
-//   //   zIndex: -1,
-//   // },
-//   tabsRow: {
-//     flexDirection: 'row-reverse',
-//     justifyContent: 'space-between',
-//     alignItems: 'center',
-//   },
-//   tabItem: {
-//     flex: 1,
-//     alignItems: 'center',
-//     justifyContent: 'center',
-//     paddingTop: 8,
-//     paddingBottom: 8,
-//     gap: 4,
-//     borderRadius: 100,
-//   },
-//   label: {
-//     fontSize: 10,
-//     fontWeight: '600',
-//     color: colors.textLight,
-//     marginTop: 2,
-//   },
-//   labelActive: {
-//     color: colors.textSecondary,
-//     fontWeight: '900',
-//   },
-//   centerButtonWrapper: {
-//     width: 50,
-//     alignItems: 'center',
-//     justifyContent: 'flex-end',
-//   },
-//   centerButton: {
-//     position: 'absolute',
-//     width: 64,
-//     height: 64,
-//     borderRadius: 32,
-//     backgroundColor: colors.gold,
-//     justifyContent: 'center',
-//     alignItems: 'center',
-//     borderWidth: 5,
-//     borderColor: colors.primary,
-//     shadowColor: '#000',
-//     shadowOffset: { width: 0, height: 4 },
-//     shadowOpacity: 0.3,
-//     shadowRadius: 6,
-//     elevation: 8,
-//     zIndex: 20,
-//   },
-// });
 
 const getStyles = (colors: typeof lightMode) =>
   StyleSheet.create({

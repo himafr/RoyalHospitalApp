@@ -1,9 +1,10 @@
 import { ActivityIndicator } from "react-native"
-import { colors } from "../theme"
+import { useTheme } from "../context/ModeContext"
 
 const SmallIndicator : React.FC =()=> {
+    const {colors}=useTheme()
     return (
-       <ActivityIndicator color={colors.gold} size="small" />
+       <ActivityIndicator color={colors.primary} size="small" />
     )
 }
 

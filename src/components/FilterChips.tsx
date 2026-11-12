@@ -1,7 +1,8 @@
-import React from 'react';
-import { TouchableOpacity, Text, StyleSheet } from 'react-native';
+import React, { useMemo } from 'react';
+import { StyleSheet, Text, TouchableOpacity } from 'react-native';
 import { SPECIALTIES } from '../constants';
-import { colors, spacing, radius } from '../theme';
+import { useTheme } from '../context/ModeContext';
+import { lightMode, radius, spacing } from '../theme';
 import SmoothScrollView from './SmoothScrollView';
 
 interface Props {
@@ -10,6 +11,8 @@ interface Props {
 }
 
 export default function FilterChips({ selected, onSelect }: Props) {
+  const { colors } = useTheme();
+const styles = useMemo(() => getStyles(colors), [colors]);
   return (
     <SmoothScrollView
       horizontal
@@ -40,29 +43,28 @@ export default function FilterChips({ selected, onSelect }: Props) {
     </SmoothScrollView>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    paddingHorizontal: spacing.md,
-    paddingVertical: spacing.sm,
-    gap: spacing.sm,
-    flexDirection: 'row',
-    height:50
-    
-  },
-  chip: {
-    paddingHorizontal: spacing.md,
-    paddingVertical: spacing.xs,
-    borderRadius: radius.pill,
-    borderWidth: 1,
-    borderColor: colors.goldBorder,
-    backgroundColor: colors.white,
-    marginRight: spacing.sm,
-    minWidth: 80,
-    height:30,
-    alignItems: 'center',
-  },
-  chipActive: { backgroundColor: colors.primary, borderColor: colors.primary },
-  text: { color: colors.primary, fontWeight: '700', fontSize: 13 },
-  textActive: { color: colors.gold },
-});
+const getStyles = (colors: typeof lightMode) =>
+  StyleSheet.create({
+    container: {
+      paddingHorizontal: spacing.md,
+      paddingVertical: spacing.sm,
+      gap: spacing.sm,
+      flexDirection: 'row',
+      height: 50,
+    },
+    chip: {
+      paddingHorizontal: spacing.md,
+      paddingVertical: spacing.xs,
+      borderRadius: radius.pill,
+      borderWidth: 1,
+      borderColor: colors.border,
+      backgroundColor: colors.card,
+      marginRight: spacing.sm,
+      minWidth: 80,
+      height: 30,
+      alignItems: 'center',
+    },
+    chipActive: { backgroundColor: colors.primary, borderColor: colors.primary },
+    text: { color: colors.text, fontWeight: '700', fontSize: 13 },
+    textActive: { color: colors.onPrimary },
+  });

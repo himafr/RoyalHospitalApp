@@ -1,9 +1,11 @@
 import { Text, TouchableOpacity, View } from "react-native"
 import Ionicons from "react-native-vector-icons/Ionicons"
 
-import { colors, radius, spacing } from "../theme"
+import { useTheme } from "../context/ModeContext"
+import { radius, spacing } from "../theme"
 
 const VerifyMessage : React.FC<{isVerified:boolean,navigation:any}> =({isVerified,navigation})=> {
+  const {colors}=useTheme()
     return (
         <View>
             {!isVerified && (
@@ -13,7 +15,7 @@ const VerifyMessage : React.FC<{isVerified:boolean,navigation:any}> =({isVerifie
     flexDirection: 'row-reverse',
     alignItems: 'center',
     justifyContent: 'center',
-    backgroundColor: colors.bg,
+    backgroundColor: colors.backgroundAlt,
     
     paddingVertical: spacing.sm,
     paddingHorizontal: spacing.md,
@@ -27,9 +29,9 @@ const VerifyMessage : React.FC<{isVerified:boolean,navigation:any}> =({isVerifie
   }}
       onPress={() => navigation.navigate('Activate')}
     >
-      <Ionicons name="alert-circle" size={18} color={colors.white} />
+      <Ionicons name="alert-circle" size={18} color={colors.error} />
       <Text style={{
-    color: colors.white,
+    color: colors.text,
     fontSize: 14,
     fontWeight: '900',
   }}>اضغط هنا لتوثيق الحساب</Text>

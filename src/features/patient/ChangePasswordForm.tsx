@@ -1,19 +1,22 @@
-import React, { useState } from 'react';
+import React, { useMemo, useState } from 'react';
 import {
-  View,
-  Text,
-  StyleSheet,
-  TouchableOpacity,
-  Alert,
   ActivityIndicator,
+  Alert,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
 } from 'react-native';
-import { useAuth } from '../../context/AuthContext';
-import useUser from '../../hooks/useUser';
-import { colors, radius, spacing } from '../../theme';
 import PasswordInput from '../../components/PasswordInput';
+import { useAuth } from '../../context/AuthContext';
+import { useTheme } from '../../context/ModeContext';
+import useUser from '../../hooks/useUser';
+import { lightMode, radius, spacing } from '../../theme';
 import { getErrorMessage, showErrorToast } from '../../utils/toast';
 
 export default function ChangePasswordForm({ navigation }: any) {
+  const { colors } = useTheme();
+const styles = useMemo(() => getStyles(colors), [colors]);
   const { signOut } = useAuth();
   const { passwordUpdate, loading } = useUser();
 
@@ -88,7 +91,7 @@ export default function ChangePasswordForm({ navigation }: any) {
         disabled={loading}
       >
         {loading ? (
-          <ActivityIndicator color={colors.gold} />
+          <ActivityIndicator color={colors.primary} />
         ) : (
           <Text style={styles.saveBtnText}>تحديث كلمة المرور</Text>
         )}
@@ -97,29 +100,36 @@ export default function ChangePasswordForm({ navigation }: any) {
   );
 }
 
-const styles = StyleSheet.create({
-  label: {
-    fontSize: 14,
-    color: colors.primary,
-    fontWeight: '700',
-    marginBottom: spacing.xs,
-    textAlign: 'right',
-  },
-  input: {
-    borderWidth: 1,
-    borderColor: colors.border,
-    borderRadius: radius.md,
-    padding: spacing.md,
-    marginBottom: spacing.md,
-    textAlign: 'right',
-  },
-  saveBtn: {
-    backgroundColor: colors.primary,
-    padding: spacing.md,
-    borderRadius: radius.md,
-    alignItems: 'center',
-    justifyContent: 'center',
-    minHeight: 52,
-  },
-  saveBtnText: { color: colors.gold, fontWeight: '900', fontSize: 16 },
-});
+const getStyles = (colors: typeof lightMode) =>
+  StyleSheet.create({
+    label: {
+      fontSize: 14,
+      color: colors.text,
+      fontWeight: '700',
+      marginBottom: spacing.xs,
+      textAlign: 'right',
+    },
+    input: {
+      borderWidth: 1,
+      borderColor: colors.inputBorder,
+      backgroundColor: colors.inputBackground,
+      color: colors.text,
+      borderRadius: radius.md,
+      padding: spacing.md,
+      marginBottom: spacing.md,
+      textAlign: 'right',
+    },
+    saveBtn: {
+      backgroundColor: colors.buttonPrimary,
+      padding: spacing.md,
+      borderRadius: radius.md,
+      alignItems: 'center',
+      justifyContent: 'center',
+      minHeight: 52,
+    },
+    saveBtnText: {
+      color: colors.buttonPrimaryText,
+      fontWeight: '900',
+      fontSize: 16,
+    },
+  });

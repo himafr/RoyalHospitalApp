@@ -1,7 +1,8 @@
-import React, { useState } from 'react';
-import { View, TextInput, Text, TouchableOpacity, StyleSheet, TextInputProps } from 'react-native';
+import React, { useMemo, useState } from 'react';
+import { StyleSheet, Text, TextInput, TextInputProps, TouchableOpacity, View } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
-import { colors, spacing, radius } from '../theme';
+import { useTheme } from '../context/ModeContext';
+import { lightMode, radius, spacing } from '../theme';
 
 interface Props extends TextInputProps {
   label: string;
@@ -12,6 +13,8 @@ interface Props extends TextInputProps {
 }
 
 export default function InputField({ label, value, onChangeText, icon, error, secureTextEntry, ...rest }: Props) {
+   const { colors } = useTheme();
+  const styles = useMemo(() => getStyles(colors), [colors]);
   const [focused, setFocused] = useState(false);
   const [show, setShow] = useState(!secureTextEntry);
 
@@ -44,17 +47,18 @@ export default function InputField({ label, value, onChangeText, icon, error, se
   );
 }
 
-const styles = StyleSheet.create({
-  container: { marginBottom: spacing.md, width: '100%' },
-  label: { fontSize: 12, color: colors.textMuted, letterSpacing: 0.6, marginBottom: spacing.xs },
-  inputWrap: {
-    flexDirection: 'row', alignItems: 'center', borderWidth: 1,
-    borderColor: colors.border, borderRadius: radius.md, backgroundColor: colors.white,
-    paddingHorizontal: spacing.md, height: 52,
-  },
-  focused: { borderColor: colors.gold },
-  errorBorder: { borderColor: colors.danger },
-  input: { flex: 1, fontSize: 16, color: colors.textPrimary, textAlign: 'right', paddingVertical: 0 },
-  icon: { paddingHorizontal: spacing.sm },
-  errorText: { color: colors.danger, fontSize: 12, marginTop: spacing.xs, textAlign: 'right' },
-});
+const getStyles = (colors: typeof lightMode) =>
+  StyleSheet.create({
+    container: { marginBottom: spacing.md, width: '100%' },
+    label: { fontSize: 12, color: colors.textMuted, letterSpacing: 0.6, marginBottom: spacing.xs },
+    inputWrap: {
+      flexDirection: 'row', alignItems: 'center', borderWidth: 1,
+      borderColor: colors.inputBorder, borderRadius: radius.md, backgroundColor: colors.inputBackground,
+      paddingHorizontal: spacing.md, height: 52,
+    },
+    focused: { borderColor: colors.inputBorderFocused },
+    errorBorder: { borderColor: colors.error },
+    input: { flex: 1, fontSize: 16, color: colors.text, textAlign: 'right', paddingVertical: 0 },
+    icon: { paddingHorizontal: spacing.sm },
+    errorText: { color: colors.error, fontSize: 12, marginTop: spacing.xs, textAlign: 'right' },
+  });

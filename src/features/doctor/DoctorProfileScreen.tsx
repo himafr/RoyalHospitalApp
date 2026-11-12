@@ -1,22 +1,25 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import {
   Image,
-  View,
-  Text,
-  StyleSheet,
-  TouchableOpacity,
   RefreshControl,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
 } from 'react-native';
 import Ionicons from 'react-native-vector-icons/Ionicons';
-import { useAuth } from '../../context/AuthContext';
-import { colors, spacing, radius, shadow } from '../../theme';
-import useDoctor from './useDoctor';
-import AddCertificationForm from './AddCertificationForm';
-import EditCertificationForm from './EditCertificationForm';
-import EditCareerDetailsForm from './EditCareerDetailsForm';
 import SmoothScrollView from '../../components/SmoothScrollView';
+import { useAuth } from '../../context/AuthContext';
+import { useTheme } from '../../context/ModeContext';
+import { lightMode, radius, shadow, spacing } from '../../theme';
+import AddCertificationForm from './AddCertificationForm';
+import EditCareerDetailsForm from './EditCareerDetailsForm';
+import EditCertificationForm from './EditCertificationForm';
+import useDoctor from './useDoctor';
 
 export default function DoctorProfileScreen({ navigation }: any) {
+  const { colors } = useTheme();
+const styles = useMemo(() => getStyles(colors), [colors]);
   const { email, signOut, photoUrl } = useAuth();
   const { doctor: user, loading, refetch,error } = useDoctor();
 
@@ -37,7 +40,7 @@ export default function DoctorProfileScreen({ navigation }: any) {
           {photoUrl ? (
             <Image source={{ uri: photoUrl }} style={styles.avatarImage} />
           ) : (
-            <Ionicons name="person" size={40} color={colors.gold} />
+            <Ionicons name="person" size={40} color={colors.primary} />
           )}
         </View>
         <View style={{ flex: 1, alignItems: 'flex-end' }}>
@@ -57,7 +60,7 @@ export default function DoctorProfileScreen({ navigation }: any) {
           <Text style={styles.briefLabel}>إجمالي المرضى</Text>
         </View>
         <View style={styles.briefCard}>
-          <Ionicons name="star" size={24} color={colors.gold} />
+          <Ionicons name="star" size={24} color={colors.primary} />
           <Text style={styles.briefValue}>4.9 / 5</Text>
           <Text style={styles.briefLabel}>متوسط التقييم</Text>
         </View>
@@ -101,9 +104,9 @@ export default function DoctorProfileScreen({ navigation }: any) {
               })
           }}
         >
-          <Ionicons name="create" size={20} color={colors.gold} />
+          <Ionicons name="create" size={20} color={colors.primary} />
           <Text style={styles.actionBtnText}>تعديل المعلومات المهنية</Text>
-          <Ionicons name="chevron-back" size={20} color={colors.gold} />
+          <Ionicons name="chevron-back" size={20} color={colors.primary} />
         </TouchableOpacity>
       </View>
 
@@ -124,7 +127,7 @@ export default function DoctorProfileScreen({ navigation }: any) {
               })
             }
           >
-            <Ionicons name="add" size={24} color={colors.gold} />
+            <Ionicons name="add" size={24} color={colors.primary} />
           </TouchableOpacity>
         </View>
         <View style={styles.cardBody}>
@@ -135,7 +138,7 @@ export default function DoctorProfileScreen({ navigation }: any) {
                   <Image source={{ uri: cert.photo }} style={styles.certPhoto} />
                 ) : (
                   <View style={styles.certIcon}>
-                    <Ionicons name="school" size={18} color={colors.gold} />
+                    <Ionicons name="school" size={18} color={colors.primary} />
                   </View>
                 )}
                 <View style={{ flex: 1, alignItems: 'flex-end' }}>
@@ -173,7 +176,7 @@ export default function DoctorProfileScreen({ navigation }: any) {
       </View>
 
       <TouchableOpacity style={styles.logoutBtn} onPress={signOut}>
-        <Ionicons name="log-out-outline" size={20} color={colors.white} />
+        <Ionicons name="log-out-outline" size={20} color={colors.iconSecondary} />
         <Text style={styles.logoutText}>تسجيل الخروج</Text>
       </TouchableOpacity>
 
@@ -182,233 +185,237 @@ export default function DoctorProfileScreen({ navigation }: any) {
   );
 }
 
-const styles = StyleSheet.create({
-  root: { flex: 1, backgroundColor: colors.bgLight },
+const getStyles = (colors: typeof lightMode) =>
+  StyleSheet.create({
+    root: { flex: 1, backgroundColor: colors.background },
 
-  welcomeCard: {
-    flexDirection: 'row-reverse',
-    alignItems: 'center',
-    backgroundColor: colors.primary,
-    padding: spacing.lg,
-    marginBottom: spacing.md,
+    welcomeCard: {
+      flexDirection: 'row-reverse',
+      alignItems: 'center',
+      backgroundColor: colors.primary,
+      padding: spacing.lg,
+      marginBottom: spacing.md,
+      borderBottomLeftRadius: 32,
+      borderBottomRightRadius: 32,
+      gap: spacing.md,
+    },
+    avatar: {
+      width: 70,
+      height: 70,
+      borderRadius: 35,
+      backgroundColor: colors.primaryLight,
+      justifyContent: 'center',
+      alignItems: 'center',
+      borderWidth: 3,
+      borderColor: colors.onPrimary,
+      overflow: 'hidden',
+    },
+    avatarImage: { width: '100%', height: '100%' },
+    welcomeTitle: { fontSize: 20, fontWeight: '900', color: colors.onPrimary },
+    welcomeSub: {
+      fontSize: 13,
+      color: colors.onPrimary,
+      opacity: 0.8,
+      marginTop: 4,
+      textAlign: 'right',
+    },
 
-    borderBottomLeftRadius: 32,
-    borderBottomRightRadius: 32,
-    gap: spacing.md,
-  },
-  avatar: {
-    width: 70,
-    height: 70,
-    borderRadius: 35,
-    backgroundColor: colors.white,
-    justifyContent: 'center',
-    alignItems: 'center',
-    borderWidth: 3,
-    borderColor: colors.gold,
-    overflow: 'hidden',
-  },
-  avatarImage: { width: '100%', height: '100%' },
-  welcomeTitle: { fontSize: 20, fontWeight: '900', color: colors.white },
-  welcomeSub: {
-    fontSize: 13,
-    color: colors.textLight,
-    marginTop: 4,
-    textAlign: 'right',
-  },
+    briefContainer: {
+      flexDirection: 'row-reverse',
+      justifyContent: 'space-between',
+      padding: spacing.lg,
+      marginTop: -20,
+      zIndex: 10,
+    },
+    briefCard: {
+      flex: 1,
+      backgroundColor: colors.card,
+      padding: spacing.md,
+      borderRadius: radius.lg,
+      alignItems: 'center',
+      marginHorizontal: 4,
+      borderWidth: 1,
+      borderColor: colors.border,
+      ...shadow.card,
+    },
+    briefValue: {
+      fontSize: 18,
+      fontWeight: '900',
+      color: colors.text,
+      marginTop: spacing.xs,
+    },
+    briefLabel: { fontSize: 11, color: colors.textMuted, marginTop: 2 },
 
-  briefContainer: {
-    flexDirection: 'row-reverse',
-    justifyContent: 'space-between',
-    padding: spacing.lg,
-    marginTop: -20,
-    zIndex: 10,
-  },
-  briefCard: {
-    flex: 1,
-    backgroundColor: colors.white,
-    padding: spacing.md,
-    borderRadius: radius.lg,
-    alignItems: 'center',
-    marginHorizontal: 4,
-    ...shadow.card,
-  },
-  briefValue: {
-    fontSize: 18,
-    fontWeight: '900',
-    color: colors.primary,
-    marginTop: spacing.xs,
-  },
-  briefLabel: { fontSize: 11, color: colors.textMuted, marginTop: 2 },
+    section: { padding: spacing.lg },
+    sectionHeader: {
+      flexDirection: 'row-reverse',
+      justifyContent: 'space-between',
+      alignItems: 'center',
+      marginBottom: spacing.md,
+    },
+    sectionTitle: {
+      fontSize: 20,
+      fontWeight: '900',
+      color: colors.text,
+      textAlign: 'right',
+    },
+    linkText: { color: colors.link, fontWeight: '700', fontSize: 13 },
 
-  section: { padding: spacing.lg },
-  sectionHeader: {
-    flexDirection: 'row-reverse',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    marginBottom: spacing.md,
-  },
-  sectionTitle: {
-    fontSize: 20,
-    fontWeight: '900',
-    color: colors.primary,
-    textAlign: 'right',
-  },
-  linkText: { color: colors.gold, fontWeight: '700', fontSize: 13 },
+    appointmentCard: {
+      flexDirection: 'row-reverse',
+      alignItems: 'center',
+      backgroundColor: colors.card,
+      padding: spacing.md,
+      borderRadius: radius.md,
+      marginBottom: spacing.sm,
+      borderWidth: 1,
+      borderColor: colors.border,
+    },
+    doctorAvatarMini: {
+      width: 40,
+      height: 40,
+      borderRadius: 20,
+      backgroundColor: colors.secondaryLight,
+      justifyContent: 'center',
+      alignItems: 'center',
+      marginLeft: spacing.md,
+    },
+    avatarText: { color: colors.text, fontWeight: '700', fontSize: 12 },
+    patientName: {
+      fontSize: 16,
+      fontWeight: '700',
+      color: colors.text,
+      textAlign: 'right',
+    },
+    appointmentTime: {
+      fontSize: 12,
+      color: colors.textMuted,
+      textAlign: 'right',
+    },
+    badgeGreen: {
+      backgroundColor: colors.success + '20',
+      paddingHorizontal: spacing.sm,
+      paddingVertical: 4,
+      borderRadius: radius.pill,
+      borderWidth: 1,
+      borderColor: colors.success + '40',
+    },
+    badgeText: { color: colors.success, fontSize: 12, fontWeight: '700' },
+    badgeGray: {
+      backgroundColor: colors.cardAlt,
+      paddingHorizontal: spacing.sm,
+      paddingVertical: 4,
+      borderRadius: radius.pill,
+    },
+    badgeTextGray: { color: colors.textMuted, fontSize: 12, fontWeight: '700' },
 
-  appointmentCard: {
-    flexDirection: 'row-reverse',
-    alignItems: 'center',
-    backgroundColor: colors.white,
-    padding: spacing.md,
-    borderRadius: radius.md,
-    marginBottom: spacing.sm,
-    borderWidth: 1,
-    borderColor: colors.borderLight,
-  },
-  doctorAvatarMini: {
-    width: 40,
-    height: 40,
-    borderRadius: 20,
-    backgroundColor: colors.goldLight,
-    justifyContent: 'center',
-    alignItems: 'center',
-    marginLeft: spacing.md,
-  },
-  avatarText: { color: colors.primary, fontWeight: '700', fontSize: 12 },
-  patientName: {
-    fontSize: 16,
-    fontWeight: '700',
-    color: colors.primary,
-    textAlign: 'right',
-  },
-  appointmentTime: {
-    fontSize: 12,
-    color: colors.textMuted,
-    textAlign: 'right',
-  },
-  badgeGreen: {
-    backgroundColor: colors.success + '20',
-    paddingHorizontal: spacing.sm,
-    paddingVertical: 4,
-    borderRadius: radius.pill,
-    borderWidth: 1,
-    borderColor: colors.success + '40',
-  },
-  badgeText: { color: '#0a7c2b', fontSize: 12, fontWeight: '700' },
-  badgeGray: {
-    backgroundColor: colors.bgGray,
-    paddingHorizontal: spacing.sm,
-    paddingVertical: 4,
-    borderRadius: radius.pill,
-  },
-  badgeTextGray: { color: colors.textMuted, fontSize: 12, fontWeight: '700' },
+    actionBtn: {
+      flexDirection: 'row-reverse',
+      alignItems: 'center',
+      backgroundColor: colors.card,
+      padding: spacing.md,
+      borderEndEndRadius: radius.md,
+      borderEndStartRadius: radius.md,
+      borderWidth: 1,
+      borderColor: colors.border,
+      gap: spacing.sm,
+    },
+    actionBtnText: {
+      flex: 1,
+      fontSize: 15,
+      fontWeight: '700',
+      color: colors.text,
+      textAlign: 'right',
+    },
 
-  actionBtn: {
-    flexDirection: 'row-reverse',
-    alignItems: 'center',
-    backgroundColor: colors.white,
-    padding: spacing.md,
+    logoutBtn: {
+      flexDirection: 'row-reverse',
+      alignItems: 'center',
+      justifyContent: 'center',
+      backgroundColor: colors.error,
+      margin: spacing.lg,
+      padding: spacing.md,
+      borderRadius: radius.md,
+      gap: spacing.sm,
+    },
+    logoutText: { color: '#FFFFFF', fontWeight: '700', fontSize: 16 },
 
-    borderEndEndRadius: radius.md,
-    borderEndStartRadius: radius.md,
-    borderWidth: 1,
-    borderColor: colors.goldBorder,
-    gap: spacing.sm,
-  },
-  actionBtnText: {
-    flex: 1,
-    fontSize: 15,
-    fontWeight: '700',
-    color: colors.primary,
-    textAlign: 'right',
-  },
+    card: {
+      backgroundColor: colors.card,
+      borderRadius: radius.lg,
+      marginBottom: spacing.md,
+      borderWidth: 1,
+      borderColor: colors.border,
+      ...shadow.card,
+      overflow: 'hidden',
+      marginHorizontal: spacing.lg,
+    },
+    cardHeader: {
+      flexDirection: 'row-reverse',
+      justifyContent: 'space-between',
+      alignItems: 'center',
+      padding: spacing.md,
+      backgroundColor: colors.cardAlt,
+      borderBottomWidth: 1,
+      borderBottomColor: colors.border,
+    },
+    cardTitle: { fontSize: 16, fontWeight: '900', color: colors.text },
+    cardBody: { padding: spacing.md },
 
-  logoutBtn: {
-    flexDirection: 'row-reverse',
-    alignItems: 'center',
-    justifyContent: 'center',
-    backgroundColor: colors.danger,
-    margin: spacing.lg,
-    padding: spacing.md,
-    borderRadius: radius.md,
-    gap: spacing.sm,
-  },
-  logoutText: { color: colors.white, fontWeight: '700', fontSize: 16 },
+    infoItem: { marginBottom: spacing.md },
+    infoLabel: {
+      fontSize: 12,
+      color: colors.textMuted,
+      textAlign: 'right',
+      marginBottom: 4,
+    },
+    infoValue: {
+      fontSize: 14,
+      color: colors.text,
+      fontWeight: '700',
+      textAlign: 'right',
+    },
 
-  card: {
-    backgroundColor: colors.white,
-    borderRadius: radius.lg,
-    marginBottom: spacing.md,
-    ...shadow.card,
-    overflow: 'hidden',
-    marginHorizontal: spacing.lg,
-  },
-  cardHeader: {
-    flexDirection: 'row-reverse',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    padding: spacing.md,
-    backgroundColor: colors.white,
-    borderBottomWidth: 1,
-    borderBottomColor: colors.borderLight,
-  },
-  cardTitle: { fontSize: 16, fontWeight: '900', color: colors.primary },
-  cardBody: { padding: spacing.md },
-
-  infoItem: { marginBottom: spacing.md },
-  infoLabel: {
-    fontSize: 12,
-    color: colors.textMuted,
-    textAlign: 'right',
-    marginBottom: 4,
-  },
-  infoValue: {
-    fontSize: 14,
-    color: colors.primary,
-    fontWeight: '700',
-    textAlign: 'right',
-  },
-
-  label: {
-    fontSize: 12,
-    color: colors.textMuted,
-    textAlign: 'right',
-    marginBottom: 4,
-  },
-  aboutText: {
-    fontSize: 14,
-    color: colors.textSecondary,
-    textAlign: 'right',
-    lineHeight: 22,
-  },
-  certItem: {
-    flexDirection: 'row-reverse',
-    alignItems: 'center',
-    backgroundColor: colors.bgGray,
-    padding: spacing.md,
-    borderRadius: radius.md,
-    marginBottom: spacing.sm,
-    gap: spacing.sm,
-  },
-  certIcon: {
-    width: 36,
-    height: 36,
-    borderRadius: 18,
-    backgroundColor: colors.goldLight,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  certPhoto: { width: 36, height: 36, borderRadius: 18 },
-  certName: {
-    fontSize: 15,
-    fontWeight: '900',
-    color: colors.primary,
-    textAlign: 'right',
-  },
-  certOrg: { fontSize: 12, color: colors.textMuted, textAlign: 'right' },
-  emptyText: {
-    textAlign: 'center',
-    color: colors.textMuted,
-    marginVertical: spacing.md,
-  },
-});
+    label: {
+      fontSize: 12,
+      color: colors.textMuted,
+      textAlign: 'right',
+      marginBottom: 4,
+    },
+    aboutText: {
+      fontSize: 14,
+      color: colors.textSecondary,
+      textAlign: 'right',
+      lineHeight: 22,
+    },
+    certItem: {
+      flexDirection: 'row-reverse',
+      alignItems: 'center',
+      backgroundColor: colors.cardAlt,
+      padding: spacing.md,
+      borderRadius: radius.md,
+      marginBottom: spacing.sm,
+      gap: spacing.sm,
+    },
+    certIcon: {
+      width: 36,
+      height: 36,
+      borderRadius: 18,
+      backgroundColor: colors.secondaryLight,
+      justifyContent: 'center',
+      alignItems: 'center',
+    },
+    certPhoto: { width: 36, height: 36, borderRadius: 18 },
+    certName: {
+      fontSize: 15,
+      fontWeight: '900',
+      color: colors.text,
+      textAlign: 'right',
+    },
+    certOrg: { fontSize: 12, color: colors.textMuted, textAlign: 'right' },
+    emptyText: {
+      textAlign: 'center',
+      color: colors.textMuted,
+      marginVertical: spacing.md,
+    },
+  });

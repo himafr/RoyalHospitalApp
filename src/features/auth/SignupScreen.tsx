@@ -1,14 +1,17 @@
-import React, { useState } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, KeyboardAvoidingView, Platform } from 'react-native';
+import React, { useMemo, useState } from 'react';
+import { KeyboardAvoidingView, Platform, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
-import { useAuth } from '../../context/AuthContext';
 import InputField from '../../components/InputField';
 import PrimaryButton from '../../components/PrimaryButton';
-import { colors, spacing, radius } from '../../theme';
-import { getErrorMessage, showErrorToast, showSuccessToast } from '../../utils/toast';
 import SmoothScrollView from '../../components/SmoothScrollView';
+import { useAuth } from '../../context/AuthContext';
+import { useTheme } from '../../context/ModeContext';
+import { lightMode, radius, spacing } from '../../theme';
+import { getErrorMessage, showErrorToast, showSuccessToast } from '../../utils/toast';
 
 export default function SignupScreen({ navigation }: any) {
+  const { colors } = useTheme();
+const styles = useMemo(() => getStyles(colors), [colors]);
   const { signup } = useAuth();
   const [form, setForm] = useState({ fullName: '', phoneNumber: '', email: '', password: '', passwordCheck: '', gender: 'ذكر', agree: true });
   const [error, setError] = useState('');
@@ -80,24 +83,25 @@ export default function SignupScreen({ navigation }: any) {
   );
 }
 
-const styles = StyleSheet.create({
-  root: { flex: 1, backgroundColor: colors.bg },
-  scroll: { flexGrow: 1, justifyContent: 'center', padding: spacing.lg },
-  card: { backgroundColor: colors.white, borderRadius: radius.lg, borderWidth: 1, borderColor: colors.gold, padding: spacing.lg },
-  header: { fontSize: 28, color: colors.primary, textAlign: 'right' },
-  sub: { fontSize: 14, color: colors.textMuted, marginTop: spacing.xs, textAlign: 'right' },
-  label: { fontSize: 12, color: colors.textMuted, marginBottom: spacing.xs, textTransform: 'uppercase', textAlign: 'right' },
-  genderRow: { flexDirection: 'row', gap: spacing.sm, marginBottom: spacing.md },
-  genderBtn: { flex: 1, paddingVertical: spacing.sm, borderRadius: radius.md, borderWidth: 1, borderColor: colors.border, alignItems: 'center' },
-  genderActive: { backgroundColor: colors.primary, borderColor: colors.primary },
-  genderText: { color: colors.primary, fontWeight: '700' },
-  genderTextActive: { color: colors.gold },
-  checkRow: { flexDirection: 'row-reverse', alignItems: 'center', marginBottom: spacing.md },
-  checkbox: { width: 22, height: 22, borderRadius: 4, borderWidth: 1, borderColor: colors.gold, justifyContent: 'center', alignItems: 'center', marginLeft: spacing.sm },
-  checkboxActive: { backgroundColor: colors.gold },
-  checkText: { fontSize: 13, color: colors.textMuted, flex: 1, textAlign: 'right' },
-  error: { color: colors.danger, fontSize: 13, marginBottom: spacing.sm, textAlign: 'center' },
-  loginBox: { flexDirection: 'row', justifyContent: 'center', alignItems: 'center', marginTop: spacing.md, flexWrap: 'wrap' },
-  loginText: { fontSize: 14, color: colors.textMuted },
-  loginLink: { fontSize: 16, color: colors.primary, fontWeight: '700' },
-});
+const getStyles = (colors: typeof lightMode) =>
+  StyleSheet.create({
+    root: { flex: 1, backgroundColor: colors.background },
+    scroll: { flexGrow: 1, justifyContent: 'center', padding: spacing.lg },
+    card: { backgroundColor: colors.card, borderRadius: radius.lg, borderWidth: 1, borderColor: colors.iconActive, padding: spacing.lg },
+    header: { fontSize: 28, color: colors.text, textAlign: 'right' },
+    sub: { fontSize: 14, color: colors.textMuted, marginTop: spacing.xs, textAlign: 'right' },
+    label: { fontSize: 12, color: colors.textMuted, marginBottom: spacing.xs, textTransform: 'uppercase', textAlign: 'right' },
+    genderRow: { flexDirection: 'row', gap: spacing.sm, marginBottom: spacing.md },
+    genderBtn: { flex: 1, paddingVertical: spacing.sm, borderRadius: radius.md, borderWidth: 1, borderColor: colors.inputBorder, backgroundColor: colors.inputBackground, alignItems: 'center' },
+    genderActive: { backgroundColor: colors.primary, borderColor: colors.primary },
+    genderText: { color: colors.text, fontWeight: '700' },
+    genderTextActive: { color: colors.onPrimary },
+    checkRow: { flexDirection: 'row-reverse', alignItems: 'center', marginBottom: spacing.md },
+    checkbox: { width: 22, height: 22, borderRadius: 4, borderWidth: 1, borderColor: colors.iconActive, justifyContent: 'center', alignItems: 'center', marginLeft: spacing.sm },
+    checkboxActive: { backgroundColor: colors.iconActive },
+    checkText: { fontSize: 13, color: colors.textMuted, flex: 1, textAlign: 'right' },
+    error: { color: colors.error, fontSize: 13, marginBottom: spacing.sm, textAlign: 'center' },
+    loginBox: { flexDirection: 'row', justifyContent: 'center', alignItems: 'center', marginTop: spacing.md, flexWrap: 'wrap' },
+    loginText: { fontSize: 14, color: colors.textMuted },
+    loginLink: { fontSize: 16, color: colors.link, fontWeight: '700' },
+  });

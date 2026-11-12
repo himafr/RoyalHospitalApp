@@ -1,21 +1,24 @@
-import React, { useState } from 'react';
+import React, { useMemo, useState } from 'react';
 import {
-  View,
-  Text,
-  StyleSheet,
-  TouchableOpacity,
   KeyboardAvoidingView,
   Platform,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
 } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
-import { useAuth } from '../../context/AuthContext';
 import InputField from '../../components/InputField';
 import PrimaryButton from '../../components/PrimaryButton';
-import { colors, spacing, radius } from '../../theme';
-import { getErrorMessage, showErrorToast, showSuccessToast } from '../../utils/toast';
 import SmoothScrollView from '../../components/SmoothScrollView';
+import { useAuth } from '../../context/AuthContext';
+import { lightMode, radius, spacing } from '../../theme';
+import { getErrorMessage, showErrorToast, showSuccessToast } from '../../utils/toast';
+import { useTheme } from '../../context/ModeContext';
 
 export default function LoginScreen({ navigation }: any) {
+  const { colors } = useTheme();
+const styles = useMemo(() => getStyles(colors), [colors]);
   const { login } = useAuth();
   const [email, setEmail] = useState('hema@sallem.com');
   const [password, setPassword] = useState('12345678');
@@ -50,7 +53,7 @@ export default function LoginScreen({ navigation }: any) {
       >
         <View style={styles.card}>
           <View style={styles.logoHolder}>
-            <Icon name="medkit" size={40} color={colors.gold} />
+            <Icon name="medkit" size={40} color={colors.primary} />
           </View>
           <Text style={styles.brand}>العيادة</Text>
           <Text style={styles.tagline}>الفخامة في الرعاية</Text>
@@ -104,62 +107,63 @@ export default function LoginScreen({ navigation }: any) {
   );
 }
 
-const styles = StyleSheet.create({
-  root: { flex: 1, backgroundColor: colors.bg },
-  scroll: { flexGrow: 1, justifyContent: 'center', padding: spacing.lg },
-  card: {
-    backgroundColor: colors.bgLight,
-    borderRadius: radius.lg,
-    borderWidth: 1,
-    borderColor: colors.gold,
-    padding: spacing.lg,
-    alignItems: 'center',
-  },
-  logoHolder: {
-    width: 90,
-    height: 90,
-    borderRadius: 45,
-    borderWidth: 3,
-    borderColor: colors.gold,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  brand: {
-    fontSize: 30,
-    fontWeight: '500',
-    color: colors.primary,
-    marginTop: spacing.sm,
-  },
-  tagline: {
-    fontSize: 14,
-    fontWeight: '600',
-    color: colors.textMuted,
-    textTransform: 'uppercase',
-    marginTop: spacing.xs,
-  },
-  divider: {
-    width: 48,
-    height: 2,
-    backgroundColor: colors.gold,
-    marginVertical: spacing.md,
-  },
-  title: { fontSize: 20, fontWeight: '500', color: colors.primary },
-  error: {
-    color: colors.danger,
-    fontSize: 13,
-    marginBottom: spacing.sm,
-    textAlign: 'center',
-  },
-  signupBox: {
-    flexDirection: 'row',
-    justifyContent: 'center',
-    alignItems: 'center',
-    marginTop: spacing.lg,
-    paddingTop: spacing.md,
-    borderTopWidth: 2,
-    borderTopColor: colors.goldBorder,
-    flexWrap: 'wrap',
-  },
-  signupText: { fontSize: 14, color: colors.textMuted },
-  signupLink: { fontSize: 16, color: colors.primary, fontWeight: '700' },
-});
+const getStyles = (colors: typeof lightMode) =>
+  StyleSheet.create({
+    root: { flex: 1, backgroundColor: colors.background },
+    scroll: { flexGrow: 1, justifyContent: 'center', padding: spacing.lg },
+    card: {
+      backgroundColor: colors.card,
+      borderRadius: radius.lg,
+      borderWidth: 1,
+      borderColor: colors.iconActive,
+      padding: spacing.lg,
+      alignItems: 'center',
+    },
+    logoHolder: {
+      width: 90,
+      height: 90,
+      borderRadius: 45,
+      borderWidth: 3,
+      borderColor: colors.iconActive,
+      justifyContent: 'center',
+      alignItems: 'center',
+    },
+    brand: {
+      fontSize: 30,
+      fontWeight: '500',
+      color: colors.text,
+      marginTop: spacing.sm,
+    },
+    tagline: {
+      fontSize: 14,
+      fontWeight: '600',
+      color: colors.textMuted,
+      textTransform: 'uppercase',
+      marginTop: spacing.xs,
+    },
+    divider: {
+      width: 48,
+      height: 2,
+      backgroundColor: colors.iconActive,
+      marginVertical: spacing.md,
+    },
+    title: { fontSize: 20, fontWeight: '500', color: colors.text },
+    error: {
+      color: colors.error,
+      fontSize: 13,
+      marginBottom: spacing.sm,
+      textAlign: 'center',
+    },
+    signupBox: {
+      flexDirection: 'row',
+      justifyContent: 'center',
+      alignItems: 'center',
+      marginTop: spacing.lg,
+      paddingTop: spacing.md,
+      borderTopWidth: 2,
+      borderTopColor: colors.border,
+      flexWrap: 'wrap',
+    },
+    signupText: { fontSize: 14, color: colors.textMuted },
+    signupLink: { fontSize: 16, color: colors.link, fontWeight: '700' },
+  });

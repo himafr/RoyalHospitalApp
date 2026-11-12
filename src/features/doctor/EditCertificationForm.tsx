@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import {
   ActivityIndicator,
   Alert,
@@ -8,22 +8,25 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
+import type { Asset } from 'react-native-image-picker';
 import Ionicons from 'react-native-vector-icons/Ionicons';
-import { colors, radius, spacing } from '../../theme';
-import useDoctor from './useDoctor';
+import { useTheme } from '../../context/ModeContext';
+import { lightMode, radius, spacing } from '../../theme';
+import { pickImage } from '../../utils/pickImage';
 import {
   getErrorMessage,
   showErrorToast,
   showSuccessToast,
 } from '../../utils/toast';
-import type { Asset } from 'react-native-image-picker';
-import { pickImage } from '../../utils/pickImage';
+import useDoctor from './useDoctor';
 
 export default function EditCertificationForm({
   certId: id,
   navigation,
   refetchData,
 }: any) {
+  const { colors } = useTheme();
+const styles = useMemo(() => getStyles(colors), [colors]);
   const {
     doctor,
     loading,
@@ -133,54 +136,60 @@ export default function EditCertificationForm({
 
       {/* زرار الحذف */}
       <TouchableOpacity style={styles.deleteBtn} onPress={handleDelete}>
-        <Ionicons name="trash" size={20} color={colors.white} />
+        <Ionicons name="trash" size={20} color={colors.iconSecondary} />
         <Text style={styles.deleteBtnText}>حذف الشهادة</Text>
       </TouchableOpacity>
     </View>
   );
 }
-
-const styles = StyleSheet.create({
-  label: {
-    fontSize: 14,
-    color: colors.primary,
-    fontWeight: '700',
-    marginBottom: spacing.xs,
-    textAlign: 'right',
-  },
-  input: {
-    borderWidth: 1,
-    borderColor: colors.border,
-    borderRadius: radius.md,
-    padding: spacing.md,
-    marginBottom: spacing.md,
-    textAlign: 'right',
-  },
-  saveBtn: {
-    backgroundColor: colors.primary,
-    padding: spacing.md,
-    borderRadius: radius.md,
-    alignItems: 'center',
-  },
-  photoBtn: {
-    borderWidth: 1,
-    borderColor: colors.primary,
-    borderRadius: radius.md,
-    padding: spacing.md,
-    marginBottom: spacing.md,
-    alignItems: 'center',
-  },
-  photoBtnText: { color: colors.primary, fontWeight: '700' },
-  saveBtnText: { color: colors.gold, fontWeight: '900', fontSize: 16 },
-  deleteBtn: {
-    flexDirection: 'row-reverse',
-    alignItems: 'center',
-    justifyContent: 'center',
-    backgroundColor: colors.danger,
-    padding: spacing.md,
-    borderRadius: radius.md,
-    marginTop: spacing.md,
-    gap: spacing.sm,
-  },
-  deleteBtnText: { color: colors.white, fontWeight: '700', fontSize: 16 },
-});
+const getStyles = (colors: typeof lightMode) =>
+  StyleSheet.create({
+    label: {
+      fontSize: 14,
+      color: colors.text,
+      fontWeight: '700',
+      marginBottom: spacing.xs,
+      textAlign: 'right',
+    },
+    input: {
+      borderWidth: 1,
+      borderColor: colors.inputBorder,
+      backgroundColor: colors.inputBackground,
+      color: colors.text,
+      borderRadius: radius.md,
+      padding: spacing.md,
+      marginBottom: spacing.md,
+      textAlign: 'right',
+    },
+    saveBtn: {
+      backgroundColor: colors.buttonPrimary,
+      padding: spacing.md,
+      borderRadius: radius.md,
+      alignItems: 'center',
+    },
+    photoBtn: {
+      borderWidth: 1,
+      borderColor: colors.primary,
+      borderRadius: radius.md,
+      padding: spacing.md,
+      marginBottom: spacing.md,
+      alignItems: 'center',
+    },
+    photoBtnText: { color: colors.primary, fontWeight: '700' },
+    saveBtnText: {
+      color: colors.buttonPrimaryText,
+      fontWeight: '900',
+      fontSize: 16,
+    },
+    deleteBtn: {
+      flexDirection: 'row-reverse',
+      alignItems: 'center',
+      justifyContent: 'center',
+      backgroundColor: colors.error,
+      padding: spacing.md,
+      borderRadius: radius.md,
+      marginTop: spacing.md,
+      gap: spacing.sm,
+    },
+    deleteBtnText: { color: '#FFFFFF', fontWeight: '700', fontSize: 16 },
+  });

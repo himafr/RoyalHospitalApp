@@ -1,25 +1,26 @@
-import React from 'react';
 import { createNavigationContainerRef, NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
-import { View, ActivityIndicator, StyleSheet } from 'react-native';
+import React from 'react';
+import { ActivityIndicator, StyleSheet, View } from 'react-native';
 import { useAuth } from '../context/AuthContext';
+import { useTheme } from '../context/ModeContext';
+import ActivateScreen from '../features/auth/ActivateScreen';
+import DoctorProfileScreen from '../features/doctor/DoctorProfileScreen';
+import PatientProfileScreen from '../features/patient/PatientProfileScreen';
+import EditModalScreen from '../screens/EditModalScreen';
 import AuthStack from './AuthStack';
 import MainTabs from './MainTabs';
-import { colors } from '../theme';
-import ActivateScreen from '../features/auth/ActivateScreen';
-import EditModalScreen from '../screens/EditModalScreen';
-import DoctorProfileScreen from '../features/doctor/DoctorProfileScreen';
-import PatientHomeScreen from '../screens/main/HomeScreen';
 
 const Stack = createNativeStackNavigator();
 export const navigationRef = createNavigationContainerRef();
 
 export default function RootNavigator() {
+  const { colors } = useTheme();
   const { loading, isAuthenticated,role } = useAuth();
   if (loading)
     return (
-      <View style={styles.loader}>
-        <ActivityIndicator size="large" color={colors.gold} />
+      <View style={[styles.loader,{backgroundColor:colors.background}]}>
+        <ActivityIndicator size="large" color={colors.primary} />
       </View>
     );
 
@@ -38,7 +39,7 @@ export default function RootNavigator() {
         ) : (
           <>
             <Stack.Screen name="Main" component={MainTabs} />
-            <Stack.Screen name="Profile" component={role==="DOCTOR"?DoctorProfileScreen:PatientHomeScreen} />
+            <Stack.Screen name="Profile" component={role==="DOCTOR"?DoctorProfileScreen:PatientProfileScreen} />
 
             <Stack.Screen
               name="Activate"
@@ -49,7 +50,7 @@ export default function RootNavigator() {
                 animationDuration: 250,
                 title: 'تفعيل الحساب',
                 headerTintColor: colors.primary,
-                headerStyle: { backgroundColor: colors.white },
+                headerStyle: { backgroundColor: colors.backgroundAlt },
               }}
             />
             <Stack.Screen
@@ -74,6 +75,5 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: colors.bg,
   },
 });

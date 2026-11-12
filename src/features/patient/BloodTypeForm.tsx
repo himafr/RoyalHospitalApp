@@ -1,12 +1,15 @@
 import { Picker } from '@react-native-picker/picker';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { ActivityIndicator, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { BloodType } from '../../../types/user';
-import { colors, radius, spacing } from '../../theme';
-import usePatient from './usePatient';
+import { useTheme } from '../../context/ModeContext';
+import { lightMode, radius, spacing } from '../../theme';
 import { getErrorMessage, showErrorToast, showSuccessToast } from '../../utils/toast';
+import usePatient from './usePatient';
 
 export default function BloodTypeForm({ navigation,refreshData }: any) {
+  const { colors } = useTheme();
+const styles = useMemo(() => getStyles(colors), [colors]);
   const { patient, loading,bloodTypeUpdate } = usePatient();
   const [bloodType, setBloodType] = useState<BloodType>();
 
@@ -53,11 +56,11 @@ export default function BloodTypeForm({ navigation,refreshData }: any) {
     </View>
   );
 }
-
-const styles = StyleSheet.create({
-  label: { fontSize: 14, color: colors.primary, fontWeight: '700', marginBottom: spacing.sm, textAlign: 'right' },
-  pickerWrapper: { borderWidth: 1, borderColor: colors.border, borderRadius: radius.md, marginBottom: spacing.lg, overflow: 'hidden' },
-  picker: { color: colors.primary },
-  saveBtn: { backgroundColor: colors.primary, padding: spacing.md, borderRadius: radius.md, alignItems: 'center' },
-  saveBtnText: { color: colors.gold, fontWeight: '900', fontSize: 16 },
-});
+const getStyles = (colors: typeof lightMode) =>
+  StyleSheet.create({
+    label: { fontSize: 14, color: colors.text, fontWeight: '700', marginBottom: spacing.sm, textAlign: 'right' },
+    pickerWrapper: { borderWidth: 1, borderColor: colors.inputBorder, backgroundColor: colors.inputBackground, borderRadius: radius.md, marginBottom: spacing.lg, overflow: 'hidden' },
+    picker: { color: colors.text },
+    saveBtn: { backgroundColor: colors.buttonPrimary, padding: spacing.md, borderRadius: radius.md, alignItems: 'center' },
+    saveBtnText: { color: colors.buttonPrimaryText, fontWeight: '900', fontSize: 16 },
+  });

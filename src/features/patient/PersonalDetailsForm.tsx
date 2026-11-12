@@ -1,6 +1,6 @@
 import DateTimePicker from '@react-native-community/datetimepicker';
 import { Picker } from '@react-native-picker/picker';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import {
   ActivityIndicator,
   Platform,
@@ -11,12 +11,15 @@ import {
   View,
 } from 'react-native';
 import type { Asset } from 'react-native-image-picker';
+import { useTheme } from '../../context/ModeContext';
 import useUser from '../../hooks/useUser';
-import { colors, radius, spacing } from '../../theme';
-import { getErrorMessage, showErrorToast, showSuccessToast } from '../../utils/toast';
+import { lightMode, radius, spacing } from '../../theme';
 import { pickImage } from '../../utils/pickImage';
+import { getErrorMessage, showErrorToast, showSuccessToast } from '../../utils/toast';
 
 export default function PersonalDetailsForm({ navigation, refreshData }: any) {
+  const { colors } = useTheme();
+const styles = useMemo(() => getStyles(colors), [colors]);
   const { data: user, updatePersonalDetails, loading } = useUser();
   const [form, setForm] = useState({
     fullName: '',
@@ -147,43 +150,51 @@ export default function PersonalDetailsForm({ navigation, refreshData }: any) {
   );
 }
 
-const styles = StyleSheet.create({
-  label: {
-    fontSize: 14,
-    color: colors.primary,
-    fontWeight: '700',
-    marginBottom: spacing.xs,
-    textAlign: 'right',
-  },
-  input: {
-    borderWidth: 1,
-    borderColor: colors.border,
-    borderRadius: radius.md,
-    padding: spacing.md,
-    marginBottom: spacing.md,
-    textAlign: 'right',
-  },
-  pickerWrapper: {
-    borderWidth: 1,
-    borderColor: colors.border,
-    borderRadius: radius.md,
-    marginBottom: spacing.md,
-    overflow: 'hidden',
-  },
-  saveBtn: {
-    backgroundColor: colors.primary,
-    padding: spacing.md,
-    borderRadius: radius.md,
-    alignItems: 'center',
-  },
-  photoBtn: {
-    borderWidth: 1,
-    borderColor: colors.primary,
-    borderRadius: radius.md,
-    padding: spacing.md,
-    marginBottom: spacing.md,
-    alignItems: 'center',
-  },
-  photoBtnText: { color: colors.primary, fontWeight: '700' },
-  saveBtnText: { color: colors.gold, fontWeight: '900', fontSize: 16 },
-});
+const getStyles = (colors: typeof lightMode) =>
+  StyleSheet.create({
+    label: {
+      fontSize: 14,
+      color: colors.text,
+      fontWeight: '700',
+      marginBottom: spacing.xs,
+      textAlign: 'right',
+    },
+    input: {
+      borderWidth: 1,
+      borderColor: colors.inputBorder,
+      backgroundColor: colors.inputBackground,
+      color: colors.text,
+      borderRadius: radius.md,
+      padding: spacing.md,
+      marginBottom: spacing.md,
+      textAlign: 'right',
+    },
+    pickerWrapper: {
+      borderWidth: 1,
+      borderColor: colors.inputBorder,
+      backgroundColor: colors.inputBackground,
+      borderRadius: radius.md,
+      marginBottom: spacing.md,
+      overflow: 'hidden',
+    },
+    saveBtn: {
+      backgroundColor: colors.buttonPrimary,
+      padding: spacing.md,
+      borderRadius: radius.md,
+      alignItems: 'center',
+    },
+    photoBtn: {
+      borderWidth: 1,
+      borderColor: colors.primary,
+      borderRadius: radius.md,
+      padding: spacing.md,
+      marginBottom: spacing.md,
+      alignItems: 'center',
+    },
+    photoBtnText: { color: colors.primary, fontWeight: '700' },
+    saveBtnText: {
+      color: colors.buttonPrimaryText,
+      fontWeight: '900',
+      fontSize: 16,
+    },
+  });

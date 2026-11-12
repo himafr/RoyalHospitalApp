@@ -1,12 +1,15 @@
-import React, { useState } from 'react';
+import React, { useMemo, useState } from 'react';
 import { Alert, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
-import { colors, radius, spacing } from '../../theme';
-import useDoctor from './useDoctor';
-import { getErrorMessage, showErrorToast, showSuccessToast } from '../../utils/toast';
 import type { Asset } from 'react-native-image-picker';
+import { useTheme } from '../../context/ModeContext';
+import { lightMode, radius, spacing } from '../../theme';
 import { pickImage } from '../../utils/pickImage';
+import { getErrorMessage, showErrorToast, showSuccessToast } from '../../utils/toast';
+import useDoctor from './useDoctor';
 
 export default function AddCertificationForm({ navigation ,refetchData}: any) {
+  const { colors } = useTheme();
+const styles = useMemo(() => getStyles(colors), [colors]);
   const {  addCertification,loading } = useDoctor();
   const [form, setForm] = useState({
     name: '',
@@ -63,11 +66,12 @@ export default function AddCertificationForm({ navigation ,refetchData}: any) {
   );
 }
 
-const styles = StyleSheet.create({
-  label: { fontSize: 14, color: colors.primary, fontWeight: '700', marginBottom: spacing.xs, textAlign: 'right' },
-  input: { borderWidth: 1, borderColor: colors.border, borderRadius: radius.md, padding: spacing.md, marginBottom: spacing.md, textAlign: 'right' },
-  saveBtn: { backgroundColor: colors.primary, padding: spacing.md, borderRadius: radius.md, alignItems: 'center' },
-  photoBtn: { borderWidth: 1, borderColor: colors.primary, borderRadius: radius.md, padding: spacing.md, marginBottom: spacing.md, alignItems: 'center' },
-  photoBtnText: { color: colors.primary, fontWeight: '700' },
-  saveBtnText: { color: colors.gold, fontWeight: '900', fontSize: 16 },
-});
+const getStyles = (colors: typeof lightMode) =>
+  StyleSheet.create({
+    label: { fontSize: 14, color: colors.text, fontWeight: '700', marginBottom: spacing.xs, textAlign: 'right' },
+    input: { borderWidth: 1, borderColor: colors.inputBorder, backgroundColor: colors.inputBackground, color: colors.text, borderRadius: radius.md, padding: spacing.md, marginBottom: spacing.md, textAlign: 'right' },
+    saveBtn: { backgroundColor: colors.buttonPrimary, padding: spacing.md, borderRadius: radius.md, alignItems: 'center' },
+    photoBtn: { borderWidth: 1, borderColor: colors.primary, borderRadius: radius.md, padding: spacing.md, marginBottom: spacing.md, alignItems: 'center' },
+    photoBtnText: { color: colors.primary, fontWeight: '700' },
+    saveBtnText: { color: colors.buttonPrimaryText, fontWeight: '900', fontSize: 16 },
+  });

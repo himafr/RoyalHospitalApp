@@ -1,37 +1,45 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import { Text, View, StyleSheet } from 'react-native';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import Toast, { type ToastConfig } from 'react-native-toast-message';
-import { colors, radius, spacing } from '../theme';
+import { useTheme } from '../context/ModeContext';
+import { lightMode, radius, spacing } from '../theme';
+
+type ToastProps = { text1?: string; text2?: string };
+
+function BaseToast({
+  text1,
+  text2,
+  variant,
+}: ToastProps & { variant: 'success' | 'error' }) {
+  const { colors } = useTheme();
+  const styles = useMemo(() => getStyles(colors), [colors]);
+
+  const isSuccess = variant === 'success';
+  const accent = isSuccess ? colors.success : colors.error;
+
+  return (
+    <View style={[styles.container, { borderRightColor: accent }]}>
+      <Ionicons
+        name={isSuccess ? 'checkmark-circle' : 'alert-circle'}
+        size={24}
+        color={accent}
+        style={styles.icon}
+      />
+      <View style={styles.copy}>
+        {text1 ? <Text style={styles.title}>{text1}</Text> : null}
+        {text2 ? <Text style={styles.message}>{text2}</Text> : null}
+      </View>
+    </View>
+  );
+}
 
 export const toastConfig: ToastConfig = {
   success: ({ text1, text2 }) => (
-    <View style={[styles.container, styles.success]}>
-      <Ionicons
-        name="checkmark-circle"
-        size={24}
-        color={colors.primary}
-        style={styles.icon}
-      />
-      <View style={styles.copy}>
-        {text1 ? <Text style={styles.title}>{text1}</Text> : null}
-        {text2 ? <Text style={styles.message}>{text2}</Text> : null}
-      </View>
-    </View>
+    <BaseToast variant="success" text1={text1} text2={text2} />
   ),
   error: ({ text1, text2 }) => (
-    <View style={[styles.container, styles.error]}>
-      <Ionicons
-        name="alert-circle"
-        size={24}
-        color={colors.danger}
-        style={styles.icon}
-      />
-      <View style={styles.copy}>
-        {text1 ? <Text style={styles.title}>{text1}</Text> : null}
-        {text2 ? <Text style={styles.message}>{text2}</Text> : null}
-      </View>
-    </View>
+    <BaseToast variant="error" text1={text1} text2={text2} />
   ),
 };
 
@@ -56,37 +64,38 @@ export function getErrorMessage(error: unknown, fallback: string) {
   return fallback;
 }
 
-const styles = StyleSheet.create({
-  container: {
-    flexDirection: 'row-reverse',
-    alignItems: 'center',
-    backgroundColor: colors.white,
-    borderRadius: radius.md,
-    borderRightWidth: 4,
-    padding: spacing.md,
-    marginHorizontal: spacing.md,
-    minHeight: 64,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.08,
-    shadowRadius: 8,
-    elevation: 2,
-  },
-  success: { borderRightColor: colors.primary },
-  error: { borderRightColor: colors.danger },
-  icon: { marginLeft: spacing.md },
-  copy: { flex: 1 },
-  title: {
-    color: colors.primary,
-    fontSize: 16,
-    fontWeight: '700',
-    textAlign: 'right',
-  },
-  message: {
-    color: colors.textSecondary,
-    fontSize: 14,
-    lineHeight: 21,
-    marginTop: spacing.xs,
-    textAlign: 'right',
-  },
-});
+const getStyles = (colors: typeof lightMode) =>
+  StyleSheet.create({
+    container: {
+      flexDirection: 'row-reverse',
+      alignItems: 'center',
+      backgroundColor: colors.modal,
+      borderRadius: radius.md,
+      borderRightWidth: 4,
+      borderWidth: 1,
+      borderColor: colors.border,
+      padding: spacing.md,
+      marginHorizontal: spacing.md,
+      minHeight: 64,
+      shadowColor: colors.shadow,
+      shadowOffset: { width: 0, height: 4 },
+      shadowOpacity: 0.08,
+      shadowRadius: 8,
+      elevation: 2,
+    },
+    icon: { marginLeft: spacing.md },
+    copy: { flex: 1 },
+    title: {
+      color: colors.text,
+      fontSize: 16,
+      fontWeight: '700',
+      textAlign: 'right',
+    },
+    message: {
+      color: colors.textSecondary,
+      fontSize: 14,
+      lineHeight: 21,
+      marginTop: spacing.xs,
+      textAlign: 'right',
+    },
+  });

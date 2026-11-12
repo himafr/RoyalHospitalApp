@@ -1,9 +1,12 @@
-import React from 'react';
-import { View, StyleSheet } from 'react-native';
-import { colors, spacing } from '../theme';
+import React, { useMemo } from 'react';
+import { StyleSheet, View } from 'react-native';
 import SmoothScrollView from '../components/SmoothScrollView';
+import { useTheme } from '../context/ModeContext';
+import { lightMode, spacing } from '../theme';
 
 export default function EditModalScreen({ route, navigation }: any) {
+  const { colors } = useTheme();
+const styles = useMemo(() => getStyles(colors), [colors]);
   const { renderContent } = route.params;
 
   return (
@@ -15,8 +18,20 @@ export default function EditModalScreen({ route, navigation }: any) {
   );
 }
 
-const styles = StyleSheet.create({
-  root: { flex: 1, backgroundColor: colors.bgLight },
-  content: { padding: spacing.md },
-  card: { backgroundColor: colors.white, padding: spacing.lg, borderRadius: 16, shadowColor: '#000', shadowOffset: { width: 0, height: 2 }, shadowOpacity: 0.1, shadowRadius: 8, elevation: 4 },
-});
+const getStyles = (colors: typeof lightMode) =>
+  StyleSheet.create({
+    root: { flex: 1, backgroundColor: colors.background },
+    content: { padding: spacing.md },
+    card: {
+      backgroundColor: colors.card,
+      padding: spacing.lg,
+      borderRadius: 16,
+      borderWidth: 1,
+      borderColor: colors.border,
+      shadowColor: colors.shadow,
+      shadowOffset: { width: 0, height: 2 },
+      shadowOpacity: 0.1,
+      shadowRadius: 8,
+      elevation: 4,
+    },
+  });

@@ -1,10 +1,13 @@
-import React, { useState, useEffect } from 'react';
-import { View, Text, StyleSheet, TextInput, TouchableOpacity, ActivityIndicator } from 'react-native';
-import { colors, spacing, radius } from '../../theme';
-import usePatient from './usePatient';
+import React, { useEffect, useMemo, useState } from 'react';
+import { ActivityIndicator, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
+import { useTheme } from '../../context/ModeContext';
+import { lightMode, radius, spacing } from '../../theme';
 import { getErrorMessage, showErrorToast, showSuccessToast } from '../../utils/toast';
+import usePatient from './usePatient';
 
 export default function EmergencyContactForm({ navigation,refreshData }: any) {
+  const { colors } = useTheme();
+const styles = useMemo(() => getStyles(colors), [colors]);
   const { emergencyContactUpdate,patient, loading } = usePatient();
   const [form, setForm] = useState({
     emergencyContactName: '',
@@ -61,9 +64,10 @@ export default function EmergencyContactForm({ navigation,refreshData }: any) {
   );
 }
 
-const styles = StyleSheet.create({
-  label: { fontSize: 14, color: colors.primary, fontWeight: '700', marginBottom: spacing.xs, textAlign: 'right' },
-  input: { borderWidth: 1, borderColor: colors.border, borderRadius: radius.md, padding: spacing.md, marginBottom: spacing.md, textAlign: 'right' },
-  saveBtn: { backgroundColor: colors.primary, padding: spacing.md, borderRadius: radius.md, alignItems: 'center', marginTop: spacing.md },
-  saveBtnText: { color: colors.gold, fontWeight: '900', fontSize: 16 },
-});
+const getStyles = (colors: typeof lightMode) =>
+  StyleSheet.create({
+    label: { fontSize: 14, color: colors.text, fontWeight: '700', marginBottom: spacing.xs, textAlign: 'right' },
+    input: { borderWidth: 1, borderColor: colors.inputBorder, backgroundColor: colors.inputBackground, color: colors.text, borderRadius: radius.md, padding: spacing.md, marginBottom: spacing.md, textAlign: 'right' },
+    saveBtn: { backgroundColor: colors.buttonPrimary, padding: spacing.md, borderRadius: radius.md, alignItems: 'center', marginTop: spacing.md },
+    saveBtnText: { color: colors.buttonPrimaryText, fontWeight: '900', fontSize: 16 },
+  });
