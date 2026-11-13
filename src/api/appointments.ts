@@ -1,5 +1,10 @@
 import client from './client';
 
+export const getAllAppointments = (params: { page: number; size: number }) =>
+  client.get('/appointments', { params });
+export const getAllAppointmentsForDoctor = (params: { page: number; size: number }) =>
+  client.get('/appointments/doctor', { params });
+
 export const getBookedDates = (doctorId: number) =>
   client.get('/appointments/booked-dates', { params: { doctorId } });
 

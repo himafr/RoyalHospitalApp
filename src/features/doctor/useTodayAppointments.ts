@@ -3,6 +3,7 @@ import { getTodayBookedDatesForDoctor } from '../../api/appointments';
 import { showErrorToast } from '../../utils/toast';
 import { Appointment } from '../../../types/medical';
 
+
 export default function useTodayAppointments() {
   const [appointments, setAppointments] = useState<Appointment[]>([]);
   const [loading, setLoading] = useState(false);
@@ -12,6 +13,7 @@ export default function useTodayAppointments() {
     try {
       const res = await getTodayBookedDatesForDoctor();
       setAppointments(res.data || []);
+      
     } catch (e) {
       console.log('Error fetching today appointments', e);
       showErrorToast('تعذر تحميل حجوزات اليوم.');
