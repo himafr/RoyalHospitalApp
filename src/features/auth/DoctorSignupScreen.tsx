@@ -151,9 +151,9 @@
 //     borderColor: colors.gold,
 //     padding: spacing.lg,
 //   },
-//   header: { fontSize: 28, color: colors.primary, textAlign: 'right' },
-//   sub: { fontSize: 14, color: colors.textMuted, marginTop: spacing.xs, textAlign: 'right' },
-//   label: { fontSize: 12, color: colors.textMuted, marginBottom: spacing.xs, textTransform: 'uppercase', textAlign: 'right' },
+//   header: { fontSize: 2 * fontScale8, color: colors.primary, textAlign: 'right' },
+//   sub: { fontSize: 14 * fontScale, color: colors.textMuted, marginTop: spacing.xs, textAlign: 'right' },
+//   label: { fontSize: 12 * fontScale, color: colors.textMuted, marginBottom: spacing.xs, textTransform: 'uppercase', textAlign: 'right' },
 //   genderRow: { flexDirection: 'row', gap: spacing.sm, marginBottom: spacing.md },
 //   genderBtn: {
 //     flex: 1,
@@ -178,8 +178,8 @@
 //     marginLeft: spacing.sm,
 //   },
 //   checkboxActive: { backgroundColor: colors.gold },
-//   checkText: { fontSize: 13, color: colors.textMuted, flex: 1, textAlign: 'right' },
-//   error: { color: colors.danger, fontSize: 13, marginBottom: spacing.sm, textAlign: 'center' },
+//   checkText: { fontSize: 13 * fontScale, color: colors.textMuted, flex: 1, textAlign: 'right' },
+//   error: { color: colors.danger, fontSize: 13 * fontScale, marginBottom: spacing.sm, textAlign: 'center' },
 //   loginBox: {
 //     flexDirection: 'row',
 //     justifyContent: 'center',
@@ -187,6 +187,6 @@
 //     marginTop: spacing.md,
 //     flexWrap: 'wrap',
 //   },
-//   loginText: { fontSize: 14, color: colors.textMuted },
-//   loginLink: { fontSize: 16, color: colors.primary, fontWeight: '700' },
+//   loginText: { fontSize: 14 * fontScale, color: colors.textMuted },
+//   loginLink: { fontSize: 16 * fontScale, color: colors.primary, fontWeight: '700' },
 // });

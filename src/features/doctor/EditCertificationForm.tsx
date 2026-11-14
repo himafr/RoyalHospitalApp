@@ -25,8 +25,8 @@ export default function EditCertificationForm({
   navigation,
   refetchData,
 }: any) {
-  const { colors } = useTheme();
-const styles = useMemo(() => getStyles(colors), [colors]);
+  const { colors,fontScale } = useTheme();
+const styles = useMemo(() => getStyles(colors,fontScale), [colors,fontScale]);
   const {
     doctor,
     loading,
@@ -142,10 +142,10 @@ const styles = useMemo(() => getStyles(colors), [colors]);
     </View>
   );
 }
-const getStyles = (colors: typeof lightMode) =>
+const getStyles = (colors: typeof lightMode, fontScale:number) =>
   StyleSheet.create({
     label: {
-      fontSize: 14,
+      fontSize: 14 * fontScale,
       color: colors.text,
       fontWeight: '700',
       marginBottom: spacing.xs,
@@ -179,7 +179,7 @@ const getStyles = (colors: typeof lightMode) =>
     saveBtnText: {
       color: colors.buttonPrimaryText,
       fontWeight: '900',
-      fontSize: 16,
+      fontSize: 16 * fontScale,
     },
     deleteBtn: {
       flexDirection: 'row-reverse',
@@ -191,5 +191,5 @@ const getStyles = (colors: typeof lightMode) =>
       marginTop: spacing.md,
       gap: spacing.sm,
     },
-    deleteBtnText: { color: '#FFFFFF', fontWeight: '700', fontSize: 16 },
+    deleteBtnText: { color: '#FFFFFF', fontWeight: '700', fontSize: 16 * fontScale },
   });

@@ -11,8 +11,8 @@ interface Props {
 }
 
 export default function ErrorState({ message, onRetry }: Props) {
-  const { colors } = useTheme();
-const styles = useMemo(() => getStyles(colors), [colors]);
+  const { colors,fontScale } = useTheme();
+const styles = useMemo(() => getStyles(colors,fontScale), [colors,fontScale]);
   return (
     <View style={styles.container}>
       <Ionicons name="cloud-offline-outline" size={32} color={colors.textMuted} />
@@ -23,7 +23,7 @@ const styles = useMemo(() => getStyles(colors), [colors]);
   );
 }
 
-const getStyles = (colors: typeof lightMode) =>
+const getStyles = (colors: typeof lightMode, fontScale:number) =>
   StyleSheet.create({
     container: {
       alignItems: 'center',
@@ -32,13 +32,13 @@ const getStyles = (colors: typeof lightMode) =>
     },
     title: {
       color: colors.text,
-      fontSize: 16,
+      fontSize: 16 * fontScale,
       fontWeight: '700',
       textAlign: 'center',
     },
     message: {
       color: colors.textSecondary,
-      fontSize: 14,
+      fontSize: 14 * fontScale,
       lineHeight: 21,
       marginBottom: spacing.sm,
       textAlign: 'center',

@@ -13,8 +13,8 @@ interface ServiceCardProps {
 
 export default function ServiceCard({ service }: ServiceCardProps) {
   const navigation = useNavigation<any>();
-  const { colors } = useTheme();
-  const styles = useMemo(() => getStyles(colors), [colors]);
+  const { colors,fontScale } = useTheme();
+  const styles = useMemo(() => getStyles(colors,fontScale), [colors,fontScale]);
 
   // تجهيز السعر
   const priceLabel = service.consulating
@@ -89,7 +89,7 @@ export default function ServiceCard({ service }: ServiceCardProps) {
   );
 }
 
-const getStyles = (colors: typeof lightMode) =>
+const getStyles = (colors: typeof lightMode, fontScale:number) =>
   StyleSheet.create({
     alertBadge: {
       position: 'absolute',
@@ -130,7 +130,7 @@ const getStyles = (colors: typeof lightMode) =>
       alignItems: 'center',
     },
     name: {
-      fontSize: 18,
+      fontSize: 18 * fontScale,
       fontWeight: '900',
       color: colors.text,
       textAlign: 'right',
@@ -138,14 +138,14 @@ const getStyles = (colors: typeof lightMode) =>
     },
     specialty: {
       marginTop: 5,
-      fontSize: 12,
+      fontSize: 12 * fontScale,
       color: colors.secondary,
       fontWeight: '700',
       textAlign: 'right',
     },
 
     desc: {
-      fontSize: 14,
+      fontSize: 14 * fontScale,
       color: colors.textSecondary,
       lineHeight: 22,
       textAlign: 'right',
@@ -159,7 +159,7 @@ const getStyles = (colors: typeof lightMode) =>
       marginBottom: spacing.md,
     },
     featureText: {
-      fontSize: 12,
+      fontSize: 12 * fontScale,
       color: colors.textSecondary,
       fontWeight: '700',
       textAlign: 'right',
@@ -174,19 +174,19 @@ const getStyles = (colors: typeof lightMode) =>
       paddingTop: spacing.md,
     },
     priceLabel: {
-      fontSize: 11,
+      fontSize: 11 * fontScale,
       color: colors.textMuted,
       textAlign: 'right',
       marginBottom: 2,
     },
     price: {
-      fontSize: 18,
+      fontSize: 18 * fontScale,
       fontWeight: '900',
       color: colors.text,
       textAlign: 'right',
     },
     currency: {
-      fontSize: 13,
+      fontSize: 13 * fontScale,
       color: colors.secondary,
       fontWeight: '700',
     },

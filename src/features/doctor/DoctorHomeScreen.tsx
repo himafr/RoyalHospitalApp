@@ -59,9 +59,9 @@ const CLINIC_FEATURES = [
 
 export default function DoctorHomeScreen({ navigation }: any) {
   const { isVerified } = useAuth();
-  const { colors } = useTheme();
+  const { colors,fontScale,t } = useTheme();
   const { appointments, count, done, loading, still,refetch } = useTodayAppointments();
-  const styles = useMemo(() => getStyles(colors), [colors]);
+  const styles = useMemo(() => getStyles(colors,fontScale), [colors,fontScale]);
   const [isAvailable, setIsAvailable] = useState(true);
 
   // حساب أعلى قيمة في الرسم البياني
@@ -77,7 +77,7 @@ export default function DoctorHomeScreen({ navigation }: any) {
 
   return (
     <ScrollView style={styles.root} showsVerticalScrollIndicator={false}>
-      <AppHeader />
+      <AppHeader  />
 
       {!isVerified() && (
         <View style={styles.verifyHeader}>
@@ -88,15 +88,15 @@ export default function DoctorHomeScreen({ navigation }: any) {
       {/* 1. الهيدر (العنوان + الحالة) */}
       <View style={styles.topBar}>
         <View style={{ flex: 1 }}>
-          <Text style={styles.headerTitle}>لوحة التحكم</Text>
-          <Text style={styles.headerSub}>نظرة عامة على أداء العيادة اليوم</Text>
+          <Text style={styles.headerTitle}>{t('dashboard')}</Text>
+          <Text style={styles.headerSub}>{t('dashboard_subtitle')}</Text>
         </View>
         <TouchableOpacity 
           style={[styles.statusBtn, isAvailable ? styles.statusActive : styles.statusInactive]}
           onPress={() => setIsAvailable(!isAvailable)}
         >
           <View style={[styles.statusDot, isAvailable ? styles.dotGreen : styles.dotRed]} />
-          <Text style={styles.statusText}>{isAvailable ? 'متاح' : 'إجازة'}</Text>
+          <Text style={styles.statusText}>{isAvailable ? t("available") :t('on_leave')}</Text>
         </TouchableOpacity>
       </View>
 
@@ -104,9 +104,9 @@ export default function DoctorHomeScreen({ navigation }: any) {
       <View style={styles.nextAppointmentCard}>
         <View style={styles.nextHeader}>
           <Ionicons name="time" size={20} color={colors.onPrimary} />
-          <Text style={styles.nextTitle}>الموعد القادم</Text>
+          <Text style={styles.nextTitle}> {t('appointment_next')}</Text>
           <Text style={styles.nextTime}>
-            بعد {MOCK_NEXT_APPOINTMENT.remainingMinutes} دقيقة
+            {t('appointment_after')} {MOCK_NEXT_APPOINTMENT.remainingMinutes} {t('minutes')}
           </Text>
         </View>
         <View style={styles.nextBody}>
@@ -165,11 +165,11 @@ export default function DoctorHomeScreen({ navigation }: any) {
       <View style={styles.todayStatsContainer}>
         <View style={styles.summaryCard}>
           <Text style={styles.summaryValue}>{count}</Text>
-          <Text style={styles.summaryLabel}>إجمالي اليوم</Text>
+          <Text style={styles.summaryLabel}>{t('today_total')}</Text>
         </View>
         <View style={styles.summaryCard}>
           <Text style={[styles.summaryValue, { color: colors.success }]}>{done.length}</Text>
-          <Text style={styles.summaryLabel}>مكتمل</Text>
+          <Text style={styles.summaryLabel}>{t('completed')}</Text>
         </View>
         <View style={styles.summaryCard}>
           <Text style={[styles.summaryValue, { color: colors.warning }]}>{still.length}</Text>
@@ -336,7 +336,7 @@ export default function DoctorHomeScreen({ navigation }: any) {
   );
 }
 
-const getStyles = (colors: typeof lightMode) =>
+const getStyles = (colors: typeof lightMode, fontScale:number) =>
   StyleSheet.create({
     root: { flex: 1, backgroundColor: colors.background },
     verifyHeader: {
@@ -354,8 +354,8 @@ const getStyles = (colors: typeof lightMode) =>
       alignItems: 'center',
       padding: spacing.lg,
     },
-    headerTitle: { fontSize: 24, fontWeight: '900', color: colors.text, textAlign: 'right' },
-    headerSub: { fontSize: 14, color: colors.textSecondary, textAlign: 'right', marginTop: 4 },
+    headerTitle: { fontSize: 24 * fontScale, fontWeight: '900', color: colors.text, textAlign: 'right' },
+    headerSub: { fontSize: 14 * fontScale, color: colors.textSecondary, textAlign: 'right', marginTop: 4 },
     statusBtn: {
       flexDirection: 'row-reverse', alignItems: 'center',
       paddingHorizontal: spacing.sm, paddingVertical: 6,
@@ -366,7 +366,7 @@ const getStyles = (colors: typeof lightMode) =>
     statusDot: { width: 8, height: 8, borderRadius: 4 },
     dotGreen: { backgroundColor: colors.success },
     dotRed: { backgroundColor: colors.error },
-    statusText: { fontSize: 12, fontWeight: '700', color: colors.text },
+    statusText: { fontSize: 12 * fontScale, fontWeight: '700', color: colors.text },
 
     // Next appointment
     nextAppointmentCard: {
@@ -383,23 +383,23 @@ const getStyles = (colors: typeof lightMode) =>
       flexDirection: 'row-reverse', alignItems: 'center',
       gap: spacing.sm, marginBottom: spacing.md,
     },
-    nextTitle: { fontSize: 14, fontWeight: '700', color: colors.onPrimary },
-    nextTime: { fontSize: 12, color: colors.onPrimary, opacity: 0.8, marginRight: 'auto' },
+    nextTitle: { fontSize: 14 * fontScale, fontWeight: '700', color: colors.onPrimary },
+    nextTime: { fontSize: 12 * fontScale, color: colors.onPrimary, opacity: 0.8, marginRight: 'auto' },
     nextBody: { flexDirection: 'row-reverse', alignItems: 'center', gap: spacing.md },
     avatarMiniLarge: {
       width: 50, height: 50, borderRadius: 25,
       backgroundColor: colors.primaryLight, justifyContent: 'center', alignItems: 'center',
       borderWidth: 2, borderColor: colors.border,
     },
-    avatarTextLarge: { color: colors.onPrimary, fontWeight: '900', fontSize: 20 },
-    nextPatientName: { fontSize: 18, fontWeight: '900', color: colors.onPrimary },
-    nextDetails: { fontSize: 13, color: colors.onPrimary, opacity: 0.8, marginTop: 2 },
+    avatarTextLarge: { color: colors.onPrimary, fontWeight: '900', fontSize: 20 * fontScale },
+    nextPatientName: { fontSize: 18 * fontScale, fontWeight: '900', color: colors.onPrimary },
+    nextDetails: { fontSize: 13 * fontScale, color: colors.onPrimary, opacity: 0.8, marginTop: 2 },
     startSessionBtn: {
       backgroundColor: colors.secondary,
       paddingHorizontal: spacing.md, paddingVertical: spacing.sm,
       borderRadius: radius.md,
     },
-    startSessionText: { color: colors.onSecondary, fontWeight: '900', fontSize: 13 },
+    startSessionText: { color: colors.onSecondary, fontWeight: '900', fontSize: 13 * fontScale },
 
     // Stats grid
     statsGrid: {
@@ -419,16 +419,16 @@ const getStyles = (colors: typeof lightMode) =>
       width: 36, height: 36, borderRadius: radius.md,
       justifyContent: 'center', alignItems: 'center',
     },
-    statTitle: { fontSize: 13, color: colors.textSecondary, fontWeight: '700', textAlign: 'right' },
-    statValue: { fontSize: 22, fontWeight: '900', color: colors.text, textAlign: 'right' },
-    currencyText: { fontSize: 12, color: colors.textMuted, fontWeight: '700' },
+    statTitle: { fontSize: 13 * fontScale, color: colors.textSecondary, fontWeight: '700', textAlign: 'right' },
+    statValue: { fontSize: 22 * fontScale, fontWeight: '900', color: colors.text, textAlign: 'right' },
+    currencyText: { fontSize: 12 * fontScale, color: colors.textMuted, fontWeight: '700' },
     statBody: {},
     statFooter: {
       flexDirection: 'row-reverse', justifyContent: 'space-between',
       alignItems: 'center', marginTop: spacing.xs,
     },
-    trendText: { fontSize: 11, fontWeight: '700', marginRight: 2 },
-    statSub: { fontSize: 11, color: colors.textMuted },
+    trendText: { fontSize: 11 * fontScale, fontWeight: '700', marginRight: 2 },
+    statSub: { fontSize: 11 * fontScale, color: colors.textMuted },
 
     // Today summary (stats cards in row)
     todayStatsContainer: {
@@ -440,8 +440,8 @@ const getStyles = (colors: typeof lightMode) =>
       borderRadius: radius.lg, alignItems: 'center',
       marginHorizontal: 4, ...shadow.card,
     },
-    summaryValue: { fontSize: 22, fontWeight: '900', color: colors.text },
-    summaryLabel: { fontSize: 11, color: colors.textMuted, marginTop: 4 },
+    summaryValue: { fontSize: 22 * fontScale, fontWeight: '900', color: colors.text },
+    summaryLabel: { fontSize: 11 * fontScale, color: colors.textMuted, marginTop: 4 },
 
     // News
     newsCard: {
@@ -454,13 +454,13 @@ const getStyles = (colors: typeof lightMode) =>
       gap: spacing.sm, marginBottom: spacing.md,
       borderBottomWidth: 1, borderBottomColor: colors.border, paddingBottom: spacing.sm,
     },
-    newsTitle: { fontSize: 16, fontWeight: '900', color: colors.text },
+    newsTitle: { fontSize: 16 * fontScale, fontWeight: '900', color: colors.text },
     newsRow: {
       flexDirection: 'row-reverse', alignItems: 'center',
       gap: spacing.sm, marginBottom: spacing.sm,
     },
-    newsText: { fontSize: 14, color: colors.text, fontWeight: '700', textAlign: 'right' },
-    newsDate: { fontSize: 11, color: colors.textMuted, textAlign: 'right' },
+    newsText: { fontSize: 14 * fontScale, color: colors.text, fontWeight: '700', textAlign: 'right' },
+    newsDate: { fontSize: 11 * fontScale, color: colors.textMuted, textAlign: 'right' },
 
     // Cards (general)
     card: {
@@ -473,7 +473,7 @@ const getStyles = (colors: typeof lightMode) =>
       alignItems: 'center', padding: spacing.md,
       backgroundColor: colors.cardAlt, borderBottomWidth: 1, borderBottomColor: colors.border,
     },
-    cardTitle: { fontSize: 16, fontWeight: '900', color: colors.text },
+    cardTitle: { fontSize: 16 * fontScale, fontWeight: '900', color: colors.text },
     cardBody: { padding: spacing.md },
 
     // Review
@@ -486,10 +486,10 @@ const getStyles = (colors: typeof lightMode) =>
       backgroundColor: colors.primary, justifyContent: 'center', alignItems: 'center',
       marginLeft: spacing.md,
     },
-    avatarText: { color: colors.onPrimary, fontWeight: '700', fontSize: 14 },
-    reviewPatientName: { fontSize: 15, fontWeight: '900', color: colors.text },
+    avatarText: { color: colors.onPrimary, fontWeight: '700', fontSize: 14 * fontScale },
+    reviewPatientName: { fontSize: 15 * fontScale, fontWeight: '900', color: colors.text },
     reviewComment: {
-      fontSize: 14, color: colors.textSecondary,
+      fontSize: 14 * fontScale, color: colors.textSecondary,
       textAlign: 'right', fontStyle: 'italic', lineHeight: 22,
     },
 
@@ -497,11 +497,11 @@ const getStyles = (colors: typeof lightMode) =>
     performanceRow: { flexDirection: 'row-reverse', justifyContent: 'space-between' },
     performanceItem: { width: '48%' },
     performanceLabel: {
-      fontSize: 12, color: colors.textMuted,
+      fontSize: 12 * fontScale, color: colors.textMuted,
       textAlign: 'right', marginBottom: 4,
     },
     performanceValue: {
-      fontSize: 18, fontWeight: '900', color: colors.text,
+      fontSize: 18 * fontScale, fontWeight: '900', color: colors.text,
       textAlign: 'right', marginBottom: spacing.sm,
     },
     progressBar: {
@@ -515,7 +515,7 @@ const getStyles = (colors: typeof lightMode) =>
       backgroundColor: colors.backgroundAlt, paddingHorizontal: spacing.sm, paddingVertical: 4,
       borderRadius: radius.sm, borderWidth: 1, borderColor: colors.border,
     },
-    chartFilterText: { fontSize: 11, color: colors.textSecondary, fontWeight: '700' },
+    chartFilterText: { fontSize: 11 * fontScale, color: colors.textSecondary, fontWeight: '700' },
     chartContainer: {
       height: 200, marginTop: spacing.sm, marginBottom: spacing.md,
       position: 'relative', paddingHorizontal: spacing.sm,
@@ -539,16 +539,16 @@ const getStyles = (colors: typeof lightMode) =>
     },
     barFill: { width: '100%', borderRadius: radius.sm },
     barLabel: {
-      marginTop: spacing.sm, fontSize: 10,
+      marginTop: spacing.sm, fontSize: 10 * fontScale,
       color: colors.textMuted, fontWeight: '700',
       textAlign: 'center', position: 'absolute', bottom: -22,
     },
 
     // Section (features)
     section: { padding: spacing.lg, backgroundColor: colors.backgroundAlt },
-    sectionTitle: { fontSize: 20, fontWeight: '900', color: colors.text },
+    sectionTitle: { fontSize: 20 * fontScale, fontWeight: '900', color: colors.text },
     sectionSub: {
-      fontSize: 14, color: colors.textSecondary,
+      fontSize: 14 * fontScale, color: colors.textSecondary,
       marginBottom: spacing.md, textAlign: 'right',
     },
     featuresGrid: {
@@ -565,8 +565,8 @@ const getStyles = (colors: typeof lightMode) =>
       backgroundColor: colors.primary, justifyContent: 'center',
       alignItems: 'center', marginBottom: spacing.sm,
     },
-    featureTitle: { fontSize: 14, fontWeight: '900', color: colors.text, textAlign: 'center', marginBottom: 4 },
-    featureDesc: { fontSize: 12, color: colors.textSecondary, textAlign: 'center', lineHeight: 18 },
+    featureTitle: { fontSize: 14 * fontScale, fontWeight: '900', color: colors.text, textAlign: 'center', marginBottom: 4 },
+    featureDesc: { fontSize: 12 * fontScale, color: colors.textSecondary, textAlign: 'center', lineHeight: 18 },
 
     // Contact admin
     contactAdminBtn: {
@@ -574,5 +574,5 @@ const getStyles = (colors: typeof lightMode) =>
       backgroundColor: colors.buttonPrimary, marginHorizontal: spacing.lg,
       padding: spacing.md, borderRadius: radius.md, gap: spacing.sm,
     },
-    contactAdminText: { color: colors.buttonPrimaryText, fontWeight: '700', fontSize: 16 },
+    contactAdminText: { color: colors.buttonPrimaryText, fontWeight: '700', fontSize: 16 * fontScale },
   });

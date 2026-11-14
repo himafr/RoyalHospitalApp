@@ -13,8 +13,8 @@ interface Props extends TextInputProps {
 }
 
 export default function InputField({ label, value, onChangeText, icon, error, secureTextEntry, ...rest }: Props) {
-   const { colors } = useTheme();
-  const styles = useMemo(() => getStyles(colors), [colors]);
+   const { colors,fontScale } = useTheme();
+  const styles = useMemo(() => getStyles(colors,fontScale), [colors,fontScale]);
   const [focused, setFocused] = useState(false);
   const [show, setShow] = useState(!secureTextEntry);
 
@@ -47,10 +47,10 @@ export default function InputField({ label, value, onChangeText, icon, error, se
   );
 }
 
-const getStyles = (colors: typeof lightMode) =>
+const getStyles = (colors: typeof lightMode, fontScale:number) =>
   StyleSheet.create({
     container: { marginBottom: spacing.md, width: '100%' },
-    label: { fontSize: 12, color: colors.textMuted, letterSpacing: 0.6, marginBottom: spacing.xs },
+    label: { fontSize: 12 * fontScale, color: colors.textMuted, letterSpacing: 0.6, marginBottom: spacing.xs },
     inputWrap: {
       flexDirection: 'row', alignItems: 'center', borderWidth: 1,
       borderColor: colors.inputBorder, borderRadius: radius.md, backgroundColor: colors.inputBackground,
@@ -58,7 +58,7 @@ const getStyles = (colors: typeof lightMode) =>
     },
     focused: { borderColor: colors.inputBorderFocused },
     errorBorder: { borderColor: colors.error },
-    input: { flex: 1, fontSize: 16, color: colors.text, textAlign: 'right', paddingVertical: 0 },
+    input: { flex: 1, fontSize: 16 * fontScale, color: colors.text, textAlign: 'right', paddingVertical: 0 },
     icon: { paddingHorizontal: spacing.sm },
-    errorText: { color: colors.error, fontSize: 12, marginTop: spacing.xs, textAlign: 'right' },
+    errorText: { color: colors.error, fontSize: 12 * fontScale, marginTop: spacing.xs, textAlign: 'right' },
   });

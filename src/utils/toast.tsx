@@ -12,8 +12,8 @@ function BaseToast({
   text2,
   variant,
 }: ToastProps & { variant: 'success' | 'error' }) {
-  const { colors } = useTheme();
-  const styles = useMemo(() => getStyles(colors), [colors]);
+  const { colors,fontScale } = useTheme();
+  const styles = useMemo(() => getStyles(colors,fontScale), [colors,fontScale]);
 
   const isSuccess = variant === 'success';
   const accent = isSuccess ? colors.success : colors.error;
@@ -64,7 +64,7 @@ export function getErrorMessage(error: unknown, fallback: string) {
   return fallback;
 }
 
-const getStyles = (colors: typeof lightMode) =>
+const getStyles = (colors: typeof lightMode, fontScale:number) =>
   StyleSheet.create({
     container: {
       flexDirection: 'row-reverse',
@@ -87,13 +87,13 @@ const getStyles = (colors: typeof lightMode) =>
     copy: { flex: 1 },
     title: {
       color: colors.text,
-      fontSize: 16,
+      fontSize: 16 * fontScale,
       fontWeight: '700',
       textAlign: 'right',
     },
     message: {
       color: colors.textSecondary,
-      fontSize: 14,
+      fontSize: 14 * fontScale,
       lineHeight: 21,
       marginTop: spacing.xs,
       textAlign: 'right',

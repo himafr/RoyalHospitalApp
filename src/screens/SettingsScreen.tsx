@@ -18,30 +18,36 @@ import NavBar from '../components/layout/NavBar';
 export default function SettingsScreen({ navigation }: any) {
   const { colors, isDark, toggleMode } = useTheme();
   const { signOut } = useAuth();
-  const styles = useMemo(() => getStyles(colors), [colors]);
+  const { fontSize, setFontSize, fontScale, language, setLanguage, t } =
+    useTheme();
+  const styles = useMemo(
+    () => getStyles(colors, fontScale),
+    [colors, fontScale],
+  );
 
-  // ✨ Mock Data (States)
   const [notificationsEnabled, setNotificationsEnabled] = useState(true);
   const [emailAlerts, setEmailAlerts] = useState(false);
   const [smsAlerts, setSmsAlerts] = useState(true);
-  const [language, setLanguage] = useState('العربية'); // 'العربية' أو 'English'
-  const [fontSize, setFontSize] = useState('medium'); // 'small', 'medium', 'large'
-
-  // ✨ دوال مساعدة (Mock Actions)
-  const handleLanguageToggle = () => {
+  
+ const handleLanguageToggle = () => {
     Alert.alert(
-      'تغيير اللغة',
-      'هذه الميزة ستكون متاحة قريباً.',
-      [{ text: 'حسناً' }]
+      t('language'),
+      t('choose_language'),
+      [
+        { text: t('arabic'), onPress: () => setLanguage('ar') },
+        { text: t('english'), onPress: () => setLanguage('en') },
+        { text: t('cancel'), style: 'cancel' },
+      ],
+      { cancelable: true }
     );
   };
-
   const handleFontSize = () => {
-    Alert.alert(
-      'حجم الخط',
-      'هذه الميزة ستكون متاحة قريباً.',
-      [{ text: 'حسناً' }]
-    );
+    Alert.alert('حجم الخط', 'اختر حجم الخط المناسب لك', [
+      { text: 'صغير', onPress: () => setFontSize('small') },
+      { text: 'متوسط', onPress: () => setFontSize('medium') },
+      { text: 'كبير', onPress: () => setFontSize('large') },
+      { text: 'إلغاء', style: 'cancel' },
+    ]);
   };
 
   const handleDeleteAccount = () => {
@@ -53,30 +59,38 @@ export default function SettingsScreen({ navigation }: any) {
         {
           text: 'حذف',
           style: 'destructive',
-          onPress: () => Alert.alert('تم', 'سيتم ربط هذا الإجراء بالـ API قريباً.'),
+          onPress: () =>
+            Alert.alert('تم', 'سيتم ربط هذا الإجراء بالـ API قريباً.'),
         },
-      ]
+      ],
     );
   };
 
   return (
     <ScrollView style={styles.root} showsVerticalScrollIndicator={false}>
-      
-      <NavBar navigation={navigation} title='الإعدادات' />
+      <NavBar navigation={navigation} title={t("settings")} />
 
       {/* 2. المظهر (Dark Mode) */}
       <View style={styles.card}>
         <View style={styles.sectionHeader}>
-          <Ionicons name="color-palette-outline" size={20} color={colors.primary} />
-          <Text style={styles.sectionTitle}>المظهر</Text>
+          <Ionicons
+            name="color-palette-outline"
+            size={20}
+            color={colors.primary}
+          />
+          <Text style={styles.sectionTitle}>{t("appearance")}</Text>
         </View>
 
         <View style={styles.row}>
           <View style={styles.rowLeft}>
-            <Ionicons name="moon-outline" size={22} color={colors.textSecondary} />
+            <Ionicons
+              name="moon-outline"
+              size={22}
+              color={colors.textSecondary}
+            />
             <View>
-              <Text style={styles.rowTitle}>الوضع الليلي</Text>
-              <Text style={styles.rowSub}>تفعيل المظهر الداكن للتطبيق</Text>
+              <Text style={styles.rowTitle}>{t('dark_mode')}</Text>
+              <Text style={styles.rowSub}>{t('dark_mode_desc')}</Text>
             </View>
           </View>
           <Switch
@@ -84,7 +98,7 @@ export default function SettingsScreen({ navigation }: any) {
             onValueChange={toggleMode}
             trackColor={{ false: colors.border, true: colors.secondary }}
             thumbColor={colors.card}
-             style={{ transform: [{ scaleX: I18nManager.isRTL ? 1 : -1 }] }}
+            style={{ transform: [{ scaleX: I18nManager.isRTL ? 1 : -1 }] }}
           />
         </View>
       </View>
@@ -92,15 +106,23 @@ export default function SettingsScreen({ navigation }: any) {
       {/* 3. الإشعارات */}
       <View style={styles.card}>
         <View style={styles.sectionHeader}>
-          <Ionicons name="notifications-outline" size={20} color={colors.primary} />
-          <Text style={styles.sectionTitle}>الإشعارات</Text>
+          <Ionicons
+            name="notifications-outline"
+            size={20}
+            color={colors.primary}
+          />
+          <Text style={styles.sectionTitle}>{t('notifications')}</Text>
         </View>
 
         <View style={styles.row}>
           <View style={styles.rowLeft}>
-            <Ionicons name="notifications" size={22} color={colors.textSecondary} />
+            <Ionicons
+              name="notifications"
+              size={22}
+              color={colors.textSecondary}
+            />
             <View>
-              <Text style={styles.rowTitle}>تفعيل الإشعارات</Text>
+              <Text style={styles.rowTitle}> {t('enable_notifications')}</Text>
               <Text style={styles.rowSub}>استقبال إشعارات عامة</Text>
             </View>
           </View>
@@ -109,7 +131,7 @@ export default function SettingsScreen({ navigation }: any) {
             onValueChange={setNotificationsEnabled}
             trackColor={{ false: colors.border, true: colors.secondary }}
             thumbColor={colors.card}
-             style={{ transform: [{ scaleX: I18nManager.isRTL ? 1 : -1 }] }}
+            style={{ transform: [{ scaleX: I18nManager.isRTL ? 1 : -1 }] }}
           />
         </View>
 
@@ -117,7 +139,11 @@ export default function SettingsScreen({ navigation }: any) {
 
         <View style={styles.row}>
           <View style={styles.rowLeft}>
-            <Ionicons name="mail-outline" size={22} color={colors.textSecondary} />
+            <Ionicons
+              name="mail-outline"
+              size={22}
+              color={colors.textSecondary}
+            />
             <View>
               <Text style={styles.rowTitle}>تنبيهات البريد الإلكتروني</Text>
               <Text style={styles.rowSub}>تقارير وفواتير</Text>
@@ -128,7 +154,7 @@ export default function SettingsScreen({ navigation }: any) {
             onValueChange={setEmailAlerts}
             trackColor={{ false: colors.border, true: colors.secondary }}
             thumbColor={colors.card}
-             style={{ transform: [{ scaleX: I18nManager.isRTL ? 1 : -1 }] }}
+            style={{ transform: [{ scaleX: I18nManager.isRTL ? 1 : -1 }] }}
           />
         </View>
 
@@ -136,7 +162,11 @@ export default function SettingsScreen({ navigation }: any) {
 
         <View style={styles.row}>
           <View style={styles.rowLeft}>
-            <Ionicons name="chatbubble-outline" size={22} color={colors.textSecondary} />
+            <Ionicons
+              name="chatbubble-outline"
+              size={22}
+              color={colors.textSecondary}
+            />
             <View>
               <Text style={styles.rowTitle}>الرسائل النصية SMS</Text>
               <Text style={styles.rowSub}>تنبيهات المواعيد</Text>
@@ -147,7 +177,7 @@ export default function SettingsScreen({ navigation }: any) {
             onValueChange={setSmsAlerts}
             trackColor={{ false: colors.border, true: colors.secondary }}
             thumbColor={colors.card}
-             style={{ transform: [{ scaleX: I18nManager.isRTL ? 1 : -1 }] }}
+            style={{ transform: [{ scaleX: I18nManager.isRTL ? 1 : -1 }] }}
           />
         </View>
       </View>
@@ -156,12 +186,16 @@ export default function SettingsScreen({ navigation }: any) {
       <View style={styles.card}>
         <View style={styles.sectionHeader}>
           <Ionicons name="language-outline" size={20} color={colors.primary} />
-          <Text style={styles.sectionTitle}>اللغة والخط</Text>
+          <Text style={styles.sectionTitle}>{t('language_and_font')}</Text>
         </View>
 
         <TouchableOpacity style={styles.row} onPress={handleLanguageToggle}>
           <View style={styles.rowLeft}>
-            <Ionicons name="globe-outline" size={22} color={colors.textSecondary} />
+            <Ionicons
+              name="globe-outline"
+              size={22}
+              color={colors.textSecondary}
+            />
             <View>
               <Text style={styles.rowTitle}>اللغة</Text>
               <Text style={styles.rowSub}>{language}</Text>
@@ -174,11 +208,19 @@ export default function SettingsScreen({ navigation }: any) {
 
         <TouchableOpacity style={styles.row} onPress={handleFontSize}>
           <View style={styles.rowLeft}>
-            <Ionicons name="text-outline" size={22} color={colors.textSecondary} />
+            <Ionicons
+              name="text-outline"
+              size={22}
+              color={colors.textSecondary}
+            />
             <View>
               <Text style={styles.rowTitle}>حجم الخط</Text>
               <Text style={styles.rowSub}>
-                {fontSize === 'small' ? 'صغير' : fontSize === 'medium' ? 'متوسط' : 'كبير'}
+                {fontSize === 'small'
+                  ? 'صغير'
+                  : fontSize === 'medium'
+                  ? 'متوسط'
+                  : 'كبير'}
               </Text>
             </View>
           </View>
@@ -189,13 +231,21 @@ export default function SettingsScreen({ navigation }: any) {
       {/* 5. الدعم والمساعدة */}
       <View style={styles.card}>
         <View style={styles.sectionHeader}>
-          <Ionicons name="help-circle-outline" size={20} color={colors.primary} />
+          <Ionicons
+            name="help-circle-outline"
+            size={20}
+            color={colors.primary}
+          />
           <Text style={styles.sectionTitle}>الدعم والمساعدة</Text>
         </View>
 
         <TouchableOpacity style={styles.row}>
           <View style={styles.rowLeft}>
-            <Ionicons name="shield-checkmark-outline" size={22} color={colors.textSecondary} />
+            <Ionicons
+              name="shield-checkmark-outline"
+              size={22}
+              color={colors.textSecondary}
+            />
             <Text style={styles.rowTitle}>سياسة الخصوصية</Text>
           </View>
           <Ionicons name="chevron-back" size={20} color={colors.textMuted} />
@@ -205,7 +255,11 @@ export default function SettingsScreen({ navigation }: any) {
 
         <TouchableOpacity style={styles.row}>
           <View style={styles.rowLeft}>
-            <Ionicons name="document-text-outline" size={22} color={colors.textSecondary} />
+            <Ionicons
+              name="document-text-outline"
+              size={22}
+              color={colors.textSecondary}
+            />
             <Text style={styles.rowTitle}>الشروط والأحكام</Text>
           </View>
           <Ionicons name="chevron-back" size={20} color={colors.textMuted} />
@@ -215,7 +269,11 @@ export default function SettingsScreen({ navigation }: any) {
 
         <TouchableOpacity style={styles.row}>
           <View style={styles.rowLeft}>
-            <Ionicons name="information-circle-outline" size={22} color={colors.textSecondary} />
+            <Ionicons
+              name="information-circle-outline"
+              size={22}
+              color={colors.textSecondary}
+            />
             <Text style={styles.rowTitle}>عن التطبيق</Text>
           </View>
           <Text style={styles.versionText}>v1.0.0</Text>
@@ -247,14 +305,16 @@ export default function SettingsScreen({ navigation }: any) {
         </TouchableOpacity>
       </View>
 
-      <Text style={styles.footerText}>© 2026 عيادة الشفاء - جميع الحقوق محفوظة</Text>
+      <Text style={styles.footerText}>
+        © 2026 عيادة الشفاء - جميع الحقوق محفوظة
+      </Text>
 
       <View style={{ height: 100 }} />
     </ScrollView>
   );
 }
 
-const getStyles = (colors: typeof lightMode) =>
+const getStyles = (colors: typeof lightMode, fontScale: number) =>
   StyleSheet.create({
     root: { flex: 1, backgroundColor: colors.background },
 
@@ -267,7 +327,11 @@ const getStyles = (colors: typeof lightMode) =>
       borderBottomColor: colors.border,
       alignItems: 'center',
     },
-    headerTitle: { fontSize: 20, fontWeight: '900', color: colors.text },
+    headerTitle: {
+      fontSize: 20 * fontScale,
+      fontWeight: '900',
+      color: colors.text,
+    },
 
     // الكروت
     card: {
@@ -288,7 +352,7 @@ const getStyles = (colors: typeof lightMode) =>
       borderBottomColor: colors.divider,
     },
     sectionTitle: {
-      fontSize: 15,
+      fontSize: 15 * fontScale,
       fontWeight: '900',
       color: colors.text,
     },
@@ -307,13 +371,13 @@ const getStyles = (colors: typeof lightMode) =>
       flex: 1,
     },
     rowTitle: {
-      fontSize: 15,
+      fontSize: 15 * fontScale,
       fontWeight: '700',
       color: colors.text,
       textAlign: 'right',
     },
     rowSub: {
-      fontSize: 12,
+      fontSize: 12 * fontScale,
       color: colors.textMuted,
       textAlign: 'right',
       marginTop: 2,
@@ -323,11 +387,11 @@ const getStyles = (colors: typeof lightMode) =>
     divider: { height: 1, backgroundColor: colors.divider },
 
     // نصوص
-    versionText: { fontSize: 13, color: colors.textMuted },
+    versionText: { fontSize: 13 * fontScale, color: colors.textMuted },
     footerText: {
       textAlign: 'center',
       color: colors.textMuted,
-      fontSize: 12,
+      fontSize: 12 * fontScale,
       marginTop: spacing.lg,
     },
   });

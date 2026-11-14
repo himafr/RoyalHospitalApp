@@ -13,8 +13,8 @@ import { lightMode, radius, shadow, spacing } from '../../theme';
 import useAllAppointments from './useAllAppointments';
 
 export default function DoctorAllAppointmentsScreen({ navigation }: any) {
-  const { colors } = useTheme();
-  const styles = useMemo(() => getStyles(colors), [colors]);
+  const { colors,fontScale } = useTheme();
+  const styles = useMemo(() => getStyles(colors,fontScale), [colors,fontScale]);
   const { appointments, loading, page, totalPages, goToPage } = useAllAppointments();
 
   // دالة مساعدة لعرض حالة الحجز بلون
@@ -158,7 +158,7 @@ export default function DoctorAllAppointmentsScreen({ navigation }: any) {
   );
 }
 
-const getStyles = (colors: typeof lightMode) =>
+const getStyles = (colors: typeof lightMode, fontScale:number) =>
   StyleSheet.create({
     root: { flex: 1, backgroundColor: colors.background },
 
@@ -173,12 +173,12 @@ const getStyles = (colors: typeof lightMode) =>
       borderBottomColor: colors.border,
     },
     backBtn: { padding: spacing.xs },
-    headerTitle: { fontSize: 18, fontWeight: '900', color: colors.text },
+    headerTitle: { fontSize: 18 * fontScale, fontWeight: '900', color: colors.text },
 
     // القائمة
     listContent: { padding: spacing.md, paddingBottom: 100 },
     center: { flex: 1, justifyContent: 'center', alignItems: 'center', padding: spacing.lg },
-    emptyText: { color: colors.textMuted, fontSize: 14, marginTop: spacing.sm },
+    emptyText: { color: colors.textMuted, fontSize: 14 * fontScale, marginTop: spacing.sm },
 
     // كارت الموعد
     card: {
@@ -208,16 +208,16 @@ const getStyles = (colors: typeof lightMode) =>
       justifyContent: 'center',
       alignItems: 'center',
     },
-    avatarText: { color: colors.primary, fontWeight: '900', fontSize: 16 },
-    patientName: { fontSize: 15, fontWeight: '900', color: colors.text, textAlign: 'right' },
-    patientPhone: { fontSize: 12, color: colors.textMuted, textAlign: 'right' },
+    avatarText: { color: colors.primary, fontWeight: '900', fontSize: 16 * fontScale },
+    patientName: { fontSize: 15 * fontScale, fontWeight: '900', color: colors.text, textAlign: 'right' },
+    patientPhone: { fontSize: 12 * fontScale, color: colors.textMuted, textAlign: 'right' },
 
     badge: {
       paddingHorizontal: spacing.sm,
       paddingVertical: 4,
       borderRadius: radius.pill,
     },
-    badgeText: { fontSize: 11, fontWeight: '900' },
+    badgeText: { fontSize: 11 * fontScale, fontWeight: '900' },
 
     divider: {
       height: 1,
@@ -230,7 +230,7 @@ const getStyles = (colors: typeof lightMode) =>
       alignItems: 'center',
       gap: 4,
     },
-    infoText: { fontSize: 12, color: colors.textSecondary, fontWeight: '700' },
+    infoText: { fontSize: 12 * fontScale, color: colors.textSecondary, fontWeight: '700' },
 
     // الترقيم
     pagination: {
@@ -252,6 +252,6 @@ const getStyles = (colors: typeof lightMode) =>
     },
     pageBtnActive: { backgroundColor: colors.primary, borderColor: colors.primary },
     pageBtnDisabled: { opacity: 0.4 },
-    pageText: { fontSize: 13, fontWeight: '700', color: colors.text },
+    pageText: { fontSize: 13 * fontScale, fontWeight: '700', color: colors.text },
     pageTextActive: { color: colors.onPrimary },
   });

@@ -15,8 +15,8 @@ import { lightMode, radius, spacing } from '../../theme';
 import { getErrorMessage, showErrorToast } from '../../utils/toast';
 
 export default function ChangePasswordForm({ navigation }: any) {
-  const { colors } = useTheme();
-const styles = useMemo(() => getStyles(colors), [colors]);
+  const { colors,fontScale } = useTheme();
+const styles = useMemo(() => getStyles(colors,fontScale), [colors,fontScale]);
   const { signOut } = useAuth();
   const { passwordUpdate, loading } = useUser();
 
@@ -100,10 +100,10 @@ const styles = useMemo(() => getStyles(colors), [colors]);
   );
 }
 
-const getStyles = (colors: typeof lightMode) =>
+const getStyles = (colors: typeof lightMode, fontScale:number) =>
   StyleSheet.create({
     label: {
-      fontSize: 14,
+      fontSize: 14 * fontScale,
       color: colors.text,
       fontWeight: '700',
       marginBottom: spacing.xs,
@@ -130,6 +130,6 @@ const getStyles = (colors: typeof lightMode) =>
     saveBtnText: {
       color: colors.buttonPrimaryText,
       fontWeight: '900',
-      fontSize: 16,
+      fontSize: 16 * fontScale,
     },
   });

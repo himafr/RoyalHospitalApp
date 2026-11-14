@@ -5,8 +5,8 @@ import { useTheme } from '../context/ModeContext';
 import { lightMode, spacing } from '../theme';
 
 export default function EditModalScreen({ route, navigation }: any) {
-  const { colors } = useTheme();
-const styles = useMemo(() => getStyles(colors), [colors]);
+  const { colors,fontScale } = useTheme();
+const styles = useMemo(() => getStyles(colors,fontScale), [colors,fontScale]);
   const { renderContent } = route.params;
 
   return (
@@ -18,7 +18,7 @@ const styles = useMemo(() => getStyles(colors), [colors]);
   );
 }
 
-const getStyles = (colors: typeof lightMode) =>
+const getStyles = (colors: typeof lightMode, fontScale:number) =>
   StyleSheet.create({
     root: { flex: 1, backgroundColor: colors.background },
     content: { padding: spacing.md },

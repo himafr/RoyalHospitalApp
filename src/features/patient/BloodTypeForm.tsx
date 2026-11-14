@@ -8,8 +8,8 @@ import { getErrorMessage, showErrorToast, showSuccessToast } from '../../utils/t
 import usePatient from './usePatient';
 
 export default function BloodTypeForm({ navigation,refreshData }: any) {
-  const { colors } = useTheme();
-const styles = useMemo(() => getStyles(colors), [colors]);
+  const { colors,fontScale } = useTheme();
+const styles = useMemo(() => getStyles(colors,fontScale), [colors,fontScale]);
   const { patient, loading,bloodTypeUpdate } = usePatient();
   const [bloodType, setBloodType] = useState<BloodType>();
 
@@ -56,11 +56,11 @@ const styles = useMemo(() => getStyles(colors), [colors]);
     </View>
   );
 }
-const getStyles = (colors: typeof lightMode) =>
+const getStyles = (colors: typeof lightMode, fontScale:number) =>
   StyleSheet.create({
-    label: { fontSize: 14, color: colors.text, fontWeight: '700', marginBottom: spacing.sm, textAlign: 'right' },
+    label: { fontSize: 14 * fontScale, color: colors.text, fontWeight: '700', marginBottom: spacing.sm, textAlign: 'right' },
     pickerWrapper: { borderWidth: 1, borderColor: colors.inputBorder, backgroundColor: colors.inputBackground, borderRadius: radius.md, marginBottom: spacing.lg, overflow: 'hidden' },
     picker: { color: colors.text },
     saveBtn: { backgroundColor: colors.buttonPrimary, padding: spacing.md, borderRadius: radius.md, alignItems: 'center' },
-    saveBtnText: { color: colors.buttonPrimaryText, fontWeight: '900', fontSize: 16 },
+    saveBtnText: { color: colors.buttonPrimaryText, fontWeight: '900', fontSize: 16 * fontScale },
   });

@@ -10,8 +10,8 @@ import { lightMode, radius, spacing } from '../../theme';
 import { getErrorMessage, showErrorToast, showSuccessToast } from '../../utils/toast';
 
 export default function SignupScreen({ navigation }: any) {
-  const { colors } = useTheme();
-const styles = useMemo(() => getStyles(colors), [colors]);
+  const { colors,fontScale } = useTheme();
+const styles = useMemo(() => getStyles(colors,fontScale), [colors,fontScale]);
   const { signup } = useAuth();
   const [form, setForm] = useState({ fullName: '', phoneNumber: '', email: '', password: '', passwordCheck: '', gender: 'ذكر', agree: true });
   const [error, setError] = useState('');
@@ -83,14 +83,14 @@ const styles = useMemo(() => getStyles(colors), [colors]);
   );
 }
 
-const getStyles = (colors: typeof lightMode) =>
+const getStyles = (colors: typeof lightMode, fontScale:number) =>
   StyleSheet.create({
     root: { flex: 1, backgroundColor: colors.background },
     scroll: { flexGrow: 1, justifyContent: 'center', padding: spacing.lg },
     card: { backgroundColor: colors.card, borderRadius: radius.lg, borderWidth: 1, borderColor: colors.iconActive, padding: spacing.lg },
-    header: { fontSize: 28, color: colors.text, textAlign: 'right' },
-    sub: { fontSize: 14, color: colors.textMuted, marginTop: spacing.xs, textAlign: 'right' },
-    label: { fontSize: 12, color: colors.textMuted, marginBottom: spacing.xs, textTransform: 'uppercase', textAlign: 'right' },
+    header: { fontSize: 28 * fontScale, color: colors.text, textAlign: 'right' },
+    sub: { fontSize: 14 * fontScale, color: colors.textMuted, marginTop: spacing.xs, textAlign: 'right' },
+    label: { fontSize: 12 * fontScale, color: colors.textMuted, marginBottom: spacing.xs, textTransform: 'uppercase', textAlign: 'right' },
     genderRow: { flexDirection: 'row', gap: spacing.sm, marginBottom: spacing.md },
     genderBtn: { flex: 1, paddingVertical: spacing.sm, borderRadius: radius.md, borderWidth: 1, borderColor: colors.inputBorder, backgroundColor: colors.inputBackground, alignItems: 'center' },
     genderActive: { backgroundColor: colors.primary, borderColor: colors.primary },
@@ -99,9 +99,9 @@ const getStyles = (colors: typeof lightMode) =>
     checkRow: { flexDirection: 'row-reverse', alignItems: 'center', marginBottom: spacing.md },
     checkbox: { width: 22, height: 22, borderRadius: 4, borderWidth: 1, borderColor: colors.iconActive, justifyContent: 'center', alignItems: 'center', marginLeft: spacing.sm },
     checkboxActive: { backgroundColor: colors.iconActive },
-    checkText: { fontSize: 13, color: colors.textMuted, flex: 1, textAlign: 'right' },
-    error: { color: colors.error, fontSize: 13, marginBottom: spacing.sm, textAlign: 'center' },
+    checkText: { fontSize: 13 * fontScale, color: colors.textMuted, flex: 1, textAlign: 'right' },
+    error: { color: colors.error, fontSize: 13 * fontScale, marginBottom: spacing.sm, textAlign: 'center' },
     loginBox: { flexDirection: 'row', justifyContent: 'center', alignItems: 'center', marginTop: spacing.md, flexWrap: 'wrap' },
-    loginText: { fontSize: 14, color: colors.textMuted },
-    loginLink: { fontSize: 16, color: colors.link, fontWeight: '700' },
+    loginText: { fontSize: 14 * fontScale, color: colors.textMuted },
+    loginLink: { fontSize: 16 * fontScale, color: colors.link, fontWeight: '700' },
   });

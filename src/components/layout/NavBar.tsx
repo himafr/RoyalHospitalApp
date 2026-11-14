@@ -9,8 +9,8 @@ const NavBar: React.FC<{ navigation: any; title: string }> = ({
   navigation,
   title,
 }) => {
-  const { colors } = useTheme();
-  const styles = useMemo(() => getStyles(colors), [colors]);
+  const { colors,fontScale } = useTheme();
+  const styles = useMemo(() => getStyles(colors,fontScale), [colors,fontScale]);
   const insets =useSafeAreaInsets()
 
   return (
@@ -29,10 +29,10 @@ const NavBar: React.FC<{ navigation: any; title: string }> = ({
 
 export default NavBar;
 
-const getStyles = (colors: typeof lightMode) =>
+const getStyles = (colors: typeof lightMode, fontScale:number) =>
   StyleSheet.create({
     header: {
-      flexDirection: 'row-reverse',
+      flexDirection: 'row',
       justifyContent: 'space-between',
       alignItems: 'center',
       padding: spacing.md,
@@ -42,7 +42,7 @@ const getStyles = (colors: typeof lightMode) =>
     },
     backBtn: { padding: spacing.xs },
     headerTitle: {
-      fontSize: 18,
+      fontSize: 18 * fontScale,
       fontWeight: '900',
       color: colors.text,
     },

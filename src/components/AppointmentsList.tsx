@@ -5,8 +5,8 @@ import { useTheme } from '../context/ModeContext';
 import { lightMode, radius, spacing } from '../theme';
 
 const AppointmentsList: React.FC<{ data: Appointment[],loader?:ReactNode }> = ({ data,loader }) => {
-  const { colors } = useTheme();
-const styles = useMemo(() => getStyles(colors), [colors]);
+  const { colors,fontScale } = useTheme();
+const styles = useMemo(() => getStyles(colors,fontScale), [colors,fontScale]);
   function getStatusBadge(status: string) {
     switch (status) {
       case 'PENDING':
@@ -69,7 +69,7 @@ const styles = useMemo(() => getStyles(colors), [colors]);
 
 export default AppointmentsList;
 
-const getStyles = (colors: typeof lightMode) =>
+const getStyles = (colors: typeof lightMode, fontScale:number) =>
   StyleSheet.create({
     section: { padding: spacing.lg },
     sectionHeader: {
@@ -79,12 +79,12 @@ const getStyles = (colors: typeof lightMode) =>
       marginBottom: spacing.md,
     },
     sectionTitle: {
-      fontSize: 20,
+      fontSize: 20 * fontScale,
       fontWeight: '900',
       color: colors.text,
       textAlign: 'right',
     },
-    linkText: { color: colors.link, fontWeight: '700', fontSize: 13 },
+    linkText: { color: colors.link, fontWeight: '700', fontSize: 13 * fontScale },
     emptyText: {
       textAlign: 'center',
       color: colors.textMuted,
@@ -109,15 +109,15 @@ const getStyles = (colors: typeof lightMode) =>
       alignItems: 'center',
       marginLeft: spacing.md,
     },
-    avatarText: { color: colors.text, fontWeight: '700', fontSize: 12 },
+    avatarText: { color: colors.text, fontWeight: '700', fontSize: 12 * fontScale },
     patientName: {
-      fontSize: 16,
+      fontSize: 16 * fontScale,
       fontWeight: '700',
       color: colors.text,
       textAlign: 'right',
     },
     appointmentTime: {
-      fontSize: 12,
+      fontSize: 12 * fontScale,
       color: colors.textMuted,
       textAlign: 'right',
     },
@@ -132,7 +132,7 @@ const getStyles = (colors: typeof lightMode) =>
     },
     badgeTextOrange: {
       color: colors.warning,
-      fontSize: 12,
+      fontSize: 12 * fontScale,
       fontWeight: '700',
     },
 
@@ -146,7 +146,7 @@ const getStyles = (colors: typeof lightMode) =>
     },
     badgeTextGreen: {
       color: colors.success,
-      fontSize: 12,
+      fontSize: 12 * fontScale,
       fontWeight: '700',
     },
 
@@ -160,7 +160,7 @@ const getStyles = (colors: typeof lightMode) =>
     },
     badgeTextRed: {
       color: colors.error,
-      fontSize: 12,
+      fontSize: 12 * fontScale,
       fontWeight: '700',
     },
 
@@ -174,7 +174,7 @@ const getStyles = (colors: typeof lightMode) =>
     },
     badgeTextBlue: {
       color: colors.info,
-      fontSize: 12,
+      fontSize: 12 * fontScale,
       fontWeight: '700',
     },
   });

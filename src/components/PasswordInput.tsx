@@ -11,8 +11,8 @@ interface Props extends TextInputProps {
 }
 
 export default function PasswordInput({ value, onChangeText, placeholder, ...rest }: Props) {
-  const { colors } = useTheme();
-const styles = useMemo(() => getStyles(colors), [colors]);
+  const { colors,fontScale } = useTheme();
+const styles = useMemo(() => getStyles(colors,fontScale), [colors,fontScale]);
   const [show, setShow] = useState(false);
 
   return (
@@ -36,7 +36,7 @@ const styles = useMemo(() => getStyles(colors), [colors]);
     </View>
   );
 }
-const getStyles = (colors: typeof lightMode) =>
+const getStyles = (colors: typeof lightMode, fontScale:number) =>
   StyleSheet.create({
     container: {
       flexDirection: 'row-reverse',

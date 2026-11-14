@@ -4,7 +4,7 @@ import {
 } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import React from 'react';
-import { ActivityIndicator, Settings, StyleSheet, View } from 'react-native';
+import { ActivityIndicator,  StyleSheet, View } from 'react-native';
 import { useAuth } from '../context/AuthContext';
 import { useTheme } from '../context/ModeContext';
 import ActivateScreen from '../features/auth/ActivateScreen';
@@ -21,7 +21,7 @@ const Stack = createNativeStackNavigator();
 export const navigationRef = createNavigationContainerRef();
 
 export default function RootNavigator() {
-  const { colors } = useTheme();
+  const { colors,fontScale } = useTheme();
   const { loading, isAuthenticated, role } = useAuth();
   if (loading)
     return (

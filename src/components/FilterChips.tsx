@@ -11,8 +11,8 @@ interface Props {
 }
 
 export default function FilterChips({ selected, onSelect }: Props) {
-  const { colors } = useTheme();
-const styles = useMemo(() => getStyles(colors), [colors]);
+  const { colors,fontScale } = useTheme();
+const styles = useMemo(() => getStyles(colors,fontScale), [colors,fontScale]);
   return (
     <SmoothScrollView
       horizontal
@@ -43,7 +43,7 @@ const styles = useMemo(() => getStyles(colors), [colors]);
     </SmoothScrollView>
   );
 }
-const getStyles = (colors: typeof lightMode) =>
+const getStyles = (colors: typeof lightMode, fontScale:number) =>
   StyleSheet.create({
     container: {
       paddingHorizontal: spacing.md,
@@ -65,6 +65,6 @@ const getStyles = (colors: typeof lightMode) =>
       alignItems: 'center',
     },
     chipActive: { backgroundColor: colors.primary, borderColor: colors.primary },
-    text: { color: colors.text, fontWeight: '700', fontSize: 13 },
+    text: { color: colors.text, fontWeight: '700', fontSize: 13 * fontScale },
     textActive: { color: colors.onPrimary },
   });

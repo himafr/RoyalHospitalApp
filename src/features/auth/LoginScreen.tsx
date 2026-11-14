@@ -17,8 +17,8 @@ import { getErrorMessage, showErrorToast, showSuccessToast } from '../../utils/t
 import { useTheme } from '../../context/ModeContext';
 
 export default function LoginScreen({ navigation }: any) {
-  const { colors } = useTheme();
-const styles = useMemo(() => getStyles(colors), [colors]);
+  const { colors,fontScale } = useTheme();
+const styles = useMemo(() => getStyles(colors,fontScale), [colors,fontScale]);
   const { login } = useAuth();
   const [email, setEmail] = useState('hema@sallem.com');
   const [password, setPassword] = useState('12345678');
@@ -96,7 +96,7 @@ const styles = useMemo(() => getStyles(colors), [colors]);
               onPress={() => navigation.navigate('DoctorSignup')}
               style={{ marginTop: spacing.sm, alignSelf: 'center' }}
             >
-              <Text style={[styles.signupLink, { fontSize: 14 }]}>
+              <Text style={[styles.signupLink, { fontSize: 14 * fontScale }]}>
                 تسجيل كطبيب
               </Text>
             </TouchableOpacity>
@@ -107,7 +107,7 @@ const styles = useMemo(() => getStyles(colors), [colors]);
   );
 }
 
-const getStyles = (colors: typeof lightMode) =>
+const getStyles = (colors: typeof lightMode, fontScale:number) =>
   StyleSheet.create({
     root: { flex: 1, backgroundColor: colors.background },
     scroll: { flexGrow: 1, justifyContent: 'center', padding: spacing.lg },
@@ -129,13 +129,13 @@ const getStyles = (colors: typeof lightMode) =>
       alignItems: 'center',
     },
     brand: {
-      fontSize: 30,
+      fontSize: 30 * fontScale,
       fontWeight: '500',
       color: colors.text,
       marginTop: spacing.sm,
     },
     tagline: {
-      fontSize: 14,
+      fontSize: 14 * fontScale,
       fontWeight: '600',
       color: colors.textMuted,
       textTransform: 'uppercase',
@@ -147,10 +147,10 @@ const getStyles = (colors: typeof lightMode) =>
       backgroundColor: colors.iconActive,
       marginVertical: spacing.md,
     },
-    title: { fontSize: 20, fontWeight: '500', color: colors.text },
+    title: { fontSize: 20 * fontScale, fontWeight: '500', color: colors.text },
     error: {
       color: colors.error,
-      fontSize: 13,
+      fontSize: 13 * fontScale,
       marginBottom: spacing.sm,
       textAlign: 'center',
     },
@@ -164,6 +164,6 @@ const getStyles = (colors: typeof lightMode) =>
       borderTopColor: colors.border,
       flexWrap: 'wrap',
     },
-    signupText: { fontSize: 14, color: colors.textMuted },
-    signupLink: { fontSize: 16, color: colors.link, fontWeight: '700' },
+    signupText: { fontSize: 14 * fontScale, color: colors.textMuted },
+    signupLink: { fontSize: 16 * fontScale, color: colors.link, fontWeight: '700' },
   });

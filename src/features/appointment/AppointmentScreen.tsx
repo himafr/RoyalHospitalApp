@@ -19,7 +19,7 @@ import SmoothScrollView from '../../components/SmoothScrollView';
 import { useTheme } from '../../context/ModeContext';
 
 export default function AppointmentScreen({ route, navigation }: any) {
-  const { colors } = useTheme();
+  const { colors,fontScale } = useTheme();
 
   const {
     doctorId: initialDoctorId,
@@ -87,7 +87,7 @@ export default function AppointmentScreen({ route, navigation }: any) {
   ]);
 
   const isDateFullyBooked = form.date ? bookedDates.includes(form.date) : false;
-  const styles = useMemo(() => getStyles(colors), [colors]);
+  const styles = useMemo(() => getStyles(colors,fontScale), [colors,fontScale]);
 
   return (
     <SmoothScrollView style={styles.root} showsVerticalScrollIndicator={false}>
@@ -284,7 +284,7 @@ export default function AppointmentScreen({ route, navigation }: any) {
     </SmoothScrollView>
   );
 }
-const getStyles = (colors: typeof lightMode) =>
+const getStyles = (colors: typeof lightMode, fontScale:number) =>
   StyleSheet.create({
     root: { flex: 1, backgroundColor: colors.background },
     header: {
@@ -293,20 +293,20 @@ const getStyles = (colors: typeof lightMode) =>
       alignItems: 'center',
     },
     title: {
-      fontSize: 24,
+      fontSize: 24 * fontScale,
       fontWeight: '900',
       color: colors.text,
       marginTop: spacing.sm,
     },
     sub: {
-      fontSize: 14,
+      fontSize: 14 * fontScale,
       color: colors.textSecondary,
       textAlign: 'center',
       marginTop: spacing.xs,
     },
     form: { padding: spacing.lg },
     label: {
-      fontSize: 14,
+      fontSize: 14 * fontScale,
       color: colors.text,
       fontWeight: '700',
       textAlign: 'right',
@@ -335,7 +335,7 @@ const getStyles = (colors: typeof lightMode) =>
     },
     error: {
       color: colors.error,
-      fontSize: 12,
+      fontSize: 12 * fontScale,
       textAlign: 'right',
       marginTop: -spacing.sm,
       marginBottom: spacing.sm,
@@ -364,7 +364,7 @@ const getStyles = (colors: typeof lightMode) =>
     timeTextActive: { color: colors.onPrimary },
     noSlots: {
       color: colors.textMuted,
-      fontSize: 14,
+      fontSize: 14 * fontScale,
       textAlign: 'right',
       width: '100%',
       padding: spacing.md,

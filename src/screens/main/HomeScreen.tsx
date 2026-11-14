@@ -76,8 +76,8 @@ const testimonials = [
 ];
 
 export default function PatientHomeScreen({ navigation }: any) {
-  const { colors } = useTheme();
-const styles = useMemo(() => getStyles(colors), [colors]);
+  const { colors,fontScale } = useTheme();
+const styles = useMemo(() => getStyles(colors,fontScale), [colors,fontScale]);
   const { isVerified , signOut} = useAuth();
   return (
     <SmoothScrollView style={styles.root} showsVerticalScrollIndicator={false}>
@@ -261,7 +261,7 @@ const styles = useMemo(() => getStyles(colors), [colors]);
   );
 }
 
-const getStyles = (colors: typeof lightMode) =>
+const getStyles = (colors: typeof lightMode, fontScale:number) =>
   StyleSheet.create({
     root: { flex: 1, backgroundColor: colors.background },
 
@@ -282,7 +282,7 @@ const getStyles = (colors: typeof lightMode) =>
       justifyContent: 'center',
       alignItems: 'center',
     },
-    brand: { fontSize: 16, fontWeight: '900', color: colors.text },
+    brand: { fontSize: 16 * fontScale, fontWeight: '900', color: colors.text },
 
     hero: {
       padding: spacing.lg,
@@ -291,14 +291,14 @@ const getStyles = (colors: typeof lightMode) =>
       borderBottomRightRadius: radius.lg,
     },
     heroTitle: {
-      fontSize: 32,
+      fontSize: 32 * fontScale,
       fontWeight: '900',
       color: colors.text,
       lineHeight: 38,
       textAlign: 'right',
     },
     heroSub: {
-      fontSize: 14,
+      fontSize: 14 * fontScale,
       color: colors.textSecondary,
       lineHeight: 21,
       marginTop: spacing.md,
@@ -316,7 +316,7 @@ const getStyles = (colors: typeof lightMode) =>
       paddingVertical: spacing.sm,
       borderRadius: radius.md,
     },
-    btnPrimaryText: { color: colors.buttonPrimaryText, fontWeight: '700', fontSize: 14 },
+    btnPrimaryText: { color: colors.buttonPrimaryText, fontWeight: '700', fontSize: 14 * fontScale },
     btnSecondary: {
       backgroundColor: colors.card,
       borderWidth: 1,
@@ -325,7 +325,7 @@ const getStyles = (colors: typeof lightMode) =>
       paddingVertical: spacing.sm,
       borderRadius: radius.md,
     },
-    btnSecondaryText: { color: colors.text, fontWeight: '700', fontSize: 14 },
+    btnSecondaryText: { color: colors.text, fontWeight: '700', fontSize: 14 * fontScale },
 
     ratingRow: {
       flexDirection: 'row-reverse',
@@ -345,18 +345,18 @@ const getStyles = (colors: typeof lightMode) =>
       alignItems: 'center',
       marginLeft: -10,
     },
-    ratingText: { color: colors.text, fontSize: 14, fontWeight: '700' },
+    ratingText: { color: colors.text, fontSize: 14 * fontScale, fontWeight: '700' },
 
     section: { padding: spacing.lg },
     sectionTitle: {
-      fontSize: 24,
+      fontSize: 24 * fontScale,
       fontWeight: '900',
       color: colors.text,
       textAlign: 'right',
       marginBottom: spacing.xs,
     },
     sectionSub: {
-      fontSize: 14,
+      fontSize: 14 * fontScale,
       color: colors.textSecondary,
       textAlign: 'right',
       marginBottom: spacing.lg,
@@ -384,13 +384,13 @@ const getStyles = (colors: typeof lightMode) =>
       alignItems: 'center',
     },
     featureTitle: {
-      fontSize: 16,
+      fontSize: 16 * fontScale,
       fontWeight: '900',
       color: colors.text,
       textAlign: 'right',
     },
     featureDesc: {
-      fontSize: 14,
+      fontSize: 14 * fontScale,
       color: colors.textSecondary,
       textAlign: 'right',
       marginTop: 4,
@@ -402,14 +402,14 @@ const getStyles = (colors: typeof lightMode) =>
       justifyContent: 'space-between',
       alignItems: 'center',
     },
-    linkText: { color: colors.link, fontWeight: '700', fontSize: 14 },
+    linkText: { color: colors.link, fontWeight: '700', fontSize: 14 * fontScale },
     detailsBtn: {
       flexDirection: 'row-reverse',
       alignItems: 'center',
       marginTop: spacing.sm,
       gap: 4,
     },
-    detailsText: { color: colors.link, fontWeight: '700', fontSize: 14 },
+    detailsText: { color: colors.link, fontWeight: '700', fontSize: 14 * fontScale },
 
     serviceCard: {
       backgroundColor: colors.card,
@@ -430,14 +430,14 @@ const getStyles = (colors: typeof lightMode) =>
       alignSelf: 'flex-start',
     },
     serviceTitle: {
-      fontSize: 16,
+      fontSize: 16 * fontScale,
       fontWeight: '900',
       color: colors.text,
       textAlign: 'right',
       marginBottom: spacing.xs,
     },
     serviceDesc: {
-      fontSize: 14,
+      fontSize: 14 * fontScale,
       color: colors.textSecondary,
       textAlign: 'right',
       lineHeight: 22,
@@ -457,9 +457,9 @@ const getStyles = (colors: typeof lightMode) =>
       gap: spacing.md,
       marginBottom: spacing.sm,
     },
-    testimonialName: { fontSize: 16, fontWeight: '900', color: colors.text },
+    testimonialName: { fontSize: 16 * fontScale, fontWeight: '900', color: colors.text },
     testimonialText: {
-      fontSize: 14,
+      fontSize: 14 * fontScale,
       color: colors.textSecondary,
       lineHeight: 21,
       textAlign: 'right',
@@ -476,14 +476,14 @@ const getStyles = (colors: typeof lightMode) =>
       alignItems: 'center',
     },
     ctaTitle: {
-      fontSize: 22,
+      fontSize: 22 * fontScale,
       fontWeight: '900',
       color: colors.onPrimary,
       textAlign: 'center',
       lineHeight: 29,
     },
     ctaSub: {
-      fontSize: 14,
+      fontSize: 14 * fontScale,
       color: colors.onPrimary,
       opacity: 0.8,
       textAlign: 'center',
@@ -503,7 +503,7 @@ const getStyles = (colors: typeof lightMode) =>
       paddingVertical: spacing.md,
       borderRadius: radius.md,
     },
-    ctaBtnText: { color: colors.primary, fontWeight: '900', fontSize: 16 },
+    ctaBtnText: { color: colors.primary, fontWeight: '900', fontSize: 16 * fontScale },
     ctaBtnSecondary: {
       flexDirection: 'row-reverse',
       alignItems: 'center',
@@ -515,7 +515,7 @@ const getStyles = (colors: typeof lightMode) =>
       borderRadius: radius.md,
       gap: spacing.sm,
     },
-    ctaBtnSecondaryText: { color: colors.onPrimary, fontWeight: '700', fontSize: 16 },
+    ctaBtnSecondaryText: { color: colors.onPrimary, fontWeight: '700', fontSize: 16 * fontScale },
 
     logoutBtn: {
       flexDirection: 'row-reverse',
@@ -527,5 +527,5 @@ const getStyles = (colors: typeof lightMode) =>
       borderRadius: radius.md,
       gap: spacing.sm,
     },
-    logoutText: { color: '#FFFFFF', fontWeight: '700', fontSize: 16 },
+    logoutText: { color: '#FFFFFF', fontWeight: '700', fontSize: 16 * fontScale },
   });

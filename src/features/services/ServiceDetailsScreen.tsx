@@ -22,8 +22,8 @@ const { width } = Dimensions.get('window');
 export default function ServiceDetailsScreen({ route, navigation }: any) {
     const insets= useSafeAreaInsets()
   const { serviceId } = route.params;
-  const { colors } = useTheme();
-  const styles = useMemo(() => getStyles(colors), [colors]);
+  const { colors,fontScale } = useTheme();
+  const styles = useMemo(() => getStyles(colors,fontScale), [colors,fontScale]);
 
   const { service, loading } = useServiceDetails(serviceId);
 
@@ -175,7 +175,7 @@ export default function ServiceDetailsScreen({ route, navigation }: any) {
   );
 }
 
-const getStyles = (colors: typeof lightMode) =>
+const getStyles = (colors: typeof lightMode, fontScale:number) =>
   StyleSheet.create({
     root: { flex: 1, backgroundColor: colors.background },
     center: { flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor: colors.background },
@@ -192,7 +192,7 @@ const getStyles = (colors: typeof lightMode) =>
     },
     backBtn: { padding: spacing.xs },
     headerTitle: {
-      fontSize: 18,
+      fontSize: 18 * fontScale,
       fontWeight: '900',
       color: colors.text,
     },
@@ -218,7 +218,7 @@ const getStyles = (colors: typeof lightMode) =>
       borderColor: colors.secondary,
     },
     serviceName: {
-      fontSize: 24,
+      fontSize: 24 * fontScale,
       fontWeight: '900',
       color: colors.onPrimary,
       textAlign: 'center',
@@ -231,7 +231,7 @@ const getStyles = (colors: typeof lightMode) =>
       borderRadius: radius.pill,
     },
     specialtyText: {
-      fontSize: 13,
+      fontSize: 13 * fontScale,
       fontWeight: '900',
       color: colors.onSecondary,
     },
@@ -260,20 +260,20 @@ const getStyles = (colors: typeof lightMode) =>
       alignItems: 'center',
     },
     priceLabel: {
-      fontSize: 13,
+      fontSize: 13 * fontScale,
       color: colors.textMuted,
       fontWeight: '700',
       textAlign: 'right',
       marginBottom: 4,
     },
     priceValue: {
-      fontSize: 22,
+      fontSize: 22 * fontScale,
       fontWeight: '900',
       color: colors.text,
       textAlign: 'right',
     },
     currency: {
-      fontSize: 14,
+      fontSize: 14 * fontScale,
       color: colors.secondary,
       fontWeight: '700',
     },
@@ -298,7 +298,7 @@ const getStyles = (colors: typeof lightMode) =>
       borderBottomColor: colors.divider,
     },
     sectionTitle: {
-      fontSize: 16,
+      fontSize: 16 * fontScale,
       fontWeight: '900',
       color: colors.text,
       flex: 1,
@@ -315,12 +315,12 @@ const getStyles = (colors: typeof lightMode) =>
     countBadgeText: {
       color: colors.primary,
       fontWeight: '900',
-      fontSize: 13,
+      fontSize: 13 * fontScale,
     },
 
     // الوصف
     description: {
-      fontSize: 15,
+      fontSize: 15 * fontScale,
       color: colors.textSecondary,
       lineHeight: 24,
       textAlign: 'right',
@@ -342,7 +342,7 @@ const getStyles = (colors: typeof lightMode) =>
       alignItems: 'center',
     },
     featureText: {
-      fontSize: 14,
+      fontSize: 14 * fontScale,
       color: colors.textSecondary,
       textAlign: 'right',
       flex: 1,
@@ -364,14 +364,14 @@ const getStyles = (colors: typeof lightMode) =>
       borderRadius: radius.md,
     },
     infoValue: {
-      fontSize: 13,
+      fontSize: 13 * fontScale,
       fontWeight: '900',
       color: colors.text,
       textAlign: 'center',
       marginTop: spacing.xs,
     },
     infoLabel: {
-      fontSize: 11,
+      fontSize: 11 * fontScale,
       color: colors.textMuted,
       textAlign: 'center',
       marginTop: 2,
@@ -394,12 +394,12 @@ const getStyles = (colors: typeof lightMode) =>
       ...shadow.card,
     },
     footerPriceLabel: {
-      fontSize: 11,
+      fontSize: 11 * fontScale,
       color: colors.textMuted,
       textAlign: 'right',
     },
     footerPrice: {
-      fontSize: 18,
+      fontSize: 18 * fontScale,
       fontWeight: '900',
       color: colors.text,
       textAlign: 'right',
@@ -420,6 +420,6 @@ const getStyles = (colors: typeof lightMode) =>
     bookBtnText: {
       color: colors.onPrimary,
       fontWeight: '900',
-      fontSize: 15,
+      fontSize: 15 * fontScale,
     },
   });

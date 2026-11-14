@@ -19,8 +19,8 @@ import { lightMode, radius, spacing } from '../../theme';
 const COUNTDOWN = 90;
 
 export default function ActivateScreen({ navigation }: any) {
-  const { colors } = useTheme();
-const styles = useMemo(() => getStyles(colors), [colors]);
+  const { colors,fontScale } = useTheme();
+const styles = useMemo(() => getStyles(colors,fontScale), [colors,fontScale]);
   const { updateToken } = useAuth(); 
   const [pin, setPin] = useState('');
   const [error, setError] = useState('');
@@ -163,7 +163,7 @@ const styles = useMemo(() => getStyles(colors), [colors]);
   );
 }
 
-const getStyles = (colors: typeof lightMode) =>
+const getStyles = (colors: typeof lightMode, fontScale:number) =>
   StyleSheet.create({
     root: { flex: 1, backgroundColor: colors.background },
     scroll: { flexGrow: 1, justifyContent: 'center', padding: spacing.lg },
@@ -184,13 +184,13 @@ const getStyles = (colors: typeof lightMode) =>
       marginBottom: spacing.md,
     },
     title: {
-      fontSize: 24,
+      fontSize: 24 * fontScale,
       fontWeight: '900',
       color: colors.text,
       textAlign: 'center',
     },
     sub: {
-      fontSize: 14,
+      fontSize: 14 * fontScale,
       color: colors.textSecondary,
       textAlign: 'center',
       marginTop: spacing.sm,
@@ -200,14 +200,14 @@ const getStyles = (colors: typeof lightMode) =>
 
     error: {
       color: colors.error,
-      fontSize: 14,
+      fontSize: 14 * fontScale,
       textAlign: 'center',
       marginBottom: spacing.md,
       fontWeight: '700',
     },
     success: {
       color: colors.success,
-      fontSize: 14,
+      fontSize: 14 * fontScale,
       textAlign: 'center',
       marginBottom: spacing.md,
       fontWeight: '700',
@@ -222,10 +222,10 @@ const getStyles = (colors: typeof lightMode) =>
       marginBottom: spacing.lg,
     },
     disabled: { opacity: 0.5, borderColor: colors.textMuted },
-    outlineText: { color: colors.primary, fontWeight: '700', fontSize: 16 },
+    outlineText: { color: colors.primary, fontWeight: '700', fontSize: 16 * fontScale },
 
     label: {
-      fontSize: 14,
+      fontSize: 14 * fontScale,
       color: colors.text,
       fontWeight: '700',
       marginBottom: spacing.sm,
@@ -236,7 +236,7 @@ const getStyles = (colors: typeof lightMode) =>
       borderColor: colors.inputBorder,
       borderRadius: radius.md,
       height: 60,
-      fontSize: 28,
+      fontSize: 28 * fontScale,
       letterSpacing: 16,
       color: colors.text,
       marginBottom: spacing.xl,
@@ -244,5 +244,5 @@ const getStyles = (colors: typeof lightMode) =>
     },
 
     backBtn: { marginTop: spacing.lg, alignSelf: 'center' },
-    backText: { color: colors.textMuted, fontWeight: '700', fontSize: 16 },
+    backText: { color: colors.textMuted, fontWeight: '700', fontSize: 16 * fontScale },
   });

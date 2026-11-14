@@ -15,8 +15,8 @@ interface Props {
 }
 
 export default function PrimaryButton({ title, onPress, loading, disabled, icon, variant = 'primary', style }: Props) {
-  const { colors } = useTheme();
-const styles = useMemo(() => getStyles(colors), [colors]);
+  const { colors,fontScale } = useTheme();
+const styles = useMemo(() => getStyles(colors,fontScale), [colors,fontScale]);
   const isPrimary = variant === 'primary';
   return (
     <TouchableOpacity
@@ -37,14 +37,14 @@ const styles = useMemo(() => getStyles(colors), [colors]);
   );
 }
 
-const getStyles = (colors: typeof lightMode) =>
+const getStyles = (colors: typeof lightMode, fontScale:number) =>
   StyleSheet.create({
     button: { height: 52, borderRadius: radius.lg, justifyContent: 'center', alignItems: 'center', paddingHorizontal: spacing.lg, width: '100%' },
     primary: { backgroundColor: colors.buttonPrimary },
     secondary: { backgroundColor: colors.card, borderWidth: 1, borderColor: colors.border },
     disabled: { opacity: 0.6 },
-    content: { flexDirection: 'row-reverse', alignItems: 'center' },
-    text: { fontSize: 16, fontWeight: '900' },
+    content: { flexDirection: 'row', alignItems: 'center' },
+    text: { fontSize: 16 * fontScale, fontWeight: '900' },
     textPrimary: { color: colors.buttonPrimaryText },
     textSecondary: { color: colors.text },
   });

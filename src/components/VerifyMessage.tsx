@@ -5,14 +5,14 @@ import { useTheme } from "../context/ModeContext"
 import { radius, spacing } from "../theme"
 
 const VerifyMessage : React.FC<{isVerified:boolean,navigation:any}> =({isVerified,navigation})=> {
-  const {colors}=useTheme()
+  const {colors,fontScale}=useTheme()
     return (
         <View>
             {!isVerified && (
     <TouchableOpacity
       style={{
     marginTop: spacing.lg,
-    flexDirection: 'row-reverse',
+    flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
     backgroundColor: colors.backgroundAlt,
@@ -32,7 +32,7 @@ const VerifyMessage : React.FC<{isVerified:boolean,navigation:any}> =({isVerifie
       <Ionicons name="alert-circle" size={18} color={colors.error} />
       <Text style={{
     color: colors.text,
-    fontSize: 14,
+    fontSize: 14 * fontScale,
     fontWeight: '900',
   }}>اضغط هنا لتوثيق الحساب</Text>
     </TouchableOpacity>

@@ -14,7 +14,6 @@ export default function useAllAppointments() {
     setLoading(true);
     try {
       const res = await getAllAppointmentsForDoctor({ page: pageNumber, size: PAGE_SIZE });
-      // بنفترض إن res هو الـ Page Object
       setAppointments(res.data.content || []);
       setTotalPages(res.data.totalPages || 1);
       setPage(pageNumber);

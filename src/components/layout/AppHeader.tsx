@@ -21,13 +21,13 @@ export default function AppHeader({
   title?: string;
 }) {
   const insets = useSafeAreaInsets();
-  const { colors ,toggleMode} = useTheme();
+  const { colors ,toggleMode,fontScale,t} = useTheme();
   
   const { fullName, email, photoUrl, signOut } = useAuth();
   const navigation = useNavigation();
   const [menuVisible, setMenuVisible] = useState(false);
   const [isAvailable, setIsAvailable] = useState(true);
-  const styles = useMemo(() => getStyles(colors), [colors]);
+  const styles = useMemo(() => getStyles(colors,fontScale), [colors,fontScale]);
 
   const userInitial = (fullName || email || 'U').trim().charAt(0).toUpperCase();
   return (
@@ -68,7 +68,7 @@ export default function AppHeader({
             ]}
           />
           <Text style={styles.statusText}>
-            {isAvailable ? 'متاح' : 'إجازة'}
+            {isAvailable ? t('available') : t('on_leave')}
           </Text>
         </TouchableOpacity>
       </View>
@@ -160,7 +160,8 @@ export default function AppHeader({
     </View>
   );
 }
-const getStyles = (colors: typeof lightMode) =>
+
+const getStyles = (colors: typeof lightMode, fontScale:number) =>
   StyleSheet.create({
     headerContainer: {
       height: 85,
@@ -187,7 +188,7 @@ const getStyles = (colors: typeof lightMode) =>
     statusDot: { width: 8, height: 8, borderRadius: 4 },
     dotGreen: { backgroundColor: colors.success },
     dotRed: { backgroundColor: colors.error },
-    statusText: { fontSize: 12, fontWeight: '700', color: colors.navText },
+    statusText: { fontSize: 12 * fontScale, fontWeight: '700', color: colors.navText },
 
     rightSection: {
       flexDirection: 'row-reverse',
@@ -216,7 +217,7 @@ const getStyles = (colors: typeof lightMode) =>
     avatarText: {
       color: colors.primary,
       fontWeight: '900',
-      fontSize: 18,
+      fontSize: 18 * fontScale,
     },
 
     // زرار القائمة
@@ -228,7 +229,7 @@ const getStyles = (colors: typeof lightMode) =>
     },
 
     title: {
-      fontSize: 18,
+      fontSize: 18 * fontScale,
       fontWeight: '900',
       color: colors.navText,
     },
@@ -258,7 +259,7 @@ const getStyles = (colors: typeof lightMode) =>
       gap: spacing.sm,
     },
     menuItemText: {
-      fontSize: 15,
+      fontSize: 15 * fontScale,
       fontWeight: '700',
       color: colors.text,
     },

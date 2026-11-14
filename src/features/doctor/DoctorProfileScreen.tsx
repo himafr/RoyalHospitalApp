@@ -18,8 +18,8 @@ import EditCertificationForm from './EditCertificationForm';
 import useDoctor from './useDoctor';
 
 export default function DoctorProfileScreen({ navigation }: any) {
-  const { colors } = useTheme();
-const styles = useMemo(() => getStyles(colors), [colors]);
+  const { colors,fontScale } = useTheme();
+const styles = useMemo(() => getStyles(colors,fontScale), [colors,fontScale]);
   const { email, signOut, photoUrl } = useAuth();
   const { doctor: user, loading, refetch,error } = useDoctor();
 
@@ -185,7 +185,7 @@ const styles = useMemo(() => getStyles(colors), [colors]);
   );
 }
 
-const getStyles = (colors: typeof lightMode) =>
+const getStyles = (colors: typeof lightMode, fontScale:number) =>
   StyleSheet.create({
     root: { flex: 1, backgroundColor: colors.background },
 
@@ -211,9 +211,9 @@ const getStyles = (colors: typeof lightMode) =>
       overflow: 'hidden',
     },
     avatarImage: { width: '100%', height: '100%' },
-    welcomeTitle: { fontSize: 20, fontWeight: '900', color: colors.onPrimary },
+    welcomeTitle: { fontSize: 20 * fontScale, fontWeight: '900', color: colors.onPrimary },
     welcomeSub: {
-      fontSize: 13,
+      fontSize: 13 * fontScale,
       color: colors.onPrimary,
       opacity: 0.8,
       marginTop: 4,
@@ -239,12 +239,12 @@ const getStyles = (colors: typeof lightMode) =>
       ...shadow.card,
     },
     briefValue: {
-      fontSize: 18,
+      fontSize: 18 * fontScale,
       fontWeight: '900',
       color: colors.text,
       marginTop: spacing.xs,
     },
-    briefLabel: { fontSize: 11, color: colors.textMuted, marginTop: 2 },
+    briefLabel: { fontSize: 11 * fontScale, color: colors.textMuted, marginTop: 2 },
 
     section: { padding: spacing.lg },
     sectionHeader: {
@@ -254,12 +254,12 @@ const getStyles = (colors: typeof lightMode) =>
       marginBottom: spacing.md,
     },
     sectionTitle: {
-      fontSize: 20,
+      fontSize: 20 * fontScale,
       fontWeight: '900',
       color: colors.text,
       textAlign: 'right',
     },
-    linkText: { color: colors.link, fontWeight: '700', fontSize: 13 },
+    linkText: { color: colors.link, fontWeight: '700', fontSize: 13 * fontScale },
 
     appointmentCard: {
       flexDirection: 'row-reverse',
@@ -280,15 +280,15 @@ const getStyles = (colors: typeof lightMode) =>
       alignItems: 'center',
       marginLeft: spacing.md,
     },
-    avatarText: { color: colors.text, fontWeight: '700', fontSize: 12 },
+    avatarText: { color: colors.text, fontWeight: '700', fontSize: 12 * fontScale },
     patientName: {
-      fontSize: 16,
+      fontSize: 16 * fontScale,
       fontWeight: '700',
       color: colors.text,
       textAlign: 'right',
     },
     appointmentTime: {
-      fontSize: 12,
+      fontSize: 12 * fontScale,
       color: colors.textMuted,
       textAlign: 'right',
     },
@@ -300,14 +300,14 @@ const getStyles = (colors: typeof lightMode) =>
       borderWidth: 1,
       borderColor: colors.success + '40',
     },
-    badgeText: { color: colors.success, fontSize: 12, fontWeight: '700' },
+    badgeText: { color: colors.success, fontSize: 12 * fontScale, fontWeight: '700' },
     badgeGray: {
       backgroundColor: colors.cardAlt,
       paddingHorizontal: spacing.sm,
       paddingVertical: 4,
       borderRadius: radius.pill,
     },
-    badgeTextGray: { color: colors.textMuted, fontSize: 12, fontWeight: '700' },
+    badgeTextGray: { color: colors.textMuted, fontSize: 12 * fontScale, fontWeight: '700' },
 
     actionBtn: {
       flexDirection: 'row-reverse',
@@ -322,7 +322,7 @@ const getStyles = (colors: typeof lightMode) =>
     },
     actionBtnText: {
       flex: 1,
-      fontSize: 15,
+      fontSize: 15 * fontScale,
       fontWeight: '700',
       color: colors.text,
       textAlign: 'right',
@@ -338,7 +338,7 @@ const getStyles = (colors: typeof lightMode) =>
       borderRadius: radius.md,
       gap: spacing.sm,
     },
-    logoutText: { color: '#FFFFFF', fontWeight: '700', fontSize: 16 },
+    logoutText: { color: '#FFFFFF', fontWeight: '700', fontSize: 16 * fontScale },
 
     card: {
       backgroundColor: colors.card,
@@ -359,31 +359,31 @@ const getStyles = (colors: typeof lightMode) =>
       borderBottomWidth: 1,
       borderBottomColor: colors.border,
     },
-    cardTitle: { fontSize: 16, fontWeight: '900', color: colors.text },
+    cardTitle: { fontSize: 16 * fontScale, fontWeight: '900', color: colors.text },
     cardBody: { padding: spacing.md },
 
     infoItem: { marginBottom: spacing.md },
     infoLabel: {
-      fontSize: 12,
+      fontSize: 12 * fontScale,
       color: colors.textMuted,
       textAlign: 'right',
       marginBottom: 4,
     },
     infoValue: {
-      fontSize: 14,
+      fontSize: 14 * fontScale,
       color: colors.text,
       fontWeight: '700',
       textAlign: 'right',
     },
 
     label: {
-      fontSize: 12,
+      fontSize: 12 * fontScale,
       color: colors.textMuted,
       textAlign: 'right',
       marginBottom: 4,
     },
     aboutText: {
-      fontSize: 14,
+      fontSize: 14 * fontScale,
       color: colors.textSecondary,
       textAlign: 'right',
       lineHeight: 22,
@@ -407,12 +407,12 @@ const getStyles = (colors: typeof lightMode) =>
     },
     certPhoto: { width: 36, height: 36, borderRadius: 18 },
     certName: {
-      fontSize: 15,
+      fontSize: 15 * fontScale,
       fontWeight: '900',
       color: colors.text,
       textAlign: 'right',
     },
-    certOrg: { fontSize: 12, color: colors.textMuted, textAlign: 'right' },
+    certOrg: { fontSize: 12 * fontScale, color: colors.textMuted, textAlign: 'right' },
     emptyText: {
       textAlign: 'center',
       color: colors.textMuted,

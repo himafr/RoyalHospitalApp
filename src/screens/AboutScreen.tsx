@@ -7,8 +7,8 @@ import { lightMode, radius, shadow, spacing } from '../theme';
 import NavBar from '../components/layout/NavBar';
 
 export default function AboutScreen({navigation}:any) {
-  const { colors } = useTheme();
-const styles = useMemo(() => getStyles(colors), [colors]);
+  const { colors,fontScale } = useTheme();
+const styles = useMemo(() => getStyles(colors,fontScale), [colors,fontScale]);
   return (
     <SmoothScrollView style={styles.root}>
       <NavBar navigation={navigation} title='عن العيادة' />
@@ -39,7 +39,7 @@ const styles = useMemo(() => getStyles(colors), [colors]);
   );
 }
 
-const getStyles = (colors: typeof lightMode) =>
+const getStyles = (colors: typeof lightMode, fontScale:number) =>
   StyleSheet.create({
     root: { flex: 1, backgroundColor: colors.background },
     hero: {
@@ -49,10 +49,10 @@ const getStyles = (colors: typeof lightMode) =>
       borderBottomRightRadius: 32,
       alignItems: 'center',
     },
-    heroTitle: { fontSize: 32, fontWeight: '900', color: colors.onPrimary, textAlign: 'center' },
-    heroSub: { fontSize: 16, color: colors.onPrimary, opacity: 0.8, textAlign: 'center', marginTop: spacing.sm },
+    heroTitle: { fontSize: 32 * fontScale, fontWeight: '900', color: colors.onPrimary, textAlign: 'center' },
+    heroSub: { fontSize: 16 * fontScale, color: colors.onPrimary, opacity: 0.8, textAlign: 'center', marginTop: spacing.sm },
     section: { padding: spacing.lg },
-    sectionTitle: { fontSize: 22, fontWeight: '900', color: colors.text, textAlign: 'right', marginTop: spacing.md, marginBottom: spacing.sm },
+    sectionTitle: { fontSize: 22 * fontScale, fontWeight: '900', color: colors.text, textAlign: 'right', marginTop: spacing.md, marginBottom: spacing.sm },
     card: {
       backgroundColor: colors.card,
       padding: spacing.lg,
@@ -62,5 +62,5 @@ const getStyles = (colors: typeof lightMode) =>
       marginBottom: spacing.lg,
       ...shadow.card,
     },
-    cardText: { fontSize: 15, color: colors.textSecondary, lineHeight: 24, marginTop: spacing.md, textAlign: 'right' },
+    cardText: { fontSize: 15 * fontScale, color: colors.textSecondary, lineHeight: 24, marginTop: spacing.md, textAlign: 'right' },
   });

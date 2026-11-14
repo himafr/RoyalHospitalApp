@@ -22,8 +22,8 @@ import usePatient from './usePatient';
 import NavBar from '../../components/layout/NavBar';
 
 export default function PatientProfileScreen({ navigation }: any) {
-  const { colors } = useTheme();
-const styles = useMemo(() => getStyles(colors), [colors]);
+  const { colors,fontScale } = useTheme();
+const styles = useMemo(() => getStyles(colors,fontScale), [colors,fontScale]);
   const { email, fullName, photoUrl } = useAuth();
   const { data: user, loading, refetch } = useUser();
   const {
@@ -283,7 +283,7 @@ const styles = useMemo(() => getStyles(colors), [colors]);
   );
 }
 
-const getStyles = (colors: typeof lightMode) =>
+const getStyles = (colors: typeof lightMode, fontScale:number) =>
   StyleSheet.create({
     appHeader:{backgroundColor:colors.background},
     root: { flex: 1, backgroundColor: colors.background, padding: spacing.md,paddingTop:spacing.xs },
@@ -310,9 +310,9 @@ const getStyles = (colors: typeof lightMode) =>
       overflow: 'hidden',
     },
     avatarImage: { width: '100%', height: '100%' },
-    welcomeTitle: { fontSize: 20, fontWeight: '900', color: colors.onPrimary },
+    welcomeTitle: { fontSize: 20 * fontScale, fontWeight: '900', color: colors.onPrimary },
     welcomeSub: {
-      fontSize: 14,
+      fontSize: 14 * fontScale,
       color: colors.onPrimary,
       opacity: 0.8,
       fontWeight: '700',
@@ -338,7 +338,7 @@ const getStyles = (colors: typeof lightMode) =>
       borderBottomColor: colors.border,
     },
 
-    cardTitle: { fontSize: 16, fontWeight: '900', color: colors.text },
+    cardTitle: { fontSize: 16 * fontScale, fontWeight: '900', color: colors.text },
     cardBody: { padding: spacing.md },
 
     infoGrid: {
@@ -349,13 +349,13 @@ const getStyles = (colors: typeof lightMode) =>
     },
     infoItem: { width: '48%', marginBottom: spacing.md },
     infoLabel: {
-      fontSize: 12,
+      fontSize: 12 * fontScale,
       color: colors.textMuted,
       textAlign: 'right',
       marginBottom: 4,
     },
     infoValue: {
-      fontSize: 14,
+      fontSize: 14 * fontScale,
       color: colors.text,
       fontWeight: '700',
       textAlign: 'right',
@@ -376,7 +376,7 @@ const getStyles = (colors: typeof lightMode) =>
       paddingVertical: 2,
       borderRadius: radius.sm,
     },
-    badgeGreenText: { color: colors.success, fontWeight: '700', fontSize: 12 },
+    badgeGreenText: { color: colors.success, fontWeight: '700', fontSize: 12 * fontScale },
 
     warningBox: {
       backgroundColor: colors.warning + '20',
@@ -387,14 +387,14 @@ const getStyles = (colors: typeof lightMode) =>
       marginTop: spacing.sm,
     },
     warningText: {
-      fontSize: 12,
+      fontSize: 12 * fontScale,
       color: colors.warning,
       textAlign: 'right',
       fontWeight: '700',
     },
 
     emptyBox: { padding: spacing.lg, alignItems: 'center' },
-    emptyText: { color: colors.textMuted, fontSize: 14 },
+    emptyText: { color: colors.textMuted, fontSize: 14 * fontScale },
 
     actionButton: {
       flexDirection: 'row-reverse',
@@ -405,6 +405,6 @@ const getStyles = (colors: typeof lightMode) =>
       borderRadius: radius.md,
       gap: spacing.sm,
     },
-    actionText: { color: colors.text, fontWeight: '700', fontSize: 16 },
+    actionText: { color: colors.text, fontWeight: '700', fontSize: 16 * fontScale },
     bottomHeight: { height: 120 },
   });

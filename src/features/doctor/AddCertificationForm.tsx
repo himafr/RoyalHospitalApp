@@ -8,8 +8,8 @@ import { getErrorMessage, showErrorToast, showSuccessToast } from '../../utils/t
 import useDoctor from './useDoctor';
 
 export default function AddCertificationForm({ navigation ,refetchData}: any) {
-  const { colors } = useTheme();
-const styles = useMemo(() => getStyles(colors), [colors]);
+  const { colors,fontScale } = useTheme();
+const styles = useMemo(() => getStyles(colors,fontScale), [colors,fontScale]);
   const {  addCertification,loading } = useDoctor();
   const [form, setForm] = useState({
     name: '',
@@ -66,12 +66,12 @@ const styles = useMemo(() => getStyles(colors), [colors]);
   );
 }
 
-const getStyles = (colors: typeof lightMode) =>
+const getStyles = (colors: typeof lightMode, fontScale:number) =>
   StyleSheet.create({
-    label: { fontSize: 14, color: colors.text, fontWeight: '700', marginBottom: spacing.xs, textAlign: 'right' },
+    label: { fontSize: 14 * fontScale, color: colors.text, fontWeight: '700', marginBottom: spacing.xs, textAlign: 'right' },
     input: { borderWidth: 1, borderColor: colors.inputBorder, backgroundColor: colors.inputBackground, color: colors.text, borderRadius: radius.md, padding: spacing.md, marginBottom: spacing.md, textAlign: 'right' },
     saveBtn: { backgroundColor: colors.buttonPrimary, padding: spacing.md, borderRadius: radius.md, alignItems: 'center' },
     photoBtn: { borderWidth: 1, borderColor: colors.primary, borderRadius: radius.md, padding: spacing.md, marginBottom: spacing.md, alignItems: 'center' },
     photoBtnText: { color: colors.primary, fontWeight: '700' },
-    saveBtnText: { color: colors.buttonPrimaryText, fontWeight: '900', fontSize: 16 },
+    saveBtnText: { color: colors.buttonPrimaryText, fontWeight: '900', fontSize: 16 * fontScale },
   });

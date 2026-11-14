@@ -126,7 +126,7 @@ export default function CustomTabBar({
   );
 }
 
-const getStyles = (colors: typeof lightMode) =>
+const getStyles = (colors: typeof lightMode, fontScale:number) =>
   StyleSheet.create({
     container: {
       paddingHorizontal: 16,
@@ -170,7 +170,7 @@ const getStyles = (colors: typeof lightMode) =>
       backgroundColor: colors.tabIndicator,
     },
     label: {
-      fontSize: 10,
+      fontSize: 10 * fontScale,
       fontWeight: '600',
       color: colors.tabInactive,
       marginTop: 2,

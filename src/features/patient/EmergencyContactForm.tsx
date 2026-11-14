@@ -6,8 +6,8 @@ import { getErrorMessage, showErrorToast, showSuccessToast } from '../../utils/t
 import usePatient from './usePatient';
 
 export default function EmergencyContactForm({ navigation,refreshData }: any) {
-  const { colors } = useTheme();
-const styles = useMemo(() => getStyles(colors), [colors]);
+  const { colors,fontScale } = useTheme();
+const styles = useMemo(() => getStyles(colors,fontScale), [colors,fontScale]);
   const { emergencyContactUpdate,patient, loading } = usePatient();
   const [form, setForm] = useState({
     emergencyContactName: '',
@@ -64,10 +64,10 @@ const styles = useMemo(() => getStyles(colors), [colors]);
   );
 }
 
-const getStyles = (colors: typeof lightMode) =>
+const getStyles = (colors: typeof lightMode, fontScale:number) =>
   StyleSheet.create({
-    label: { fontSize: 14, color: colors.text, fontWeight: '700', marginBottom: spacing.xs, textAlign: 'right' },
+    label: { fontSize: 14 * fontScale, color: colors.text, fontWeight: '700', marginBottom: spacing.xs, textAlign: 'right' },
     input: { borderWidth: 1, borderColor: colors.inputBorder, backgroundColor: colors.inputBackground, color: colors.text, borderRadius: radius.md, padding: spacing.md, marginBottom: spacing.md, textAlign: 'right' },
     saveBtn: { backgroundColor: colors.buttonPrimary, padding: spacing.md, borderRadius: radius.md, alignItems: 'center', marginTop: spacing.md },
-    saveBtnText: { color: colors.buttonPrimaryText, fontWeight: '900', fontSize: 16 },
+    saveBtnText: { color: colors.buttonPrimaryText, fontWeight: '900', fontSize: 16 * fontScale },
   });

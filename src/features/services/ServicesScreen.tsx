@@ -18,8 +18,8 @@ import { lightMode, radius, shadow, spacing } from '../../theme';
 import ServiceCard from './ServiceCard';
 
 export default function ServicesScreen({ navigation }: any) {
-  const { colors } = useTheme();
-const styles = useMemo(() => getStyles(colors), [colors]);
+  const { colors,fontScale } = useTheme();
+const styles = useMemo(() => getStyles(colors,fontScale), [colors,fontScale]);
   const [selectedSpec, setSelectedSpec] = useState('');
   const {
     data: services,
@@ -92,18 +92,18 @@ const styles = useMemo(() => getStyles(colors), [colors]);
     </ScreenTransition>
   );
 }
-const getStyles = (colors: typeof lightMode) =>
+const getStyles = (colors: typeof lightMode, fontScale:number) =>
   StyleSheet.create({
     root: { flex: 1, backgroundColor: colors.background },
     header: { padding: spacing.lg, backgroundColor: colors.backgroundAlt },
     title: {
-      fontSize: 24,
+      fontSize: 24 * fontScale,
       fontWeight: '900',
       color: colors.text,
       textAlign: 'right',
     },
     sub: {
-      fontSize: 14,
+      fontSize: 14 * fontScale,
       color: colors.textSecondary,
       textAlign: 'right',
       marginTop: spacing.xs,
@@ -128,14 +128,14 @@ const getStyles = (colors: typeof lightMode) =>
       alignSelf: 'flex-start',
     },
     name: {
-      fontSize: 16,
+      fontSize: 16 * fontScale,
       fontWeight: '900',
       color: colors.text,
       textAlign: 'right',
       marginBottom: spacing.xs,
     },
     desc: {
-      fontSize: 14,
+      fontSize: 14 * fontScale,
       color: colors.textSecondary,
       lineHeight: 21,
       textAlign: 'right',
@@ -146,13 +146,13 @@ const getStyles = (colors: typeof lightMode) =>
       justifyContent: 'space-between',
       alignItems: 'center',
     },
-    price: { fontSize: 16, fontWeight: '900', color: colors.text },
-    currency: { color: colors.iconActive, fontSize: 14 },
+    price: { fontSize: 16 * fontScale, fontWeight: '900', color: colors.text },
+    currency: { color: colors.iconActive, fontSize: 14 * fontScale },
     empty: {
       textAlign: 'center',
       marginTop: spacing.xxl,
       color: colors.textSecondary,
-      fontSize: 14,
+      fontSize: 14 * fontScale,
       lineHeight: 21,
     },
   });

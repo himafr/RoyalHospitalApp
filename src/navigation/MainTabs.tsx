@@ -3,12 +3,11 @@ import React from 'react';
 import CustomTabBar from '../components/layout/CustomTabBar';
 import { useAuth } from '../context/AuthContext';
 import AppointmentScreen from '../features/appointment/AppointmentScreen';
+import DoctorAllAppointmentsScreen from '../features/appointment/DoctorAllAppointmentsScreen';
 import DoctorHomeScreen from '../features/doctor/DoctorHomeScreen';
-import AboutScreen from '../screens/AboutScreen';
+import ServicesScreen from '../features/services/ServicesScreen';
 import DoctorsScreen from '../screens/main/DoctorsScreen';
 import HomeScreen from '../screens/main/HomeScreen';
-import ServicesScreen from '../features/services/ServicesScreen';
-import DoctorAllAppointmentsScreen from '../features/appointment/DoctorAllAppointmentsScreen';
 
 const Tab = createBottomTabNavigator();
 
