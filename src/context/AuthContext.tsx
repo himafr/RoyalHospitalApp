@@ -4,17 +4,19 @@ import React, {
   useContext,
   useEffect,
   ReactNode,
+  useCallback,
 } from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import * as authApi from '../api/auth';
-import {jwtDecode as decode } from "jwt-decode"
+import { jwtDecode as decode } from 'jwt-decode';
+import { DeviceEventEmitter } from 'react-native';
 interface AuthContextData {
   fullName: string | null;
   email: string | null;
   role: string | null;
   token: string | null;
   photoUrl: string | null;
-  isVerified:()=>boolean;
+  isVerified: () => boolean;
   loading: boolean;
   isAuthenticated: boolean;
   login: (email: string, password: string) => Promise<void>;
@@ -36,6 +38,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
   const getPhotoUrl = (authToken: string) =>
     decode<{ photoUrl?: string | null }>(authToken).photoUrl ?? null;
+  
 
   useEffect(() => {
     (async () => {
@@ -57,9 +60,12 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     })();
   }, []);
 
-  
-
-  const persist = async (newToken: string, fullName: string, email: string,role:string) => {
+  const persist = async (
+    newToken: string,
+    fullName: string,
+    email: string,
+    role: string,
+  ) => {
     setToken(newToken);
     setPhotoUrl(getPhotoUrl(newToken));
     setEmail(email);
@@ -75,17 +81,17 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     setPhotoUrl(getPhotoUrl(newToken));
     await AsyncStorage.setItem('auth_token', newToken);
   };
-  const isVerified= ():boolean =>{
-    console.log(decode(token||""))
-   return  decode<{isActive:boolean}>(token||"").isActive
-  }
+  const isVerified = (): boolean => {
+    console.log(decode(token || ''));
+    return decode<{ isActive: boolean }>(token || '').isActive;
+  };
 
   const login = async (email: string, password: string) => {
-    const res = await authApi.login(email, password) as any
-    console.log(res)
-    const { token: t, fullName: fn, email: e,role:r } = res;
-    console.log(t,fn,e,r)
-    await persist(t, fn, e,r);
+    const res = (await authApi.login(email, password)) as any;
+    console.log(res);
+    const { token: t, fullName: fn, email: e, role: r } = res;
+    console.log(t, fn, e, r);
+    await persist(t, fn, e, r);
   };
 
   const signup = async (data: any) => {
@@ -93,21 +99,26 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     return res;
   };
 
-
   // const doctorSignup = async (data: any) => {
   //   const res = await authApi.doctorSignup(data);
   //   return res;
   // };
 
-  
-  const signOut = async () => {
+  const signOut = useCallback(async () => {
     setToken(null);
     setPhotoUrl(null);
     setEmail(null);
     setFullName(null);
     await AsyncStorage.removeItem('auth_token');
     await AsyncStorage.removeItem('user');
-  };
+  },[]);
+
+  useEffect(() => {
+    const sub = DeviceEventEmitter.addListener('unauthorized', () => {
+      signOut();
+    });
+    return () => sub.remove();
+  }, [signOut]);
 
   return (
     <AuthContext.Provider
@@ -123,8 +134,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         signOut,
         updateToken,
         isVerified,
-        role
-        
+        role,
       }}
     >
       {children}

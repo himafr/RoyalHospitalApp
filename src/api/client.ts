@@ -1,9 +1,13 @@
 import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { Alert, Platform } from 'react-native';
+import { Alert, DeviceEventEmitter, Platform } from 'react-native';
 import { navigationRef } from '../navigation/RootNavigator';
+import { CommonActions } from '@react-navigation/native';
 
-export const BASE_URL = Platform.OS === 'android' ? 'http://10.0.2.2:8080/api' : 'http://localhost:8080/api';
+export const BASE_URL =
+  Platform.OS === 'android'
+    ? 'http://10.0.2.2:8080/api'
+    : 'http://localhost:8080/api';
 
 const client = axios.create({
   baseURL: BASE_URL,
@@ -11,17 +15,17 @@ const client = axios.create({
   timeout: 15000,
 });
 
-client.interceptors.request.use(async (config) => {
+client.interceptors.request.use(async config => {
   const token = await AsyncStorage.getItem('auth_token');
   if (token) config.headers.Authorization = `Bearer ${token}`;
-   await new Promise((r) => setTimeout(r, 3000));
+  await new Promise(r => setTimeout(r, 3000));
   return config;
 });
 
 client.interceptors.response.use(
-  (res) => res.data,
-  async (error) => {
-    console.error('API request failed', {
+  res => res.data,
+  async error => {
+    console.error('API request failed aa', {
       message: error.message,
       code: error.code,
       status: error.response?.status,
@@ -32,19 +36,13 @@ client.interceptors.response.use(
     if (error.response?.status === 401) {
       await AsyncStorage.removeItem('auth_token');
       await AsyncStorage.removeItem('user');
-      if (navigationRef.isReady()) {
-    navigationRef.reset({
-      index: 0,
-      routes: [{ name: 'Auth' }],
-    });
-  }
-
+      DeviceEventEmitter.emit('unauthorized');
     }
-    if(error.response?.status === 404) {
+    if (error.response?.status === 404) {
       Alert.alert('Not Found', error.response.data.message);
     }
     return Promise.reject(error);
-  }
+  },
 );
 
 export default client;
