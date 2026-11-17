@@ -1,3 +1,4 @@
+import { createDirectionalStyles } from '../../utils/direction';
 import React, { useEffect, useMemo, useState } from 'react';
 import { ActivityIndicator, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
 import { useTheme } from '../../context/ModeContext';
@@ -6,8 +7,8 @@ import { getErrorMessage, showErrorToast, showSuccessToast } from '../../utils/t
 import usePatient from './usePatient';
 
 export default function EmergencyContactForm({ navigation,refreshData }: any) {
-  const { colors,fontScale } = useTheme();
-const styles = useMemo(() => getStyles(colors,fontScale), [colors,fontScale]);
+  const { colors,fontScale,t, isRTL} = useTheme();
+const styles = useMemo(() => createDirectionalStyles(getStyles(colors,fontScale), isRTL), [colors,fontScale, isRTL]);
   const { emergencyContactUpdate,patient, loading } = usePatient();
   const [form, setForm] = useState({
     emergencyContactName: '',
@@ -26,11 +27,11 @@ const styles = useMemo(() => getStyles(colors,fontScale), [colors,fontScale]);
   const handleSave = async () => {
     try {
       await emergencyContactUpdate(form);
-      showSuccessToast('تم تحديث جهة اتصال الطوارئ.');
+      showSuccessToast(t('emergency_contact_updated'), t('success'));
       refreshData();
       if (navigation.isFocused()) navigation.goBack();
     } catch (error: unknown) {
-      showErrorToast(getErrorMessage(error, 'تعذر تحديث جهة اتصال الطوارئ.'));
+      showErrorToast(getErrorMessage(error, t('emergency_contact_update_error')), t('error'));
     }
   };
 
@@ -38,27 +39,28 @@ const styles = useMemo(() => getStyles(colors,fontScale), [colors,fontScale]);
 
   return (
     <View>
-      <Text style={styles.label}>اسم شخص الطوارئ</Text>
+      <Text style={styles.label}>{t('emergency_contact_name')}</Text>
       <TextInput 
         style={styles.input} 
         value={form.emergencyContactName} 
         onChangeText={(t) => setForm({ ...form, emergencyContactName: t })} 
-        placeholder="أدخل الاسم"
+        placeholder={t('enter_name')}
         placeholderTextColor={colors.textMuted}
       />
 
-      <Text style={styles.label}>رقم الجوال</Text>
+      <Text style={styles.label}>{t('phone')}
+      </Text>
       <TextInput 
         style={styles.input} 
         value={form.emergencyContactPhone} 
         onChangeText={(t) => setForm({ ...form, emergencyContactPhone: t })} 
         keyboardType="phone-pad" 
-        placeholder="أدخل الرقم"
+        placeholder={t('enter_phone')}
         placeholderTextColor={colors.textMuted}
       />
 
       <TouchableOpacity style={styles.saveBtn} onPress={handleSave} disabled={loading}>
-        <Text style={styles.saveBtnText}>{loading ? 'جاري الحفظ...' : 'حفظ'}</Text>
+        <Text style={styles.saveBtnText}>{loading ? t('saving') : t('save')}</Text>
       </TouchableOpacity>
     </View>
   );

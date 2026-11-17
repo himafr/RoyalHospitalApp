@@ -11,14 +11,14 @@ interface Props {
 }
 
 export default function ErrorState({ message, onRetry }: Props) {
-  const { colors,fontScale } = useTheme();
+  const { colors,fontScale,t } = useTheme();
 const styles = useMemo(() => getStyles(colors,fontScale), [colors,fontScale]);
   return (
     <View style={styles.container}>
       <Ionicons name="cloud-offline-outline" size={32} color={colors.textMuted} />
-      <Text style={styles.title}>تعذر تحميل البيانات</Text>
+      <Text style={styles.title}>{t("load_error")}</Text>
       <Text style={styles.message}>{message}</Text>
-      <PrimaryButton title="إعادة المحاولة" onPress={onRetry} />
+      <PrimaryButton title={t("retry")} onPress={onRetry} />
     </View>
   );
 }

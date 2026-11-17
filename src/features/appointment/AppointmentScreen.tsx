@@ -1,3 +1,4 @@
+import { createDirectionalStyles } from '../../utils/direction';
 import React, { useEffect, useMemo, useState } from 'react';
 import {
   View,
@@ -12,14 +13,14 @@ import DateTimePicker from '@react-native-community/datetimepicker';
 import InputField from '../../components/InputField';
 import PrimaryButton from '../../components/PrimaryButton';
 import useAppointment from './useAppointment';
-import { SPECIALTIES } from '../../constants';
+import { SPECIALTIES, SPECIALTY_TRANSLATION_KEYS } from '../../constants';
 import { spacing, radius, lightMode } from '../../theme';
 import { showErrorToast, showSuccessToast } from '../../utils/toast';
 import SmoothScrollView from '../../components/SmoothScrollView';
 import { useTheme } from '../../context/ModeContext';
 
 export default function AppointmentScreen({ route, navigation }: any) {
-  const { colors,fontScale } = useTheme();
+  const { colors, fontScale, t, isRTL} = useTheme();
 
   const {
     doctorId: initialDoctorId,
@@ -87,22 +88,20 @@ export default function AppointmentScreen({ route, navigation }: any) {
   ]);
 
   const isDateFullyBooked = form.date ? bookedDates.includes(form.date) : false;
-  const styles = useMemo(() => getStyles(colors,fontScale), [colors,fontScale]);
+  const styles = useMemo(() => createDirectionalStyles(getStyles(colors, fontScale), isRTL), [colors, fontScale, isRTL]);
 
   return (
     <SmoothScrollView style={styles.root} showsVerticalScrollIndicator={false}>
       {/* الهيدر */}
       <View style={styles.header}>
         <Ionicons name="calendar" size={48} color={colors.primary} />
-        <Text style={styles.title}>نموذج حجز المواعيد</Text>
-        <Text style={styles.sub}>
-          يرجى تعبئة البيانات المطلوبة بدقة لضمان حصولكم على أفضل رعاية طبية.
-        </Text>
+        <Text style={styles.title}>{t('appointment_form_title')}</Text>
+        <Text style={styles.sub}>{t('appointment_form_desc')}</Text>
       </View>
 
       <View style={styles.form}>
         {/* القسم */}
-        <Text style={styles.label}>القسم / التخصص</Text>
+        <Text style={styles.label}> {t('specialty_specialty')}</Text>
         <View style={styles.pickerWrapper}>
           <Picker
             selectedValue={form.specialty}
@@ -113,7 +112,7 @@ export default function AppointmentScreen({ route, navigation }: any) {
             itemStyle={{ color: colors.text }}
           >
             <Picker.Item
-              label="اختر القسم المطلوب"
+              label={t('select_specialty')}
               color={colors.placeholder}
               style={{ backgroundColor: colors.modal }}
               value=""
@@ -121,7 +120,7 @@ export default function AppointmentScreen({ route, navigation }: any) {
             {SPECIALTIES.map(s => (
               <Picker.Item
                 key={s.id}
-                label={s.label}
+                label={t(SPECIALTY_TRANSLATION_KEYS[s.id])}
                 value={s.id}
                 color={colors.text}
                 style={{ backgroundColor: colors.modal }}
@@ -130,7 +129,7 @@ export default function AppointmentScreen({ route, navigation }: any) {
           </Picker>
         </View>
 
-        <Text style={styles.label}>الطبيب المختص</Text>
+        <Text style={styles.label}>{t('doctors')}</Text>
         <View style={styles.pickerWrapper}>
           <Picker
             selectedValue={form.doctorId}
@@ -143,44 +142,57 @@ export default function AppointmentScreen({ route, navigation }: any) {
             dropdownIconColor={colors.icon}
             itemStyle={{ color: colors.text }}
           >
-            <Picker.Item label={doctors.length?"اختر الطبيب المفضل":"لا يوجد أطباء متاحين"} value={null}
-                color={colors.placeholder}
-              style={{ backgroundColor: colors.modal }} />
+            <Picker.Item
+              label={doctors.length ? t('select_doctor') : t('no_doctors')}
+              value={null}
+              color={colors.placeholder}
+              style={{ backgroundColor: colors.modal }}
+            />
             {doctors.map(d => (
-              <Picker.Item key={d.id} label={`د. ${d.fullName}`} value={d.id}
-               color={colors.text}
-                style={{ backgroundColor: colors.modal }} />
+              <Picker.Item
+                key={d.id}
+                label={`${t('doctor_prefix')} ${d.fullName}`}
+                value={d.id}
+                color={colors.text}
+                style={{ backgroundColor: colors.modal }}
+              />
             ))}
           </Picker>
         </View>
 
-        <Text style={styles.label}>الخدمة الطبية</Text>
+        <Text style={styles.label}>{t('select_service')}</Text>
         <View style={styles.pickerWrapper}>
           <Picker
             selectedValue={form.serviceId}
             onValueChange={v => {
               setField('serviceId', v);
-              loadDoctorsForService(v, form.specialty); 
+              loadDoctorsForService(v, form.specialty);
             }}
             enabled={!loading && services.length > 0}
-           style={{ color: colors.text }}
+            style={{ color: colors.text }}
             dropdownIconColor={colors.icon}
             itemStyle={{ color: colors.text }}
           >
-            <Picker.Item label={services.length?"اختر الخدمة المناسبة":"لا يوجد خدمات متاحه"} value={null}
-                
-                color={colors.placeholder}
-              style={{ backgroundColor: colors.modal }} />
+            <Picker.Item
+              label={services.length ? t('select_service') : t('no_services')}
+              value={null}
+              color={colors.placeholder}
+              style={{ backgroundColor: colors.modal }}
+            />
             {services.map(s => (
-              <Picker.Item key={s.id} label={s.name} value={s.id}
-               color={colors.text}
-                style={{ backgroundColor: colors.modal }} />
+              <Picker.Item
+                key={s.id}
+                label={s.name}
+                value={s.id}
+                color={colors.text}
+                style={{ backgroundColor: colors.modal }}
+              />
             ))}
           </Picker>
         </View>
 
         {/* 4. التاريخ (باستخدام DatePicker) */}
-        <Text style={styles.label}>تاريخ الزيارة</Text>
+        <Text style={styles.label}>{t('visit_date')}</Text>
         <TouchableOpacity
           style={styles.dateInput}
           onPress={() => {
@@ -191,10 +203,11 @@ export default function AppointmentScreen({ route, navigation }: any) {
           <Text
             style={{
               color: form.date ? colors.primary : colors.textMuted,
-              textAlign: 'right',
+              textAlign: isRTL ? 'right' : 'left',
+              writingDirection: isRTL ? 'rtl' : 'ltr',
             }}
           >
-            {form.date || 'اختر تاريخ الزيارة'}
+            {form.date || t('select_date')}
           </Text>
           <Ionicons name="calendar-outline" size={20} color={colors.primary} />
         </TouchableOpacity>
@@ -206,25 +219,20 @@ export default function AppointmentScreen({ route, navigation }: any) {
             display="default"
             minimumDate={new Date()}
             onChange={onChangeDate}
-            
           />
         )}
 
         {isDateFullyBooked && (
-          <Text style={styles.error}>
-            هذا اليوم محجوز بالكامل، اختر يوماً آخر.
-          </Text>
+          <Text style={styles.error}>{t('date_fully_booked')}</Text>
         )}
         {isFriday ? (
-          <Text style={styles.error}>
-            الجمعة إجازة رسمية، يرجى اختيار يوم آخر.
-          </Text>
+          <Text style={styles.error}>{t('friday_off')}</Text>
         ) : (
           form.doctorId &&
           form.date &&
           !isDateFullyBooked && (
             <>
-              <Text style={styles.label}>الفترات المتاحة</Text>
+              <Text style={styles.label}> {t('available_slots')}</Text>
               <View style={styles.timeGrid}>
                 {availableSlots.length > 0 ? (
                   availableSlots.map(time => (
@@ -247,9 +255,7 @@ export default function AppointmentScreen({ route, navigation }: any) {
                     </TouchableOpacity>
                   ))
                 ) : (
-                  <Text style={styles.noSlots}>
-                    لا توجد فترات متاحة في هذا اليوم.
-                  </Text>
+                  <Text style={styles.noSlots}>{t('no_slots')}</Text>
                 )}
               </View>
             </>
@@ -257,23 +263,23 @@ export default function AppointmentScreen({ route, navigation }: any) {
         )}
 
         {/* الملاحظات */}
-        <Text style={styles.label}>ملاحظات طبية إضافية</Text>
+        <Text style={styles.label}>{t('appointment_notes')}</Text>
         <InputField
           label=""
           value={form.notes}
           onChangeText={t => setField('notes', t)}
-          placeholder="يرجى كتابة أي ملاحظات..."
+          placeholder={t('appointment_notes_placeholder')}
           multiline
           style={{ height: 100 }}
         />
 
         <PrimaryButton
-          title="تأكيد طلب الحجز"
+          title={t("confirm_booking")}
           onPress={async () => {
             const result = await submitBooking();
-            if (result.error) showErrorToast(result.error);
+            if (result.error) showErrorToast(result.error, t('error'));
             else if (result.success) {
-              showSuccessToast(result.success, 'تم إرسال طلب الحجز');
+              showSuccessToast(result.success, t('success'));
               navigation.goBack();
             }
           }}
@@ -284,7 +290,7 @@ export default function AppointmentScreen({ route, navigation }: any) {
     </SmoothScrollView>
   );
 }
-const getStyles = (colors: typeof lightMode, fontScale:number) =>
+const getStyles = (colors: typeof lightMode, fontScale: number) =>
   StyleSheet.create({
     root: { flex: 1, backgroundColor: colors.background },
     header: {

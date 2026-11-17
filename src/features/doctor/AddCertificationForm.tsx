@@ -1,3 +1,4 @@
+import { createDirectionalStyles } from '../../utils/direction';
 import React, { useMemo, useState } from 'react';
 import { Alert, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
 import type { Asset } from 'react-native-image-picker';
@@ -8,8 +9,8 @@ import { getErrorMessage, showErrorToast, showSuccessToast } from '../../utils/t
 import useDoctor from './useDoctor';
 
 export default function AddCertificationForm({ navigation ,refetchData}: any) {
-  const { colors,fontScale } = useTheme();
-const styles = useMemo(() => getStyles(colors,fontScale), [colors,fontScale]);
+  const { colors,fontScale,t, isRTL} = useTheme();
+const styles = useMemo(() => createDirectionalStyles(getStyles(colors,fontScale), isRTL), [colors,fontScale, isRTL]);
   const {  addCertification,loading } = useDoctor();
   const [form, setForm] = useState({
     name: '',
@@ -20,16 +21,16 @@ const styles = useMemo(() => getStyles(colors,fontScale), [colors,fontScale]);
 
   const handleSave = async () => {
     if (!form.name || !form.organization) {
-      return Alert.alert('تنبيه', 'يرجى ملء اسم الشهادة والجهة المانحة');
+      return Alert.alert(t('alert'), t('cert_fill_fields'));
     }
     
     try {
       await addCertification(form, photo)
-      showSuccessToast('تم إضافة الشهادة بنجاح.');
+      showSuccessToast(t('certification_add_success'), t('success'));
       await refetchData();
       if (navigation.isFocused()) navigation.goBack();
     } catch (error: any) {
-      showErrorToast(getErrorMessage(error, 'تعذر إضافة الشهادة.'));
+      showErrorToast(getErrorMessage(error, t('certification_add_error')), t('error'));
     } 
   };
 
@@ -38,29 +39,29 @@ const styles = useMemo(() => getStyles(colors,fontScale), [colors,fontScale]);
       const selectedPhoto = await pickImage();
       if (selectedPhoto) setPhoto(selectedPhoto);
     } catch (error: unknown) {
-      showErrorToast(getErrorMessage(error, 'تعذر اختيار صورة الشهادة.'));
+      showErrorToast(getErrorMessage(error, t('certification_photo_error')), t('error'));
     }
   };
 
   return (
     <View>
-      <Text style={styles.label}>اسم الشهادة</Text>
+      <Text style={styles.label}>{t('cert_name')}</Text>
       <TextInput style={styles.input} value={form.name} onChangeText={(t) => setForm({ ...form, name: t })} />
 
-      <Text style={styles.label}>الجهة المانحة (الجامعة/المعهد)</Text>
+      <Text style={styles.label}>{t('cert_organization')}</Text>
       <TextInput style={styles.input} value={form.organization} onChangeText={(t) => setForm({ ...form, organization: t })} />
 
-      <Text style={styles.label}>المكان (البلد/المدينة)</Text>
+      <Text style={styles.label}>{t('cert_place')}</Text>
       <TextInput style={styles.input} value={form.place} onChangeText={(t) => setForm({ ...form, place: t })} />
 
       <TouchableOpacity style={styles.photoBtn} onPress={handlePickPhoto}>
         <Text style={styles.photoBtnText}>
-          {photo?.fileName || 'اختيار صورة الشهادة (اختياري)'}
+          {photo?.fileName || `${t('choose_photo')} (${t('optional')})`}
         </Text>
       </TouchableOpacity>
 
       <TouchableOpacity style={styles.saveBtn} onPress={handleSave} disabled={loading}>
-        <Text style={styles.saveBtnText}>{loading ? 'جاري الحفظ...' : 'حفظ'}</Text>
+        <Text style={styles.saveBtnText}>{loading ? t('saving') : t('save')}</Text>
       </TouchableOpacity>
     </View>
   );

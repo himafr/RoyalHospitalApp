@@ -1,4 +1,5 @@
-import React, { useEffect, useMemo, useRef, useState } from 'react';
+import { createDirectionalStyles } from '../../utils/direction';
+import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import {
   KeyboardAvoidingView,
   Platform,
@@ -19,8 +20,8 @@ import { lightMode, radius, spacing } from '../../theme';
 const COUNTDOWN = 90;
 
 export default function ActivateScreen({ navigation }: any) {
-  const { colors,fontScale } = useTheme();
-const styles = useMemo(() => getStyles(colors,fontScale), [colors,fontScale]);
+  const { colors,fontScale,t, isRTL} = useTheme();
+const styles = useMemo(() => createDirectionalStyles(getStyles(colors,fontScale), isRTL), [colors,fontScale, isRTL]);
   const { updateToken } = useAuth(); 
   const [pin, setPin] = useState('');
   const [error, setError] = useState('');
@@ -34,12 +35,6 @@ const styles = useMemo(() => getStyles(colors,fontScale), [colors,fontScale]);
       if (timerRef.current) clearInterval(timerRef.current);
     };
   }, []);
-  useEffect(() => {
-    if (pin.length === 6) {
-      handleVerify();
-    }
-  }, [pin]);
-
   const startCountdown = () => {
     setSecondsLeft(COUNTDOWN);
     if (timerRef.current) clearInterval(timerRef.current);
@@ -60,19 +55,19 @@ const styles = useMemo(() => getStyles(colors,fontScale), [colors,fontScale]);
     try {
       setLoading(true);
       await authApi.sendActivationCode();
-      setMessage('تم إرسال كود التفعيل إلى بريدك الإلكتروني');
+      setMessage(t('activation_code_sent'));
       startCountdown();
     } catch (e: any) {
-      setError(e.response?.message || 'تعذر إرسال الكود،يرجي المحاوله لاحقا');
+      setError(e.response?.message || t('activation_send_error'));
     } finally {
       setLoading(false);
     }
   };
 
-  const handleVerify = async () => {
+  const handleVerify = useCallback(async () => {
     setError('');
     setMessage('');
-    if (pin.length !== 6) return setError('أدخل كود من 6 أرقام');
+    if (pin.length !== 6) return setError(t('activation_code_length_error'));
 
     setLoading(true);
     try {
@@ -80,21 +75,27 @@ const styles = useMemo(() => getStyles(colors,fontScale), [colors,fontScale]);
 
       const newToken = res.data;
       console.log(res);
-      if (!newToken) throw new Error('لم يتم استلام التوكن الجديد');
+      if (!newToken) throw new Error(t('activation_token_error'));
 
       await updateToken(newToken);
 
-      setMessage('تم تفعيل الحساب بنجاح!');
+      setMessage(t('account_verified'));
 
       setTimeout(() => {
         navigation.goBack();
       }, 1500);
     } catch (e: any) {
-      setError(e.response?.data?.message || 'الكود غير صحيح أو انتهت ');
+      setError(e.response?.data?.message || t('invalid_code'));
     } finally {
       setLoading(false);
     }
-  };
+  }, [navigation, pin, t, updateToken]);
+
+  useEffect(() => {
+    if (pin.length === 6) {
+      handleVerify();
+    }
+  }, [handleVerify, pin]);
 
   return (
     <KeyboardAvoidingView
@@ -110,10 +111,9 @@ const styles = useMemo(() => getStyles(colors,fontScale), [colors,fontScale]);
             <Ionicons name="shield-checkmark" size={48} color={colors.primary} />
           </View>
 
-          <Text style={styles.title}>تفعيل الحساب</Text>
+          <Text style={styles.title}>{t('activate_account')}</Text>
           <Text style={styles.sub}>
-            سيتم إرسال كود التفعيل إلى بريدك الإلكتروني المسجل. يرجى إدخال الكود
-            المكون من 6 أرقام.
+            {t('activation_code_hint')}
           </Text>
 
           {error ? <Text style={styles.error}>{error}</Text> : null}
@@ -126,13 +126,13 @@ const styles = useMemo(() => getStyles(colors,fontScale), [colors,fontScale]);
           >
             <Text style={styles.outlineText}>
               {secondsLeft > 0
-                ? `إعادة الإرسال بعد ${secondsLeft} ثانية`
-                : 'إرسال كود التفعيل'}
+                ? `${t('resend_in')} ${secondsLeft} ${t('seconds')}`
+                : t('resend_code')}
             </Text>
           </TouchableOpacity>
 
           {/* حقل إدخال الكود */}
-          <Text style={styles.label}>أدخل كود التفعيل</Text>
+          <Text style={styles.label}>{t('enter_code')}</Text>
           <TextInput
             style={styles.pinInput}
             value={pin}
@@ -146,7 +146,7 @@ const styles = useMemo(() => getStyles(colors,fontScale), [colors,fontScale]);
 
           {/* زرار التأكيد */}
           <PrimaryButton
-            title="تأكيد وتفعيل الحساب"
+            title={t('confirm_activate')}
             onPress={handleVerify}
             loading={loading}
           />
@@ -155,7 +155,7 @@ const styles = useMemo(() => getStyles(colors,fontScale), [colors,fontScale]);
             onPress={() => navigation.goBack()}
             style={styles.backBtn}
           >
-            <Text style={styles.backText}>رجوع</Text>
+            <Text style={styles.backText}>{t('back')}</Text>
           </TouchableOpacity>
         </View>
       </SmoothScrollView>

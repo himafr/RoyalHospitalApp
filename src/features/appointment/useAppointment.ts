@@ -3,6 +3,7 @@ import { createAppointment, getAvailableSlots, getBookedDates } from '../../api/
 import { getDoctors } from '../../api/doctors';
 import { getServices } from '../../api/services';
 import { showErrorToast } from '../../utils/toast';
+import { useTheme } from '../../context/ModeContext';
 
 const DEFAULT_SLOTS = ['09:00', '11:30', '16:30', '19:00'];
 
@@ -11,6 +12,7 @@ export default function useAppointment(
   initialServiceId?: number,
   initialSpecialty?: string
 ) {
+  const { t } = useTheme();
   const [doctors, setDoctors] = useState<any[]>([]);
   const [services, setServices] = useState<any[]>([]);
   const [bookedDates, setBookedDates] = useState<string[]>([]);
@@ -41,11 +43,11 @@ const initialForm={
       setServices(servsRes.data.content || []);
     } catch (e) {
       console.log('Error loading initial data', e);
-      showErrorToast('تعذر تحميل بيانات الأطباء والخدمات.');
+      showErrorToast(t('err_network'), t('error'));
     } finally {
       setLoading(false);
     }
-  }, []);
+  }, [t]);
 
   // 2. فلترة الخدمات بناءً على تخصص الطبيب
   const loadServicesForDoctor = useCallback(async (doctorId: number|null, specialty: string) => {
@@ -54,9 +56,9 @@ const initialForm={
       setServices(res.data.content || []);
     } catch (e) {
       console.log('Error loading services for doctor', e);
-      showErrorToast('تعذر تحميل الخدمات لهذا التخصص.');
+      showErrorToast(t('err_network'), t('error'));
     }
-  }, []);
+  }, [t]);
 
   // 3. فلترة الأطباء بناءً على تخصص الخدمة
   const loadDoctorsForService = useCallback(async (serviceId: number|null, specialty: string) => {
@@ -65,18 +67,18 @@ const initialForm={
       setDoctors(res.data.content || []);
     } catch (e) {
       console.log('Error loading doctors for service', e);
-      showErrorToast('تعذر تحميل الأطباء لهذا التخصص.');
+      showErrorToast(t('err_network'), t('error'));
     }
-  }, []);
+  }, [t]);
 
   // 4. جلب التواريخ المحجوزة لما الدكتور يتغير
   useEffect(() => {
     if (form.doctorId) {
       getBookedDates(form.doctorId)
         .then(res => setBookedDates(res.data || []))
-        .catch(() => showErrorToast('تعذر التحقق من المواعيد المحجوزة.'));
+        .catch(() => showErrorToast(t('err_network'), t('error')));
     }
-  }, [form.doctorId]);
+  }, [form.doctorId, t]);
 
 
 // 5. جلب الفترات المتاحة لما التاريخ يتغير
@@ -101,15 +103,15 @@ useEffect(() => {
       .catch(() => {
         // لو حصل خطأ، نعرض الفترات الافتراضية برضه
         setAvailableSlots(DEFAULT_SLOTS);
-        showErrorToast('تعذر التحقق من الفترات المتاحة.');
+        showErrorToast(t('err_network'), t('error'));
       });
   }
-}, [form.doctorId, form.date, bookedDates]);
+}, [form.doctorId, form.date, bookedDates, t]);
 
   // 6. دالة تأكيد الحجز
   const submitBooking = async () => {
     if (!form.doctorId || !form.serviceId || !form.date || !form.time) {
-      return { error: 'يرجى تعبئة جميع الحقول المطلوبة' };
+      return { error: t('fill_all_fields') };
     }
     setBooking(true);
     try {
@@ -121,9 +123,9 @@ useEffect(() => {
         notes: form.notes,
       });
       setForm(initialForm)
-      return { success: 'تم طلب الحجز بنجاح، سيتم التواصل معك للتأكيد.' };
+      return { success: t('booking_success') };
     } catch (error: any) {
-      return { error: error.response?.data?.message || 'حدث خطأ أثناء الحجز' };
+      return { error: error.response?.data?.message || t('booking_error') };
     } finally {
       setBooking(false);
     }

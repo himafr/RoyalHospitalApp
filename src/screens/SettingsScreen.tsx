@@ -7,60 +7,72 @@ import {
   TouchableOpacity,
   Switch,
   Alert,
-  I18nManager,
 } from 'react-native';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import { useTheme } from '../context/ModeContext';
 import { useAuth } from '../context/AuthContext';
 import { lightMode, radius, spacing } from '../theme';
 import NavBar from '../components/layout/NavBar';
+import SelectionModal from '../components/SelectionModal';
+import { createDirectionalStyles } from '../utils/direction';
 
 export default function SettingsScreen({ navigation }: any) {
-  const { colors, isDark, toggleMode } = useTheme();
+  const {
+    colors,
+    isDark,
+    toggleMode,
+    isRTL,
+    fontSize,
+    setFontSize,
+    fontScale,
+    language,
+    setLanguage,
+    t,
+  } = useTheme();
   const { signOut } = useAuth();
-  const { fontSize, setFontSize, fontScale, language, setLanguage, t } =
-    useTheme();
   const styles = useMemo(
-    () => getStyles(colors, fontScale),
-    [colors, fontScale],
+    () => createDirectionalStyles(getStyles(colors, fontScale), isRTL),
+    [colors, fontScale, isRTL],
   );
 
   const [notificationsEnabled, setNotificationsEnabled] = useState(true);
   const [emailAlerts, setEmailAlerts] = useState(false);
   const [smsAlerts, setSmsAlerts] = useState(true);
-  
- const handleLanguageToggle = () => {
-    Alert.alert(
-      t('language'),
-      t('choose_language'),
-      [
-        { text: t('arabic'), onPress: () => setLanguage('ar') },
-        { text: t('english'), onPress: () => setLanguage('en') },
-        { text: t('cancel'), style: 'cancel' },
-      ],
-      { cancelable: true }
-    );
-  };
-  const handleFontSize = () => {
-    Alert.alert('حجم الخط', 'اختر حجم الخط المناسب لك', [
-      { text: 'صغير', onPress: () => setFontSize('small') },
-      { text: 'متوسط', onPress: () => setFontSize('medium') },
-      { text: 'كبير', onPress: () => setFontSize('large') },
-      { text: 'إلغاء', style: 'cancel' },
-    ]);
-  };
+  const [languageModalVisible, setLanguageModalVisible] = useState(false);
+  const [fontSizeModalVisible, setFontSizeModalVisible] = useState(false);
+
+  // const handleLanguageToggle = () => {
+  //   Alert.alert(
+  //     t('language'),
+  //     t('choose_language'),
+  //     [
+  //       { text: t('arabic'), onPress: () => setLanguage('ar') },
+  //       { text: t('english'), onPress: () => setLanguage('en') },
+  //       { text: t('cancel'), style: 'cancel' },
+  //     ],
+  //     { cancelable: true },
+  //   );
+  // };
+  // const handleFontSize = () => {
+  //   Alert.alert('حجم الخط', 'اختر حجم الخط المناسب لك', [
+  //     { text: 'صغير', onPress: () => setFontSize('small') },
+  //     { text: 'متوسط', onPress: () => setFontSize('medium') },
+  //     { text: 'كبير', onPress: () => setFontSize('large') },
+  //     { text: 'إلغاء', style: 'cancel' },
+  //   ]);
+  // };
 
   const handleDeleteAccount = () => {
     Alert.alert(
-      'حذف الحساب',
-      'هل أنت متأكد من حذف حسابك؟ لا يمكن التراجع عن هذا الإجراء.',
+      t('delete_account'),
+      t('delete_account_confirm'),
       [
-        { text: 'إلغاء', style: 'cancel' },
+        { text: t('cancel'), style: 'cancel' },
         {
-          text: 'حذف',
+          text: t('delete'),
           style: 'destructive',
           onPress: () =>
-            Alert.alert('تم', 'سيتم ربط هذا الإجراء بالـ API قريباً.'),
+            Alert.alert(t('done'), t('api_coming_soon')),
         },
       ],
     );
@@ -68,7 +80,31 @@ export default function SettingsScreen({ navigation }: any) {
 
   return (
     <ScrollView style={styles.root} showsVerticalScrollIndicator={false}>
-      <NavBar navigation={navigation} title={t("settings")} />
+          <SelectionModal
+        visible={languageModalVisible}
+        title={t('choose_language')}
+        selectedValue={language}
+        options={[
+          { label: t('arabic'), value: 'ar' },
+          { label: t('english'), value: 'en' },
+        ]}
+        onSelect={(v) => setLanguage(v as any)}
+        onClose={() => setLanguageModalVisible(false)}
+      />
+
+      <SelectionModal
+        visible={fontSizeModalVisible}
+        title={t('choose_font_size')}
+        selectedValue={fontSize}
+        options={[
+          { label: t('small'), value: 'small' },
+          { label: t('medium'), value: 'medium' },
+          { label: t('large'), value: 'large' },
+        ]}
+        onSelect={(v) => setFontSize(v as any)}
+        onClose={() => setFontSizeModalVisible(false)}
+      />
+      <NavBar navigation={navigation} title={t('settings')} />
 
       {/* 2. المظهر (Dark Mode) */}
       <View style={styles.card}>
@@ -78,7 +114,7 @@ export default function SettingsScreen({ navigation }: any) {
             size={20}
             color={colors.primary}
           />
-          <Text style={styles.sectionTitle}>{t("appearance")}</Text>
+          <Text style={styles.sectionTitle}>{t('appearance')}</Text>
         </View>
 
         <View style={styles.row}>
@@ -98,7 +134,7 @@ export default function SettingsScreen({ navigation }: any) {
             onValueChange={toggleMode}
             trackColor={{ false: colors.border, true: colors.secondary }}
             thumbColor={colors.card}
-            style={{ transform: [{ scaleX: I18nManager.isRTL ? 1 : -1 }] }}
+            style={{ transform: [{ scaleX: isRTL ? 1 : -1 }] }}
           />
         </View>
       </View>
@@ -123,7 +159,7 @@ export default function SettingsScreen({ navigation }: any) {
             />
             <View>
               <Text style={styles.rowTitle}> {t('enable_notifications')}</Text>
-              <Text style={styles.rowSub}>استقبال إشعارات عامة</Text>
+              <Text style={styles.rowSub}>{t('general_notifications')}</Text>
             </View>
           </View>
           <Switch
@@ -131,7 +167,7 @@ export default function SettingsScreen({ navigation }: any) {
             onValueChange={setNotificationsEnabled}
             trackColor={{ false: colors.border, true: colors.secondary }}
             thumbColor={colors.card}
-            style={{ transform: [{ scaleX: I18nManager.isRTL ? 1 : -1 }] }}
+            style={{ transform: [{ scaleX: isRTL ? 1 : -1 }] }}
           />
         </View>
 
@@ -145,8 +181,8 @@ export default function SettingsScreen({ navigation }: any) {
               color={colors.textSecondary}
             />
             <View>
-              <Text style={styles.rowTitle}>تنبيهات البريد الإلكتروني</Text>
-              <Text style={styles.rowSub}>تقارير وفواتير</Text>
+              <Text style={styles.rowTitle}>{t('email_notifications')}</Text>
+              <Text style={styles.rowSub}>{t('reports_bills')}</Text>
             </View>
           </View>
           <Switch
@@ -154,7 +190,7 @@ export default function SettingsScreen({ navigation }: any) {
             onValueChange={setEmailAlerts}
             trackColor={{ false: colors.border, true: colors.secondary }}
             thumbColor={colors.card}
-            style={{ transform: [{ scaleX: I18nManager.isRTL ? 1 : -1 }] }}
+            style={{ transform: [{ scaleX: isRTL ? 1 : -1 }] }}
           />
         </View>
 
@@ -168,8 +204,8 @@ export default function SettingsScreen({ navigation }: any) {
               color={colors.textSecondary}
             />
             <View>
-              <Text style={styles.rowTitle}>الرسائل النصية SMS</Text>
-              <Text style={styles.rowSub}>تنبيهات المواعيد</Text>
+              <Text style={styles.rowTitle}>{t('sms_notifications')}</Text>
+              <Text style={styles.rowSub}>{t('sms_alerts')}</Text>
             </View>
           </View>
           <Switch
@@ -177,7 +213,7 @@ export default function SettingsScreen({ navigation }: any) {
             onValueChange={setSmsAlerts}
             trackColor={{ false: colors.border, true: colors.secondary }}
             thumbColor={colors.card}
-            style={{ transform: [{ scaleX: I18nManager.isRTL ? 1 : -1 }] }}
+            style={{ transform: [{ scaleX: isRTL ? 1 : -1 }] }}
           />
         </View>
       </View>
@@ -189,7 +225,7 @@ export default function SettingsScreen({ navigation }: any) {
           <Text style={styles.sectionTitle}>{t('language_and_font')}</Text>
         </View>
 
-        <TouchableOpacity style={styles.row} onPress={handleLanguageToggle}>
+        <TouchableOpacity style={styles.row} onPress={()=>setLanguageModalVisible(true)}>
           <View style={styles.rowLeft}>
             <Ionicons
               name="globe-outline"
@@ -197,16 +233,16 @@ export default function SettingsScreen({ navigation }: any) {
               color={colors.textSecondary}
             />
             <View>
-              <Text style={styles.rowTitle}>اللغة</Text>
-              <Text style={styles.rowSub}>{language}</Text>
+              <Text style={styles.rowTitle}>{t('language')}</Text>
+              <Text style={styles.rowSub}>{t(language === 'ar' ? 'arabic' : 'english')}</Text>
             </View>
           </View>
-          <Ionicons name="chevron-back" size={20} color={colors.textMuted} />
+          <Ionicons name={isRTL ? 'chevron-back' : 'chevron-forward'} size={20} color={colors.textMuted} />
         </TouchableOpacity>
 
         <View style={styles.divider} />
 
-        <TouchableOpacity style={styles.row} onPress={handleFontSize}>
+        <TouchableOpacity style={styles.row} onPress={()=>setFontSizeModalVisible(true)}>
           <View style={styles.rowLeft}>
             <Ionicons
               name="text-outline"
@@ -214,17 +250,17 @@ export default function SettingsScreen({ navigation }: any) {
               color={colors.textSecondary}
             />
             <View>
-              <Text style={styles.rowTitle}>حجم الخط</Text>
+              <Text style={styles.rowTitle}>{t('font_size')}</Text>
               <Text style={styles.rowSub}>
                 {fontSize === 'small'
-                  ? 'صغير'
+                  ? t('small')
                   : fontSize === 'medium'
-                  ? 'متوسط'
-                  : 'كبير'}
+                  ? t('medium')
+                  : t('large')}
               </Text>
             </View>
           </View>
-          <Ionicons name="chevron-back" size={20} color={colors.textMuted} />
+          <Ionicons name={isRTL ? 'chevron-back' : 'chevron-forward'} size={20} color={colors.textMuted} />
         </TouchableOpacity>
       </View>
 
@@ -236,7 +272,7 @@ export default function SettingsScreen({ navigation }: any) {
             size={20}
             color={colors.primary}
           />
-          <Text style={styles.sectionTitle}>الدعم والمساعدة</Text>
+          <Text style={styles.sectionTitle}>{t('support')}</Text>
         </View>
 
         <TouchableOpacity style={styles.row}>
@@ -246,9 +282,9 @@ export default function SettingsScreen({ navigation }: any) {
               size={22}
               color={colors.textSecondary}
             />
-            <Text style={styles.rowTitle}>سياسة الخصوصية</Text>
+            <Text style={styles.rowTitle}>{t('privacy_policy')}</Text>
           </View>
-          <Ionicons name="chevron-back" size={20} color={colors.textMuted} />
+          <Ionicons name={isRTL ? 'chevron-back' : 'chevron-forward'} size={20} color={colors.textMuted} />
         </TouchableOpacity>
 
         <View style={styles.divider} />
@@ -260,9 +296,9 @@ export default function SettingsScreen({ navigation }: any) {
               size={22}
               color={colors.textSecondary}
             />
-            <Text style={styles.rowTitle}>الشروط والأحكام</Text>
+            <Text style={styles.rowTitle}>{t('terms')}</Text>
           </View>
-          <Ionicons name="chevron-back" size={20} color={colors.textMuted} />
+          <Ionicons name={isRTL ? 'chevron-back' : 'chevron-forward'} size={20} color={colors.textMuted} />
         </TouchableOpacity>
 
         <View style={styles.divider} />
@@ -274,9 +310,9 @@ export default function SettingsScreen({ navigation }: any) {
               size={22}
               color={colors.textSecondary}
             />
-            <Text style={styles.rowTitle}>عن التطبيق</Text>
+            <Text style={styles.rowTitle}>{t('about_app')}</Text>
           </View>
-          <Text style={styles.versionText}>v1.0.0</Text>
+          <Text style={styles.versionText}>{t('version')} 1.0.0</Text>
         </TouchableOpacity>
       </View>
 
@@ -286,10 +322,10 @@ export default function SettingsScreen({ navigation }: any) {
           <View style={styles.rowLeft}>
             <Ionicons name="log-out-outline" size={22} color={colors.warning} />
             <Text style={[styles.rowTitle, { color: colors.warning }]}>
-              تسجيل الخروج
+              {t('logout')}
             </Text>
           </View>
-          <Ionicons name="chevron-back" size={20} color={colors.textMuted} />
+          <Ionicons name={isRTL ? 'chevron-back' : 'chevron-forward'} size={20} color={colors.textMuted} />
         </TouchableOpacity>
 
         <View style={styles.divider} />
@@ -298,15 +334,15 @@ export default function SettingsScreen({ navigation }: any) {
           <View style={styles.rowLeft}>
             <Ionicons name="trash-outline" size={22} color={colors.error} />
             <Text style={[styles.rowTitle, { color: colors.error }]}>
-              حذف الحساب
+              {t('delete_account')}
             </Text>
           </View>
-          <Ionicons name="chevron-back" size={20} color={colors.textMuted} />
+          <Ionicons name={isRTL ? 'chevron-back' : 'chevron-forward'} size={20} color={colors.textMuted} />
         </TouchableOpacity>
       </View>
 
       <Text style={styles.footerText}>
-        © 2026 عيادة الشفاء - جميع الحقوق محفوظة
+        {t('copyright')}
       </Text>
 
       <View style={{ height: 100 }} />

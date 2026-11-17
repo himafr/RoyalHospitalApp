@@ -1,3 +1,4 @@
+import { createDirectionalStyles } from '../../utils/direction';
 import { useNavigation } from '@react-navigation/native';
 import React, { useMemo, useState } from 'react';
 import {
@@ -16,18 +17,18 @@ import { useTheme } from '../../context/ModeContext';
 import { lightMode, radius, shadow, spacing } from '../../theme';
 
 export default function AppHeader({
-  title = 'عيادة الشفاء',
+  title,
 }: {
   title?: string;
 }) {
   const insets = useSafeAreaInsets();
-  const { colors ,toggleMode,fontScale,t} = useTheme();
+  const { colors ,toggleMode,fontScale,t, isRTL} = useTheme();
   
   const { fullName, email, photoUrl, signOut } = useAuth();
   const navigation = useNavigation();
   const [menuVisible, setMenuVisible] = useState(false);
   const [isAvailable, setIsAvailable] = useState(true);
-  const styles = useMemo(() => getStyles(colors,fontScale), [colors,fontScale]);
+  const styles = useMemo(() => createDirectionalStyles(getStyles(colors,fontScale), isRTL), [colors,fontScale, isRTL]);
 
   const userInitial = (fullName || email || 'U').trim().charAt(0).toUpperCase();
   return (
@@ -77,7 +78,7 @@ export default function AppHeader({
         <View style={styles.logoCircle}>
           <Ionicons name="medkit" size={22} color={colors.navIcon} />
         </View>
-        <Text style={styles.title}>{title}</Text>
+        <Text style={styles.title}>{title || t('app_name')}</Text>
       </View>
 
       <Modal
@@ -101,7 +102,7 @@ export default function AppHeader({
                   size={24}
                   color={colors.primary}
                 />
-                <Text style={styles.menuItemText}>الملف الشخصي</Text>
+                <Text style={styles.menuItemText}>{t("profile")}</Text>
               </TouchableOpacity>
 
               <View style={styles.divider} />
@@ -114,7 +115,7 @@ export default function AppHeader({
                 }}
               >
                 <Ionicons name="cog" size={24} color={colors.primary} />
-                <Text style={styles.menuItemText}> الاعدادات</Text>
+                <Text style={styles.menuItemText}> {t("settings")}</Text>
               </TouchableOpacity>
 
               <View style={styles.divider} />
@@ -132,7 +133,7 @@ export default function AppHeader({
                   size={24}
                   color={colors.primary}
                 />
-                <Text style={styles.menuItemText}> عن العيادة</Text>
+                <Text style={styles.menuItemText}>{t("about")}</Text>
               </TouchableOpacity>
 
               <View style={styles.divider} />
@@ -150,7 +151,7 @@ export default function AppHeader({
                   color={colors.error}
                 />
                 <Text style={[styles.menuItemText, { color: colors.error }]}>
-                  تسجيل الخروج
+                  {t("logout")}
                 </Text>
               </TouchableOpacity>
             </View>

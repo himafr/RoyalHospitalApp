@@ -1,3 +1,4 @@
+import { createDirectionalStyles } from '../../utils/direction';
 import React, { useMemo, useState } from 'react';
 import {
   ActivityIndicator,
@@ -13,14 +14,14 @@ import ErrorState from '../../components/ErrorState';
 import FilterChips from '../../components/FilterChips';
 import PrimaryButton from '../../components/PrimaryButton';
 import ScreenTransition from '../../components/ScreenTransition';
-import { SPECIALTIES_STRING } from '../../constants';
+import { SPECIALTY_TRANSLATION_KEYS } from '../../constants';
 import { useTheme } from '../../context/ModeContext';
 import useInfiniteScroll from '../../hooks/useInfiniteScroll';
 import { lightMode, radius, shadow, spacing } from '../../theme';
 
 export default function DoctorsScreen({ navigation }: any) {
-  const { colors,fontScale } = useTheme();
-const styles = useMemo(() => getStyles(colors,fontScale), [colors,fontScale]);
+  const { colors,fontScale,t, isRTL} = useTheme();
+const styles = useMemo(() => createDirectionalStyles(getStyles(colors,fontScale), isRTL), [colors,fontScale, isRTL]);
   const [selectedSpec, setSelectedSpec] = useState('');
   const {
     data: doctors,
@@ -54,21 +55,22 @@ const styles = useMemo(() => getStyles(colors,fontScale), [colors,fontScale]);
             <Ionicons name="person" size={32} color={colors.primary} />
         </View>
           )}
-        <View style={{ flex: 1, alignItems: 'flex-end' }}>
+        <View style={{ flex: 1, alignItems: 'flex-start' }}>
           <Text style={styles.specialty}>
-            {item.specialtyString || SPECIALTIES_STRING[item.specialty]}
+            {item.specialtyString ||
+              t(SPECIALTY_TRANSLATION_KEYS[item.specialty] || 'specialty')}
           </Text>
-          <Text style={styles.name}>د. {item.fullName}</Text>
+          <Text style={styles.name}>{t('doctor_prefix')} {item.fullName}</Text>
           <Text style={styles.experience}>
-            {item.specialization || 'استشاري'} - خبرة 15 عاماً
+            {item.specialization || t('consultant')} - {t('doctor_experience')}
           </Text>
         </View>
       </View>
       <Text style={styles.about} numberOfLines={2}>
-        {item.about || 'طبيب متخصص في تقديم أفضل رعاية طبية.'}
+        {item.about || t('doctor_welcome_desc')}
       </Text>
       <PrimaryButton
-        title="احجز مع الطبيب"
+        title={t('book_with_doctor')}
         variant="secondary"
         onPress={() =>
           navigation.navigate('AppointmentTab', {
@@ -84,9 +86,9 @@ const styles = useMemo(() => getStyles(colors,fontScale), [colors,fontScale]);
     <ScreenTransition style={styles.root}>
       <View style={styles.header}>
         <Text style={styles.title}>
-          نخبة <Text style={{ color: colors.primary }}>الأطباء</Text>
+          {t('doctors_title')}
         </Text>
-        <Text style={styles.sub}>جودة الرعاية تبدأ من اختيار الكفاءات</Text>
+        <Text style={styles.sub}>{t('doctors_subtitle')}</Text>
       </View>
 
       <FilterChips selected={selectedSpec} onSelect={setSelectedSpec} />
@@ -116,7 +118,7 @@ const styles = useMemo(() => getStyles(colors,fontScale), [colors,fontScale]);
           contentContainerStyle={{ padding: spacing.md }}
           ListEmptyComponent={
             <Text style={styles.empty}>
-              لا يوجد أطباء متاحين في هذا التخصص.
+              {t('no_doctors')}
             </Text>
           }
         />

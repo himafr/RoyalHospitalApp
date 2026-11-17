@@ -1,3 +1,4 @@
+import { createDirectionalStyles } from '../../utils/direction';
 import React, { useEffect, useMemo, useState } from 'react';
 import {
   ActivityIndicator,
@@ -25,8 +26,8 @@ export default function EditCertificationForm({
   navigation,
   refetchData,
 }: any) {
-  const { colors,fontScale } = useTheme();
-const styles = useMemo(() => getStyles(colors,fontScale), [colors,fontScale]);
+  const { colors,fontScale,t, isRTL} = useTheme();
+const styles = useMemo(() => createDirectionalStyles(getStyles(colors,fontScale), isRTL), [colors,fontScale, isRTL]);
   const {
     doctor,
     loading,
@@ -57,10 +58,10 @@ const styles = useMemo(() => getStyles(colors,fontScale), [colors,fontScale]);
     try {
       await editCertification({ id, fData: form, photo });
       await refetchData();
-      showSuccessToast('تم تحديث الشهادة.');
+      showSuccessToast(t('certification_update_success'), t('success'));
       if (navigation.isFocused()) navigation.goBack();
     } catch (error: any) {
-      showErrorToast(getErrorMessage(error, 'تعذر تحديث الشهادة.'));
+      showErrorToast(getErrorMessage(error, t('certification_update_error')), t('error'));
     }
   };
 
@@ -69,24 +70,24 @@ const styles = useMemo(() => getStyles(colors,fontScale), [colors,fontScale]);
       const selectedPhoto = await pickImage();
       if (selectedPhoto) setPhoto(selectedPhoto);
     } catch (error: unknown) {
-      showErrorToast(getErrorMessage(error, 'تعذر اختيار صورة الشهادة.'));
+      showErrorToast(getErrorMessage(error, t('certification_photo_error')), t('error'));
     }
   };
 
   const handleDelete = async () => {
-    Alert.alert('تأكيد الحذف', 'هل أنت متأكد أنك تريد حذف هذه الشهادة؟', [
-      { text: 'إلغاء', style: 'cancel' },
+    Alert.alert(t('delete_confirm'), t('delete_cert_confirm'), [
+      { text: t('cancel'), style: 'cancel' },
       {
-        text: 'حذف',
+        text: t('delete'),
         style: 'destructive',
         onPress: async () => {
           try {
             await deleteCertificationById(id);
             await refetchData();
-            showSuccessToast('تم حذف الشهادة.');
+            showSuccessToast(t('certification_delete_success'), t('success'));
             if (navigation.isFocused()) navigation.goBack();
           } catch (error: any) {
-            showErrorToast(getErrorMessage(error, 'تعذر حذف الشهادة.'));
+            showErrorToast(getErrorMessage(error, t('certification_delete_error')), t('error'));
           }
         },
       },
@@ -97,21 +98,21 @@ const styles = useMemo(() => getStyles(colors,fontScale), [colors,fontScale]);
 
   return (
     <View>
-      <Text style={styles.label}>اسم الشهادة</Text>
+      <Text style={styles.label}>{t('cert_name')}</Text>
       <TextInput
         style={styles.input}
         value={form.name}
         onChangeText={t => setForm({ ...form, name: t })}
       />
 
-      <Text style={styles.label}>الجهة المانحة</Text>
+      <Text style={styles.label}>{t('cert_organization')}</Text>
       <TextInput
         style={styles.input}
         value={form.organization}
         onChangeText={t => setForm({ ...form, organization: t })}
       />
 
-      <Text style={styles.label}>المكان</Text>
+      <Text style={styles.label}>{t('cert_place')}</Text>
       <TextInput
         style={styles.input}
         value={form.place}
@@ -120,7 +121,7 @@ const styles = useMemo(() => getStyles(colors,fontScale), [colors,fontScale]);
 
       <TouchableOpacity style={styles.photoBtn} onPress={handlePickPhoto}>
         <Text style={styles.photoBtnText}>
-          {photo?.fileName || 'استبدال صورة الشهادة (اختياري)'}
+          {photo?.fileName || `${t('replace_photo')} (${t('optional')})`}
         </Text>
       </TouchableOpacity>
 
@@ -130,14 +131,14 @@ const styles = useMemo(() => getStyles(colors,fontScale), [colors,fontScale]);
         disabled={loading}
       >
         <Text style={styles.saveBtnText}>
-          {loading ? 'جاري الحفظ...' : 'حفظ التعديلات'}
+          {loading ? t('saving') : t('save_changes')}
         </Text>
       </TouchableOpacity>
 
       {/* زرار الحذف */}
       <TouchableOpacity style={styles.deleteBtn} onPress={handleDelete}>
         <Ionicons name="trash" size={20} color={colors.iconSecondary} />
-        <Text style={styles.deleteBtnText}>حذف الشهادة</Text>
+        <Text style={styles.deleteBtnText}>{t('delete_cert')}</Text>
       </TouchableOpacity>
     </View>
   );

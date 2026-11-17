@@ -1,3 +1,4 @@
+import { createDirectionalStyles } from '../../utils/direction';
 import React, { useMemo, useState } from 'react';
 import {
   ActivityIndicator,
@@ -18,8 +19,8 @@ import { lightMode, radius, shadow, spacing } from '../../theme';
 import ServiceCard from './ServiceCard';
 
 export default function ServicesScreen({ navigation }: any) {
-  const { colors,fontScale } = useTheme();
-const styles = useMemo(() => getStyles(colors,fontScale), [colors,fontScale]);
+  const { colors,fontScale,t, isRTL} = useTheme();
+const styles = useMemo(() => createDirectionalStyles(getStyles(colors,fontScale), isRTL), [colors,fontScale, isRTL]);
   const [selectedSpec, setSelectedSpec] = useState('');
   const {
     data: services,
@@ -47,10 +48,10 @@ const styles = useMemo(() => getStyles(colors,fontScale), [colors,fontScale]);
     <ScreenTransition style={styles.root}>
       <View style={styles.header}>
         <Text style={styles.title}>
-          رعاية صحية <Text style={{ color: colors.primary }}>ملكية</Text>
+          {t('royal_healthcare')}
         </Text>
         <Text style={styles.sub}>
-          نجمع بين الخبرة الطبية العريقة وأحدث التقنيات
+          {t('services_hero_desc')}
         </Text>
       </View>
       <FilterChips selected={selectedSpec} onSelect={setSelectedSpec} />
@@ -84,7 +85,7 @@ const styles = useMemo(() => getStyles(colors,fontScale), [colors,fontScale]);
           showsVerticalScrollIndicator={false}
           ListEmptyComponent={ 
             <Text style={styles.empty}>
-              لا توجد خدمات متاحة حالياً. اختر تخصصاً آخر أو تحقق لاحقاً.
+              {t('no_services')}
             </Text>
           }
         />

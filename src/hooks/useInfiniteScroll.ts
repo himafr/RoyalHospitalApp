@@ -1,5 +1,6 @@
 import { useState, useEffect, useCallback, useRef } from 'react';
 import { showErrorToast } from '../utils/toast';
+import { useTheme } from '../context/ModeContext';
 
 interface UseInfiniteScrollProps {
   fetchApi: (params: {
@@ -14,6 +15,7 @@ export default function useInfiniteScroll({
   fetchApi,
   selectedSpec,
 }: UseInfiniteScrollProps) {
+  const { t } = useTheme();
   const [data, setData] = useState<any[]>([]);
 
   const [page, setPage] = useState(0);
@@ -62,9 +64,9 @@ export default function useInfiniteScroll({
       } catch (caughtError) {
         console.log('Error fetching data:', caughtError);
         if (isLoadMore) {
-          showErrorToast('تعذر تحميل المزيد. حاول مرة أخرى.');
+          showErrorToast(t('load_more_error'), t('error'));
         } else {
-          setError('تحقق من اتصالك بالإنترنت ثم حاول مرة أخرى.');
+          setError(t('err_network'));
         }
       } finally {
         setLoading(false);
@@ -73,7 +75,7 @@ export default function useInfiniteScroll({
         setRefreshing(false);
       }
     },
-    [fetchApi, selectedSpec],
+    [fetchApi, selectedSpec, t],
   );
 
   useEffect(() => {

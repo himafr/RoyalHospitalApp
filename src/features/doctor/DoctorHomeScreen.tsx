@@ -1,3 +1,4 @@
+import { createDirectionalStyles } from '../../utils/direction';
 import React, { useMemo, useState } from 'react';
 import {
   Alert,
@@ -8,7 +9,6 @@ import {
   Text,
   TouchableOpacity,
   View,
-  Dimensions,
 } from 'react-native';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import AppHeader from '../../components/layout/AppHeader';
@@ -20,58 +20,56 @@ import { useTheme } from '../../context/ModeContext';
 import { lightMode, radius, shadow, spacing } from '../../theme';
 import useTodayAppointments from './useTodayAppointments';
 
-const { width } = Dimensions.get('window');
-
 // 1. بيانات وهمية
 const MOCK_STATS = [
-  { id: 1, title: 'مواعيد اليوم', value: '42', icon: 'calendar-outline', iconColor: '#4A90E2', trend: '+12%', trendColor: '#2E7D5B', sub: 'منذ أمس', bg: '#EBF4FF' },
-  { id: 2, title: 'إجمالي المرضى', value: '1,284', icon: 'people-outline', iconColor: '#2E7D5B', trend: '+5', trendColor: '#2E7D5B', sub: 'هذا الأسبوع', bg: '#E8F5E9' },
-  { id: 3, title: 'إيرادات اليوم', value: '8,450', icon: 'cash-outline', iconColor: '#C5A059', trend: '-2%', trendColor: '#C0392B', sub: 'منذ أمس', bg: '#FFF8E1', currency: 'ر.س' },
-  { id: 4, title: 'المستحقات المتبقية', value: '2,100', icon: 'wallet-outline', iconColor: '#C0392B', trend: '', trendColor: '', sub: 'من 8 مرضى', bg: '#FFEBEE', currency: 'ر.س' },
-];
+  { id: 1, titleKey: 'visit_count', value: '42', icon: 'calendar-outline', iconColor: '#4A90E2', trend: '+12%', trendColor: '#2E7D5B', subKey: 'since_yesterday', bg: '#EBF4FF' },
+  { id: 2, titleKey: 'total_patients', value: '1,284', icon: 'people-outline', iconColor: '#2E7D5B', trend: '+5', trendColor: '#2E7D5B', subKey: 'this_week', bg: '#E8F5E9' },
+  { id: 3, titleKey: 'today_revenue', value: '8,450', icon: 'cash-outline', iconColor: '#C5A059', trend: '-2%', trendColor: '#C0392B', subKey: 'since_yesterday', bg: '#FFF8E1', currency: true },
+  { id: 4, titleKey: 'remaining_dues', value: '2,100', icon: 'wallet-outline', iconColor: '#C0392B', trend: '', trendColor: '', subKey: 'from_patients', bg: '#FFEBEE', currency: true },
+ ] as const;
 
-const MOCK_REVENUE = [
-  { month: 'يناير', value: 45 },
-  { month: 'فبراير', value: 60 },
-  { month: 'مارس', value: 40 },
-  { month: 'أبريل', value: 70 },
-  { month: 'مايو', value: 35 },
-  { month: 'يونيو', value: 65, isCurrent: true },
-];
+const REVENUE_VALUES = [
+  { month: 'jan', value: 45 },
+  { month: 'feb', value: 60 },
+  { month: 'mar', value: 40 },
+  { month: 'apr', value: 70 },
+  { month: 'may', value: 35 },
+  { month: 'jun', value: 65, isCurrent: true },
+] as const;
 
-const MOCK_NEXT_APPOINTMENT = { patientName: 'سارة الأحمد', time: '10:00 ص', remainingMinutes: 15, service: 'استشارة طبية' };
+const MOCK_NEXT_APPOINTMENT = { patientName: 'سارة الأحمد', time: '10:00', remainingMinutes: 15, serviceKey: 'service_consultation' } as const;
 
 const MOCK_NEWS = [
-  { id: 1, title: 'افتتاح قسم جديد للأشعة', date: 'اليوم', icon: 'megaphone' },
-  { id: 2, title: 'تحديث بروتوكولات مكافحة العدوى', date: 'أمس', icon: 'shield-checkmark' },
-  { id: 3, title: 'اجتماع طاقم الأطباء يوم الخميس', date: 'قبل يومين', icon: 'calendar' },
-];
+  { id: 1, titleKey: 'news_radiology_opening', dateKey: 'today', icon: 'megaphone' },
+  { id: 2, titleKey: 'news_infection_control_update', dateKey: 'yesterday', icon: 'shield-checkmark' },
+  { id: 3, titleKey: 'news_doctor_meeting', dateKey: 'two_days_ago', icon: 'calendar' },
+] as const;
 
-const MOCK_LATEST_REVIEW = { patientName: 'أحمد المحمدي', rating: 5, comment: 'تجربة ممتازة جداً. الطاقم الطبي محترف والتعامل راقي.' };
+const MOCK_LATEST_REVIEW = { patientName: 'أحمد المحمدي', rating: 5 };
 const MOCK_PERFORMANCE = { attendanceRate: 92, avgSessionTime: 22 };
 
 const CLINIC_FEATURES = [
-  { icon: 'time-outline', title: 'إدارة وقتك', desc: 'نظام مواعيد ذكي يوفر عليك الوقت ويمنع التعارض.' },
-  { icon: 'analytics-outline', title: 'متابعة مستمرة', desc: 'تقارير أسبوعية عن أدائك وتقييمات المرضى.' },
-  { icon: 'shield-checkmark-outline', title: 'بيانات آمنة', desc: 'ملفات المرضى محمية بأعلى معايير الخصوصية.' },
-  { icon: 'cash-outline', title: 'مدفوعات سريعة', desc: 'تحصيل إلكتروني لمستحقاتك أولاً بأول.' },
-];
+  { icon: 'time-outline', titleKey: 'feature_time_title', descKey: 'feature_time_desc' },
+  { icon: 'analytics-outline', titleKey: 'feature_analytics_title', descKey: 'feature_analytics_desc' },
+  { icon: 'shield-checkmark-outline', titleKey: 'feature_security_title', descKey: 'feature_security_desc' },
+  { icon: 'cash-outline', titleKey: 'feature_payments_title', descKey: 'feature_payments_desc' },
+] as const;
 
 export default function DoctorHomeScreen({ navigation }: any) {
   const { isVerified } = useAuth();
-  const { colors,fontScale,t } = useTheme();
+  const { colors,fontScale,t, isRTL} = useTheme();
   const { appointments, count, done, loading, still,refetch } = useTodayAppointments();
-  const styles = useMemo(() => getStyles(colors,fontScale), [colors,fontScale]);
+  const styles = useMemo(() => createDirectionalStyles(getStyles(colors,fontScale), isRTL), [colors,fontScale, isRTL]);
   const [isAvailable, setIsAvailable] = useState(true);
 
   // حساب أعلى قيمة في الرسم البياني
-  const maxRevenue = Math.max(...MOCK_REVENUE.map((r) => r.value));
+  const maxRevenue = Math.max(...REVENUE_VALUES.map((r) => r.value));
 
   const handleContactAdmin = () => {
-    Alert.alert('التواصل مع الإدارة', 'اختر طريقة التواصل:', [
-      { text: 'إلغاء', style: 'cancel' },
-      { text: 'مكالمة', onPress: () => Linking.openURL('tel:+201146839894') },
-      { text: 'واتساب', onPress: () => Linking.openURL('https://wa.me/201146839894') },
+    Alert.alert(t('contact_admin'), t('contact_admin_choose'), [
+      { text: t('cancel'), style: 'cancel' },
+      { text: t('call'), onPress: () => Linking.openURL('tel:+201146839894') },
+      { text: t('whatsapp'), onPress: () => Linking.openURL('https://wa.me/201146839894') },
     ]);
   };
 
@@ -120,11 +118,11 @@ export default function DoctorHomeScreen({ navigation }: any) {
               {MOCK_NEXT_APPOINTMENT.patientName}
             </Text>
             <Text style={styles.nextDetails}>
-              {MOCK_NEXT_APPOINTMENT.service} - {MOCK_NEXT_APPOINTMENT.time}
+              {t(MOCK_NEXT_APPOINTMENT.serviceKey)} - {MOCK_NEXT_APPOINTMENT.time} {t('am')}
             </Text>
           </View>
           <TouchableOpacity style={styles.startSessionBtn}>
-            <Text style={styles.startSessionText}>ابدأ الجلسة</Text>
+            <Text style={styles.startSessionText}>{t('start_session')}</Text>
           </TouchableOpacity>
         </View>
       </View>
@@ -137,15 +135,15 @@ export default function DoctorHomeScreen({ navigation }: any) {
               <View style={[styles.statIconBox, { backgroundColor: stat.bg }]}>
                 <Ionicons name={stat.icon as any} size={20} color={stat.iconColor} />
               </View>
-              <Text style={styles.statTitle}>{stat.title}</Text>
+              <Text style={styles.statTitle}>{t(stat.titleKey)}</Text>
             </View>
             <View style={styles.statBody}>
               <Text style={styles.statValue}>
-                {stat.value} {stat.currency && <Text style={styles.currencyText}>{stat.currency}</Text>}
+                {stat.value} {'currency' in stat && stat.currency && <Text style={styles.currencyText}>{t('currency')}</Text>}
               </Text>
               <View style={styles.statFooter}>
                 {stat.trend ? (
-                  <View style={{ flexDirection: 'row-reverse', alignItems: 'center' }}>
+                  <View style={{ flexDirection: 'row', alignItems: 'center' }}>
                     <Ionicons 
                       name={stat.trend.startsWith('+') ? 'trending-up' : 'trending-down'} 
                       size={14} 
@@ -154,7 +152,7 @@ export default function DoctorHomeScreen({ navigation }: any) {
                     <Text style={[styles.trendText, { color: stat.trendColor }]}>{stat.trend}</Text>
                   </View>
                 ) : <View />}
-                <Text style={styles.statSub}>{stat.sub}</Text>
+                <Text style={styles.statSub}>{t(stat.subKey)}</Text>
               </View>
             </View>
           </View>
@@ -173,7 +171,7 @@ export default function DoctorHomeScreen({ navigation }: any) {
         </View>
         <View style={styles.summaryCard}>
           <Text style={[styles.summaryValue, { color: colors.warning }]}>{still.length}</Text>
-          <Text style={styles.summaryLabel}>في الانتظار</Text>
+          <Text style={styles.summaryLabel}>{t('pending')}</Text>
         </View>
       </View>
 
@@ -181,7 +179,7 @@ export default function DoctorHomeScreen({ navigation }: any) {
       <View style={styles.newsCard}>
         <View style={styles.newsHeader}>
           <Ionicons name="megaphone" size={20} color={colors.icon} />
-          <Text style={styles.newsTitle}>موجز أخبار المستشفى</Text>
+          <Text style={styles.newsTitle}>{t('hospital_news')}</Text>
         </View>
         <FlatList
           data={MOCK_NEWS}
@@ -191,8 +189,8 @@ export default function DoctorHomeScreen({ navigation }: any) {
             <View style={styles.newsRow}>
               <Ionicons name={item.icon as any} size={16} color={colors.icon} />
               <View style={{ flex: 1 }}>
-                <Text style={styles.newsText}>{item.title}</Text>
-                <Text style={styles.newsDate}>{item.date}</Text>
+                <Text style={styles.newsText}>{t(item.titleKey)}</Text>
+                <Text style={styles.newsDate}>{t(item.dateKey)}</Text>
               </View>
             </View>
           )}
@@ -215,9 +213,9 @@ export default function DoctorHomeScreen({ navigation }: any) {
       {/* 7. الرسم البياني (Revenue Chart) */}
       <View style={styles.card}>
         <View style={styles.cardHeader}>
-          <Text style={styles.cardTitle}>الإيرادات الشهرية</Text>
+          <Text style={styles.cardTitle}>{t('monthly_revenue')}</Text>
           <View style={styles.chartFilter}>
-            <Text style={styles.chartFilterText}>آخر 6 أشهر</Text>
+            <Text style={styles.chartFilterText}>{t('last_six_months')}</Text>
           </View>
         </View>
         <View style={styles.chartContainer}>
@@ -227,7 +225,7 @@ export default function DoctorHomeScreen({ navigation }: any) {
             ))}
           </View>
           <View style={styles.barsContainer}>
-            {MOCK_REVENUE.map((item, index) => (
+            {REVENUE_VALUES.map((item, index) => (
               <View key={index} style={styles.barWrapper}>
                 <View style={styles.barBackground}>
                   <View 
@@ -235,13 +233,13 @@ export default function DoctorHomeScreen({ navigation }: any) {
                       styles.barFill, 
                       { 
                         height: `${(item.value / maxRevenue) * 100}%`,
-                        backgroundColor: item.isCurrent ? colors.secondary : colors.primary,
+                        backgroundColor: 'isCurrent' in item && item.isCurrent ? colors.secondary : colors.primary,
                       }
                     ]} 
                   />
                 </View>
-                <Text style={[styles.barLabel, item.isCurrent && { color: colors.text, fontWeight: '900' }]}>
-                  {item.month}
+                <Text style={[styles.barLabel, 'isCurrent' in item && item.isCurrent && { color: colors.text, fontWeight: '900' }]}>
+                  {t(item.month)}
                 </Text>
               </View>
             ))}
@@ -252,7 +250,7 @@ export default function DoctorHomeScreen({ navigation }: any) {
       {/* 8. آخر تقييم */}
       <View style={styles.card}>
         <View style={styles.cardHeader}>
-          <Text style={styles.cardTitle}>آخر تقييم من المرضى</Text>
+          <Text style={styles.cardTitle}>{t('latest_reviews')}</Text>
         </View>
         <View style={styles.cardBody}>
           <View style={styles.reviewHeader}>
@@ -265,7 +263,7 @@ export default function DoctorHomeScreen({ navigation }: any) {
               <Text style={styles.reviewPatientName}>
                 {MOCK_LATEST_REVIEW.patientName}
               </Text>
-              <View style={{ flexDirection: 'row-reverse' }}>
+              <View style={{ flexDirection: 'row' }}>
                 {[1, 2, 3, 4, 5].map(s => (
                   <Ionicons
                     key={s}
@@ -278,7 +276,7 @@ export default function DoctorHomeScreen({ navigation }: any) {
             </View>
           </View>
           <Text style={styles.reviewComment}>
-            "{MOCK_LATEST_REVIEW.comment}"
+            "{t('sample_review')}"
           </Text>
         </View>
       </View>
@@ -286,20 +284,20 @@ export default function DoctorHomeScreen({ navigation }: any) {
       {/* 9. إحصائيات الأداء */}
       <View style={styles.card}>
         <View style={styles.cardHeader}>
-          <Text style={styles.cardTitle}>إحصائيات الأداء</Text>
+          <Text style={styles.cardTitle}>{t('performance_stats')}</Text>
         </View>
         <View style={styles.cardBody}>
           <View style={styles.performanceRow}>
             <View style={styles.performanceItem}>
-              <Text style={styles.performanceLabel}>نسبة الحضور</Text>
+              <Text style={styles.performanceLabel}>{t('attendance_rate')}</Text>
               <Text style={styles.performanceValue}>{MOCK_PERFORMANCE.attendanceRate}%</Text>
               <View style={styles.progressBar}>
                 <View style={[styles.progressFill, { width: `${MOCK_PERFORMANCE.attendanceRate}%` }]} />
               </View>
             </View>
             <View style={styles.performanceItem}>
-              <Text style={styles.performanceLabel}>متوسط وقت الجلسة</Text>
-              <Text style={styles.performanceValue}>{MOCK_PERFORMANCE.avgSessionTime} دقيقة</Text>
+              <Text style={styles.performanceLabel}>{t('avg_session_time')}</Text>
+              <Text style={styles.performanceValue}>{MOCK_PERFORMANCE.avgSessionTime} {t('minute')}</Text>
               <View style={styles.progressBar}>
                 <View style={[styles.progressFill, { width: `${(MOCK_PERFORMANCE.avgSessionTime / 60) * 100}%` }]} />
               </View>
@@ -310,16 +308,16 @@ export default function DoctorHomeScreen({ navigation }: any) {
 
       {/* 10. مزايا العيادة */}
       <View style={styles.section}>
-        <Text style={styles.sectionTitle}>لماذا تعمل معنا؟</Text>
-        <Text style={styles.sectionSub}>نوفر لك بيئة عمل متكاملة تساعدك على تقديم أفضل رعاية.</Text>
+        <Text style={styles.sectionTitle}>{t('why_work_with_us')}</Text>
+        <Text style={styles.sectionSub}>{t('why_work_with_us_desc')}</Text>
         <View style={styles.featuresGrid}>
           {CLINIC_FEATURES.map((feature, index) => (
             <View key={index} style={styles.featureCard}>
               <View style={styles.featureIcon}>
                 <Ionicons name={feature.icon as any} size={24} color={colors.onPrimary} />
               </View>
-              <Text style={styles.featureTitle}>{feature.title}</Text>
-              <Text style={styles.featureDesc}>{feature.desc}</Text>
+              <Text style={styles.featureTitle}>{t(feature.titleKey)}</Text>
+              <Text style={styles.featureDesc}>{t(feature.descKey)}</Text>
             </View>
           ))}
         </View>
@@ -328,7 +326,7 @@ export default function DoctorHomeScreen({ navigation }: any) {
       {/* 11. تواصل مع الإدارة */}
       <TouchableOpacity style={styles.contactAdminBtn} onPress={handleContactAdmin}>
         <Ionicons name="headset" size={20} color={colors.buttonPrimaryText} />
-        <Text style={styles.contactAdminText}>تواصل مع الإدارة</Text>
+        <Text style={styles.contactAdminText}>{t('contact_admin')}</Text>
       </TouchableOpacity>
 
       <View style={{ height: 100 }} />

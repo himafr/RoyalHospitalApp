@@ -2,9 +2,11 @@ import { useState, useEffect, useCallback } from 'react';
 import { getTodayBookedDatesForDoctor } from '../../api/appointments';
 import { showErrorToast } from '../../utils/toast';
 import { Appointment } from '../../../types/medical';
+import { useTheme } from '../../context/ModeContext';
 
 
 export default function useTodayAppointments() {
+  const { t } = useTheme();
   const [appointments, setAppointments] = useState<Appointment[]>([]);
   const [loading, setLoading] = useState(false);
 
@@ -16,11 +18,11 @@ export default function useTodayAppointments() {
       
     } catch (e) {
       console.log('Error fetching today appointments', e);
-      showErrorToast('تعذر تحميل حجوزات اليوم.');
+      showErrorToast(t('err_network'), t('error'));
     } finally {
       setLoading(false);
     }
-  }, []);
+  }, [t]);
 
   function getDoneAppointments() {
     return appointments.filter(app => app.status === 'COMPLETED');

@@ -1,3 +1,4 @@
+import { createDirectionalStyles } from '../../utils/direction';
 import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { useTheme } from '../../context/ModeContext';
 import { useMemo } from 'react';
@@ -9,8 +10,8 @@ const NavBar: React.FC<{ navigation: any; title: string }> = ({
   navigation,
   title,
 }) => {
-  const { colors,fontScale } = useTheme();
-  const styles = useMemo(() => getStyles(colors,fontScale), [colors,fontScale]);
+  const { colors,fontScale, isRTL} = useTheme();
+  const styles = useMemo(() => createDirectionalStyles(getStyles(colors,fontScale), isRTL), [colors,fontScale, isRTL]);
   const insets =useSafeAreaInsets()
 
   return (
@@ -19,7 +20,11 @@ const NavBar: React.FC<{ navigation: any; title: string }> = ({
         onPress={() => navigation.goBack()}
         style={styles.backBtn}
       >
-        <Ionicons name="arrow-forward" size={24} color={colors.text} />
+        <Ionicons
+          name={isRTL ? 'arrow-forward' : 'arrow-back'}
+          size={24}
+          color={colors.text}
+        />
       </TouchableOpacity>
       <Text style={styles.headerTitle}>{title}</Text>
       <View style={{ width: 24 }} />
@@ -32,7 +37,7 @@ export default NavBar;
 const getStyles = (colors: typeof lightMode, fontScale:number) =>
   StyleSheet.create({
     header: {
-      flexDirection: 'row',
+      flexDirection: 'row-reverse',
       justifyContent: 'space-between',
       alignItems: 'center',
       padding: spacing.md,

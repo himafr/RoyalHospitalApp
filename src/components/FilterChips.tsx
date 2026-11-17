@@ -1,6 +1,7 @@
+import { createDirectionalStyles } from '../utils/direction';
 import React, { useMemo } from 'react';
 import { StyleSheet, Text, TouchableOpacity } from 'react-native';
-import { SPECIALTIES } from '../constants';
+import { SPECIALTIES, SPECIALTY_TRANSLATION_KEYS } from '../constants';
 import { useTheme } from '../context/ModeContext';
 import { lightMode, radius, spacing } from '../theme';
 import SmoothScrollView from './SmoothScrollView';
@@ -11,8 +12,8 @@ interface Props {
 }
 
 export default function FilterChips({ selected, onSelect }: Props) {
-  const { colors,fontScale } = useTheme();
-const styles = useMemo(() => getStyles(colors,fontScale), [colors,fontScale]);
+  const { colors,fontScale,t, isRTL} = useTheme();
+const styles = useMemo(() => createDirectionalStyles(getStyles(colors,fontScale), isRTL), [colors,fontScale, isRTL]);
   return (
     <SmoothScrollView
       horizontal
@@ -24,7 +25,7 @@ const styles = useMemo(() => getStyles(colors,fontScale), [colors,fontScale]);
         onPress={() => onSelect('')}
       >
         <Text style={[styles.text, selected === '' && styles.textActive]}>
-          الكل
+          {t('all')}
         </Text>
       </TouchableOpacity>
       {SPECIALTIES.map(spec => (
@@ -36,7 +37,7 @@ const styles = useMemo(() => getStyles(colors,fontScale), [colors,fontScale]);
           <Text
             style={[styles.text, selected === spec.id && styles.textActive]}
           >
-            {spec.label}
+            {t(SPECIALTY_TRANSLATION_KEYS[spec.id])}
           </Text>
         </TouchableOpacity>
       ))}

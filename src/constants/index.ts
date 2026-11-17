@@ -1,3 +1,5 @@
+import type { TranslationKey } from '../utils/language';
+
 export const SPECIALTIES = [
   { id: 'GENERAL', label: 'طب عام' },
   { id: 'DENTISTRY', label: 'أسنان' },
@@ -17,4 +19,15 @@ export const SPECIALTIES_STRING :Record<string,string>= {
   COSMETIC_DERMATOLOGY: 'الجلدية والتجميل',
   PEDIATRICS: 'طب الأطفال',
   FAMILY_MEDICINE: 'طب الأسرة',
+};
+
+export const SPECIALTY_TRANSLATION_KEYS: Record<string, TranslationKey> = {
+  GENERAL: 'specialty_general',
+  DENTISTRY: 'specialty_dentistry',
+  DERMATOLOGY: 'specialty_dermatology',
+  OPHTHALMOLOGY: 'specialty_ophthalmology',
+  CARDIOLOGY: 'specialty_cardiology',
+  COSMETIC_DERMATOLOGY: 'specialty_cosmetic_dermatology',
+  PEDIATRICS: 'specialty_pediatrics',
+  FAMILY_MEDICINE: 'specialty_family_medicine',
 };

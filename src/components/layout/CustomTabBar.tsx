@@ -1,3 +1,4 @@
+import { createDirectionalStyles } from '../../utils/direction';
 import { BottomTabBarProps } from '@react-navigation/bottom-tabs';
 import React, { useEffect } from 'react';
 import {
@@ -21,7 +22,7 @@ function AnimatedTabIcon({
   focused: boolean;
 }) {
   const scale = React.useRef(new Animated.Value(1)).current;
-  const {colors}=useTheme();
+  const { colors } = useTheme();
   useEffect(() => {
     Animated.spring(scale, {
       toValue: focused ? 1.12 : 1,
@@ -48,8 +49,8 @@ export default function CustomTabBar({
 }: BottomTabBarProps) {
   const insets = useSafeAreaInsets();
   const isIOS = Platform.OS === 'ios';
-  const {colors}=useTheme();
-  const styles=getStyles(colors)
+  const {colors,fontScale,t, isRTL} = useTheme();
+  const styles = createDirectionalStyles(getStyles(colors, fontScale), isRTL)
   const barHeight = 110 + (isIOS ? insets.bottom : 0);
 
   return (
@@ -87,19 +88,19 @@ export default function CustomTabBar({
             const icons: any = {
               HomeTab: 'home',
               AboutTab: 'information-circle',
-              Profile:"person-circle",
+            Dashboard:"qr-code",
               DoctorsTab: 'people',
               ServicesTab: 'medkit',
               AppointmentTab: 'calendar',
             };
             
             const labels: any = {
-              HomeTab: 'الرئيسية',
-              Profile:"الملف الشخصي",
-              AboutTab: 'عن العيادة',
-              DoctorsTab: 'الأطباء',
-              ServicesTab: 'الخدمات',
-              AppointmentTab: 'حجز',
+              HomeTab: t('home'),
+              Dashboard:t("dashboard"),
+              AboutTab: t('clinic_about'),
+              DoctorsTab: t("doctors"),
+              ServicesTab: t("services"),
+              AppointmentTab: t("appointment"),
             };
             return (
               

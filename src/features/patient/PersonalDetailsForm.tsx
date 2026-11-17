@@ -1,3 +1,4 @@
+import { createDirectionalStyles } from '../../utils/direction';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import { Picker } from '@react-native-picker/picker';
 import React, { useEffect, useMemo, useState } from 'react';
@@ -18,8 +19,8 @@ import { pickImage } from '../../utils/pickImage';
 import { getErrorMessage, showErrorToast, showSuccessToast } from '../../utils/toast';
 
 export default function PersonalDetailsForm({ navigation, refreshData }: any) {
-  const { colors,fontScale } = useTheme();
-const styles = useMemo(() => getStyles(colors,fontScale), [colors,fontScale]);
+  const { colors,fontScale,t, isRTL} = useTheme();
+const styles = useMemo(() => createDirectionalStyles(getStyles(colors,fontScale), isRTL), [colors,fontScale, isRTL]);
   const { data: user, updatePersonalDetails, loading } = useUser();
   const [form, setForm] = useState({
     fullName: '',
@@ -50,11 +51,11 @@ const styles = useMemo(() => getStyles(colors,fontScale), [colors,fontScale]);
   async function handleSave() {
     try {
       await updatePersonalDetails(form, photo);
-      showSuccessToast('تم تحديث بياناتك الشخصية.');
+      showSuccessToast(t('profile_updated_success'), t('success'));
       refreshData();
       if (navigation.isFocused()) navigation.goBack();
     } catch (error: unknown) {
-      showErrorToast(getErrorMessage(error, 'تعذر تحديث بياناتك الشخصية.'));
+      showErrorToast(getErrorMessage(error, t('profile_update_error')), t('error'));
     }
   }
 
@@ -63,7 +64,7 @@ const styles = useMemo(() => getStyles(colors,fontScale), [colors,fontScale]);
       const selectedPhoto = await pickImage();
       if (selectedPhoto) setPhoto(selectedPhoto);
     } catch (error: unknown) {
-      showErrorToast(getErrorMessage(error, 'تعذر اختيار الصورة.'));
+      showErrorToast(getErrorMessage(error, t('image_selection_error')), t('error'));
     };
   };
   // ✨ دالة التعامل مع اختيار التاريخ
@@ -82,18 +83,18 @@ const styles = useMemo(() => getStyles(colors,fontScale), [colors,fontScale]);
     <View>
       <TouchableOpacity style={styles.photoBtn} onPress={handlePickPhoto}>
         <Text style={styles.photoBtnText}>
-          {photo?.fileName || 'اختيار صورة شخصية'}
+          {photo?.fileName || t('choose_profile_photo')}
         </Text>
       </TouchableOpacity>
 
-      <Text style={styles.label}>الاسم بالكامل</Text>
+      <Text style={styles.label}>{t('full_name')}</Text>
       <TextInput
         style={styles.input}
         value={form.fullName}
         onChangeText={t => setForm({ ...form, fullName: t })}
       />
 
-      <Text style={styles.label}>رقم الجوال</Text>
+      <Text style={styles.label}>{t('phone')}</Text>
       <TextInput
         style={styles.input}
         value={form.phoneNumber}
@@ -101,7 +102,7 @@ const styles = useMemo(() => getStyles(colors,fontScale), [colors,fontScale]);
         keyboardType="phone-pad"
       />
 
-      <Text style={styles.label}>تاريخ الميلاد</Text>
+      <Text style={styles.label}>{t('date_of_birth')}</Text>
       <TouchableOpacity
         style={styles.input}
         onPress={() => setShowDatePicker(true)}
@@ -112,7 +113,7 @@ const styles = useMemo(() => getStyles(colors,fontScale), [colors,fontScale]);
             textAlign: 'right',
           }}
         >
-          {form.dateOfBirth || 'اختر تاريخ الميلاد'}
+          {form.dateOfBirth || t('choose_date')}
         </Text>
       </TouchableOpacity>
 
@@ -126,14 +127,14 @@ const styles = useMemo(() => getStyles(colors,fontScale), [colors,fontScale]);
         />
       )}
 
-      <Text style={styles.label}>الجنس</Text>
+      <Text style={styles.label}>{t('gender')}</Text>
       <View style={styles.pickerWrapper}>
         <Picker
           selectedValue={form.gender}
           onValueChange={v => setForm({ ...form, gender: v })}
         >
-          <Picker.Item label="ذكر" value="ذكر" />
-          <Picker.Item label="أنثى" value="انثي" />
+          <Picker.Item label={t('gender_male')} value="ذكر" />
+          <Picker.Item label={t('gender_female')} value="انثي" />
         </Picker>
       </View>
 
@@ -142,9 +143,7 @@ const styles = useMemo(() => getStyles(colors,fontScale), [colors,fontScale]);
         onPress={handleSave}
         disabled={loading}
       >
-        <Text style={styles.saveBtnText}>
-          {loading ? 'جاري الحفظ...' : 'حفظ'}
-        </Text>
+        <Text style={styles.saveBtnText}>{loading ? t('saving') : t('save')}</Text>
       </TouchableOpacity>
     </View>
   );

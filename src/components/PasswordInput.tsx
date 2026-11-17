@@ -1,3 +1,4 @@
+import { createDirectionalStyles } from '../utils/direction';
 import React, { useMemo, useState } from 'react';
 import { StyleSheet, TextInput, TextInputProps, TouchableOpacity, View } from 'react-native';
 import Ionicons from 'react-native-vector-icons/Ionicons';
@@ -11,8 +12,8 @@ interface Props extends TextInputProps {
 }
 
 export default function PasswordInput({ value, onChangeText, placeholder, ...rest }: Props) {
-  const { colors,fontScale } = useTheme();
-const styles = useMemo(() => getStyles(colors,fontScale), [colors,fontScale]);
+  const { colors,fontScale, isRTL} = useTheme();
+const styles = useMemo(() => createDirectionalStyles(getStyles(colors,fontScale), isRTL), [colors,fontScale, isRTL]);
   const [show, setShow] = useState(false);
 
   return (

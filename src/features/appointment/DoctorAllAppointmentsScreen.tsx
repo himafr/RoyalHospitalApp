@@ -1,3 +1,4 @@
+import { createDirectionalStyles } from '../../utils/direction';
 import React, { useMemo } from 'react';
 import {
   View,
@@ -13,9 +14,19 @@ import { lightMode, radius, shadow, spacing } from '../../theme';
 import useAllAppointments from './useAllAppointments';
 
 export default function DoctorAllAppointmentsScreen({ navigation }: any) {
-  const { colors,fontScale } = useTheme();
-  const styles = useMemo(() => getStyles(colors,fontScale), [colors,fontScale]);
+  const { colors,fontScale,t, isRTL} = useTheme();
+  const styles = useMemo(() => createDirectionalStyles(getStyles(colors,fontScale), isRTL), [colors,fontScale, isRTL]);
   const { appointments, loading, page, totalPages, goToPage } = useAllAppointments();
+  const statusLabels: Record<string, 'status_confirmed' | 'status_completed' | 'status_cancelled' | 'status_pending'> = {
+    CONFIRMED: 'status_confirmed',
+    'مؤكد': 'status_confirmed',
+    COMPLETED: 'status_completed',
+    'مكتمل': 'status_completed',
+    CANCELLED: 'status_cancelled',
+    'ملغي': 'status_cancelled',
+    PENDING: 'status_pending',
+    'قيد الانتظار': 'status_pending',
+  };
 
   // دالة مساعدة لعرض حالة الحجز بلون
   const getStatusStyle = (status: string) => {
@@ -45,7 +56,7 @@ export default function DoctorAllAppointmentsScreen({ navigation }: any) {
               <Text style={styles.avatarText}>{item.patientName?.charAt(0) || '?'}</Text>
             </View>
             <View>
-              <Text style={styles.patientName}>{item.patientName || 'مريض'}</Text>
+              <Text style={styles.patientName}>{item.patientName || t('appointment_patient')}</Text>
               <Text style={styles.patientPhone}>{item.patientPhone || '—'}</Text>
             </View>
           </View>
@@ -53,7 +64,7 @@ export default function DoctorAllAppointmentsScreen({ navigation }: any) {
           {/* الحالة */}
           <View style={[styles.badge, { backgroundColor: statusStyle.bg }]}>
             <Text style={[styles.badgeText, { color: statusStyle.text }]}>
-              {item.status || 'غير محدد'}
+              {statusLabels[item.status] ? t(statusLabels[item.status]) : item.status || t('not_specified')}
             </Text>
           </View>
         </View>
@@ -95,7 +106,7 @@ export default function DoctorAllAppointmentsScreen({ navigation }: any) {
           onPress={() => goToPage(page - 1)}
           disabled={page === 0}
         >
-          <Ionicons name="chevron-forward" size={18} color={page === 0 ? colors.textMuted : colors.text} />
+          <Ionicons name={isRTL ? 'chevron-forward' : 'chevron-back'} size={18} color={page === 0 ? colors.textMuted : colors.text} />
         </TouchableOpacity>
 
         {/* Page numbers */}
@@ -117,7 +128,7 @@ export default function DoctorAllAppointmentsScreen({ navigation }: any) {
           onPress={() => goToPage(page + 1)}
           disabled={page === totalPages - 1}
         >
-          <Ionicons name="chevron-back" size={18} color={page === totalPages - 1 ? colors.textMuted : colors.text} />
+          <Ionicons name={isRTL ? 'chevron-back' : 'chevron-forward'} size={18} color={page === totalPages - 1 ? colors.textMuted : colors.text} />
         </TouchableOpacity>
       </View>
     );
@@ -128,9 +139,13 @@ export default function DoctorAllAppointmentsScreen({ navigation }: any) {
       {/* الهيدر */}
       <View style={styles.header}>
         <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backBtn}>
-          <Ionicons name="arrow-forward" size={24} color={colors.text} />
+          <Ionicons
+            name={isRTL ? 'arrow-forward' : 'arrow-back'}
+            size={24}
+            color={colors.text}
+          />
         </TouchableOpacity>
-        <Text style={styles.headerTitle}>كل المواعيد</Text>
+        <Text style={styles.headerTitle}>{t('all_appointments')}</Text>
         <Ionicons name='refresh' size={24} color={colors.navIcon} onPress={()=>goToPage(0)} />
       </View>
 
@@ -148,7 +163,7 @@ export default function DoctorAllAppointmentsScreen({ navigation }: any) {
           ListEmptyComponent={
             <View style={styles.center}>
               <Ionicons name="calendar-clear-outline" size={48} color={colors.textMuted} />
-              <Text style={styles.emptyText}>لا توجد مواعيد حالياً.</Text>
+              <Text style={styles.emptyText}>{t('no_appointments')}</Text>
             </View>
           }
           ListFooterComponent={renderPagination}

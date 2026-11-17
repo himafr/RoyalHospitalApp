@@ -1,3 +1,4 @@
+import { createDirectionalStyles } from './direction';
 import React, { useMemo } from 'react';
 import { Text, View, StyleSheet } from 'react-native';
 import Ionicons from 'react-native-vector-icons/Ionicons';
@@ -12,8 +13,8 @@ function BaseToast({
   text2,
   variant,
 }: ToastProps & { variant: 'success' | 'error' }) {
-  const { colors,fontScale } = useTheme();
-  const styles = useMemo(() => getStyles(colors,fontScale), [colors,fontScale]);
+  const { colors,fontScale, isRTL} = useTheme();
+  const styles = useMemo(() => createDirectionalStyles(getStyles(colors,fontScale), isRTL), [colors,fontScale, isRTL]);
 
   const isSuccess = variant === 'success';
   const accent = isSuccess ? colors.success : colors.error;
@@ -43,11 +44,11 @@ export const toastConfig: ToastConfig = {
   ),
 };
 
-export function showSuccessToast(message: string, title = 'تم بنجاح') {
+export function showSuccessToast(message: string, title: string) {
   Toast.show({ type: 'success', text1: title, text2: message });
 }
 
-export function showErrorToast(message: string, title = 'تعذر إكمال العملية') {
+export function showErrorToast(message: string, title: string) {
   Toast.show({ type: 'error', text1: title, text2: message });
 }
 

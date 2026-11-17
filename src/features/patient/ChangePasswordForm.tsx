@@ -1,3 +1,4 @@
+import { createDirectionalStyles } from '../../utils/direction';
 import React, { useMemo, useState } from 'react';
 import {
   ActivityIndicator,
@@ -15,8 +16,8 @@ import { lightMode, radius, spacing } from '../../theme';
 import { getErrorMessage, showErrorToast } from '../../utils/toast';
 
 export default function ChangePasswordForm({ navigation }: any) {
-  const { colors,fontScale } = useTheme();
-const styles = useMemo(() => getStyles(colors,fontScale), [colors,fontScale]);
+  const { colors,fontScale,t, isRTL} = useTheme();
+const styles = useMemo(() => createDirectionalStyles(getStyles(colors,fontScale), isRTL), [colors,fontScale, isRTL]);
   const { signOut } = useAuth();
   const { passwordUpdate, loading } = useUser();
 
@@ -26,33 +27,33 @@ const styles = useMemo(() => getStyles(colors,fontScale), [colors,fontScale]);
 
   const handleSave = async () => {
     if (!oldPass || !newPass || !confirmPass) {
-      return Alert.alert('', 'يرجى ملء جميع الحقول');
+      return Alert.alert('', t('fill_all_fields'));
     }
     if (newPass !== confirmPass) {
-      return Alert.alert('', 'كلمة المرور الجديدة غير متطابقة');
+      return Alert.alert('', t('passwords_not_match'));
     }
     if (newPass.length < 6) {
-      return Alert.alert('كلمة المرور يجب أن تكون 6 أحرف على الأقل');
+      return Alert.alert(t('password_min_length'));
     }
     try {
       const res = await passwordUpdate({ newPass, oldPass });
       if (res !== 200) return;
     } catch (error: unknown) {
-      showErrorToast(getErrorMessage(error, 'تعذر تحديث كلمة المرور.'));
+      showErrorToast(getErrorMessage(error, t('password_update_error')), t('error'));
       return;
     }
 
     Alert.alert(
-      'تم التحديث',
-      'تم تغيير كلمة المرور بنجاح. هل تريد تسجيل الخروج الآن أم البقاء؟',
+      t('password_updated'),
+      t('password_update_success'),
       [
         {
-          text: 'تسجيل الخروج',
+          text: t('logout'),
           onPress: () => signOut(),
           style: 'destructive', // لون أحمر عشان يوضح إنه خروج
         },
         {
-          text: 'البقاء',
+          text: t('stay'),
           onPress: () =>{if (navigation.isFocused()) navigation.goBack();}
             , // نقفل الـ Modal ونرجع للـ Home
           style: 'cancel',
@@ -64,25 +65,25 @@ const styles = useMemo(() => getStyles(colors,fontScale), [colors,fontScale]);
 
   return (
     <View>
-      <Text style={styles.label}>كلمة المرور الحالية</Text>
+      <Text style={styles.label}>{t('current_password')}</Text>
       <PasswordInput
         value={oldPass}
         onChangeText={setOldPass}
-        placeholder="أدخل كلمة المرور الحالية"
+        placeholder={t('enter_current_password')}
       />
 
-      <Text style={styles.label}>كلمة المرور الجديدة</Text>
+      <Text style={styles.label}>{t('new_password')}</Text>
       <PasswordInput
         value={newPass}
         onChangeText={setNewPass}
-        placeholder="أدخل كلمة المرور الجديدة"
+        placeholder={t('enter_new_password')}
       />
 
-      <Text style={styles.label}>تأكيد كلمة المرور الجديدة</Text>
+      <Text style={styles.label}>{t('confirm_new_password')}</Text>
       <PasswordInput
         value={confirmPass}
         onChangeText={setConfirmPass}
-        placeholder="أعد كتابة كلمة المرور الجديدة"
+        placeholder={t('reenter_new_password')}
       />
 
       <TouchableOpacity
@@ -93,7 +94,7 @@ const styles = useMemo(() => getStyles(colors,fontScale), [colors,fontScale]);
         {loading ? (
           <ActivityIndicator color={colors.primary} />
         ) : (
-          <Text style={styles.saveBtnText}>تحديث كلمة المرور</Text>
+          <Text style={styles.saveBtnText}>{t('update_password_btn')}</Text>
         )}
       </TouchableOpacity>
     </View>

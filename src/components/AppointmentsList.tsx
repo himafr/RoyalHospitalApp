@@ -1,3 +1,4 @@
+import { createDirectionalStyles } from '../utils/direction';
 import { ReactNode, useMemo } from 'react';
 import { Image, StyleSheet, Text, View } from 'react-native';
 import { Appointment } from '../../types/medical';
@@ -5,32 +6,32 @@ import { useTheme } from '../context/ModeContext';
 import { lightMode, radius, spacing } from '../theme';
 
 const AppointmentsList: React.FC<{ data: Appointment[],loader?:ReactNode }> = ({ data,loader }) => {
-  const { colors,fontScale } = useTheme();
-const styles = useMemo(() => getStyles(colors,fontScale), [colors,fontScale]);
+  const { colors,fontScale,t, isRTL} = useTheme();
+const styles = useMemo(() => createDirectionalStyles(getStyles(colors,fontScale), isRTL), [colors,fontScale, isRTL]);
   function getStatusBadge(status: string) {
     switch (status) {
       case 'PENDING':
         return (
           <View style={styles.badgeOrange}>
-            <Text style={styles.badgeTextOrange}>قيد الانتظار</Text>
+            <Text style={styles.badgeTextOrange}> {t("status_pending")}</Text>
           </View>
         );
       case 'CONFIRMED':
         return (
           <View style={styles.badgeGreen}>
-            <Text style={styles.badgeTextGreen}>مؤكد</Text>
+            <Text style={styles.badgeTextGreen}>{t("status_confirmed")}</Text>
           </View>
         );
       case 'CANCELLED':
         return (
           <View style={styles.badgeRed}>
-            <Text style={styles.badgeTextRed}>ملغى</Text>
+            <Text style={styles.badgeTextRed}>{t("status_cancelled")}</Text>
           </View>
         );
       case 'COMPLETED':
         return (
           <View style={styles.badgeBlue}>
-            <Text style={styles.badgeTextBlue}>مكتمل</Text>
+            <Text style={styles.badgeTextBlue}>{t("status_completed")}</Text>
           </View>
         );
       default:
@@ -42,7 +43,7 @@ const styles = useMemo(() => getStyles(colors,fontScale), [colors,fontScale]);
     <View style={styles.section}>
       <View style={styles.sectionHeader}>
         <Text style={styles.sectionTitle}>
-          جدول مواعيد اليوم
+          {t("today_appointments")}
           {JSON.stringify(AppointmentsList)}
         </Text>
         {loader&& loader}
@@ -60,7 +61,7 @@ const styles = useMemo(() => getStyles(colors,fontScale), [colors,fontScale]);
           {getStatusBadge(appointment.status)}
         </View>
       )): (
-                <Text style={styles.emptyText}>لا توجد مواعيد اليوم.</Text>
+                <Text style={styles.emptyText}>{t("no_scheduled_appointments")}</Text>
               )}
 
     </View>

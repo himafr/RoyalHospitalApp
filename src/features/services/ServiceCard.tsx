@@ -1,3 +1,4 @@
+import { createDirectionalStyles } from '../../utils/direction';
 import { useNavigation } from '@react-navigation/native';
 import React, { useMemo } from 'react';
 import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
@@ -5,7 +6,7 @@ import Ionicons from 'react-native-vector-icons/Ionicons';
 import { useTheme } from '../../context/ModeContext';
 import PrimaryButton from '../../components/PrimaryButton';
 import { lightMode, radius, shadow, spacing } from '../../theme';
-import { SPECIALTIES_STRING } from '../../constants';
+import { SPECIALTY_TRANSLATION_KEYS } from '../../constants';
 
 interface ServiceCardProps {
   service: any;
@@ -13,15 +14,15 @@ interface ServiceCardProps {
 
 export default function ServiceCard({ service }: ServiceCardProps) {
   const navigation = useNavigation<any>();
-  const { colors,fontScale } = useTheme();
-  const styles = useMemo(() => getStyles(colors,fontScale), [colors,fontScale]);
+  const { colors,fontScale,t, isRTL} = useTheme();
+  const styles = useMemo(() => createDirectionalStyles(getStyles(colors,fontScale), isRTL), [colors,fontScale, isRTL]);
 
   // تجهيز السعر
   const priceLabel = service.consulating
-    ? `استشارة ${service.consulating}`
+    ? `${t('service_consultation_price')} ${service.consulating}`
     : service.startFrom
-    ? `تبدأ من ${service.startFrom}`
-    : `سعر الكشف ${service.price}`;
+    ? `${t('service_starting_from')} ${service.startFrom}`
+    : `${t('service_exam_price')} ${service.price}`;
 
   return (
     <TouchableOpacity
@@ -32,18 +33,18 @@ export default function ServiceCard({ service }: ServiceCardProps) {
       }
     >
       <View style={styles.alertBadge}>
-        <Ionicons name="alert-circle" size={16} color={colors.warning} />
+        <Ionicons name="alert-circle" size={16} color={colors.info} />
       </View>
       {/* 1. الأيقونة والعنوان */}
       <View style={styles.header}>
         <View style={styles.iconHolder}>
           <Ionicons name="medkit-outline" size={24} color={colors.primary} />
         </View>
-        <View style={{ flex: 1, alignItems: 'flex-end' }}>
+        <View style={{ flex: 1, alignItems: 'flex-start' }}>
           <Text style={styles.name}>{service.name}</Text>
           {service.specialization && (
             <Text style={styles.specialty}>
-              {SPECIALTIES_STRING[service.specialization]}
+              {t(SPECIALTY_TRANSLATION_KEYS[service.specialization] || 'specialty')}
             </Text>
           )}
         </View>
@@ -68,13 +69,13 @@ export default function ServiceCard({ service }: ServiceCardProps) {
       {/* 4. السعر + زرار الحجز */}
       <View style={styles.footer}>
         <View>
-          <Text style={styles.priceLabel}>السعر</Text>
+          <Text style={styles.priceLabel}>{t('price')}</Text>
           <Text style={styles.price}>
-            {priceLabel} <Text style={styles.currency}>ر.س</Text>
+            {priceLabel} <Text style={styles.currency}>{t('currency')}</Text>
           </Text>
         </View>
         <PrimaryButton
-          title="احجز الآن"
+          title={t('book_now_service')}
           variant="primary"
           style={styles.bookBtn}
           onPress={() =>
@@ -102,7 +103,7 @@ const getStyles = (colors: typeof lightMode, fontScale:number) =>
       justifyContent: 'center',
       alignItems: 'center',
       borderWidth: 1,
-      borderColor: colors.warning,
+      borderColor: colors.info,
       zIndex: 10,
     },
     card: {

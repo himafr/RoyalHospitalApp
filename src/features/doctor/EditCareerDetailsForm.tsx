@@ -1,3 +1,4 @@
+import { createDirectionalStyles } from '../../utils/direction';
 import { Picker } from '@react-native-picker/picker';
 import React, { useEffect, useMemo, useState } from 'react';
 import {
@@ -17,8 +18,8 @@ export default function EditCareerDetailsForm({
   navigation,
   refetchData,
 }: any) {
-  const { colors,fontScale } = useTheme();
-const styles = useMemo(() => getStyles(colors,fontScale), [colors,fontScale]);
+  const { colors,fontScale,t, isRTL} = useTheme();
+const styles = useMemo(() => createDirectionalStyles(getStyles(colors,fontScale), isRTL), [colors,fontScale, isRTL]);
   const { doctor: user, loading, editDoctorCareer } = useDoctor();
   const [form, setForm] = useState({
     specialty: '',
@@ -42,10 +43,10 @@ const styles = useMemo(() => getStyles(colors,fontScale), [colors,fontScale]);
     try {
       await editDoctorCareer({ data: form });
       await refetchData();
-      showSuccessToast('تم تحديث المعلومات المهنية بنجاح.');
+      showSuccessToast(t('career_update_success'), t('success'));
       if (navigation.isFocused()) navigation.goBack();
     } catch (error: unknown) {
-      showErrorToast(getErrorMessage(error, 'تعذر تحديث المعلومات المهنية.'));
+      showErrorToast(getErrorMessage(error, t('career_update_error')), t('error'));
     }
   };
 
@@ -54,38 +55,38 @@ const styles = useMemo(() => getStyles(colors,fontScale), [colors,fontScale]);
 
   return (
     <View>
-      <Text style={styles.label}>التخصص</Text>
+      <Text style={styles.label}>{t('specialty')}</Text>
       <View style={styles.pickerWrapper}>
         <Picker
           selectedValue={form.specialty}
           onValueChange={v => setForm({ ...form, specialty: v })}
         >
-          <Picker.Item label="طب عام" value="GENERAL" />
-          <Picker.Item label="أسنان" value="DENTISTRY" />
-          <Picker.Item label="جلدية" value="DERMATOLOGY" />
-          <Picker.Item label="عيون" value="OPHTHALMOLOGY" />
-          <Picker.Item label="القلب والأوعية الدموية" value="CARDIOLOGY" />
-          <Picker.Item label="الجلدية والتجميل" value="COSMETIC_DERMATOLOGY" />
-          <Picker.Item label="طب الأطفال" value="PEDIATRICS" />
-          <Picker.Item label="طب الأسرة" value="FAMILY_MEDICINE" />
+          <Picker.Item label={t('spec_general')} value="GENERAL" />
+          <Picker.Item label={t('spec_dentistry')} value="DENTISTRY" />
+          <Picker.Item label={t('spec_dermatology')} value="DERMATOLOGY" />
+          <Picker.Item label={t('spec_ophthalmology')} value="OPHTHALMOLOGY" />
+          <Picker.Item label={t('spec_cardiology')} value="CARDIOLOGY" />
+          <Picker.Item label={t('spec_cosmetic_dermatology')} value="COSMETIC_DERMATOLOGY" />
+          <Picker.Item label={t('spec_pediatrics')} value="PEDIATRICS" />
+          <Picker.Item label={t('spec_family_medicine')} value="FAMILY_MEDICINE" />
         </Picker>
       </View>
 
-      <Text style={styles.label}>المسمى الوظيفي</Text>
+      <Text style={styles.label}>{t('job_title')}</Text>
       <TextInput
         style={styles.input}
         value={form.specialization}
         onChangeText={t => setForm({ ...form, specialization: t })}
       />
 
-      <Text style={styles.label}>العضويات المهنية</Text>
+      <Text style={styles.label}>{t('memberships')}</Text>
       <TextInput
         style={styles.input}
         value={form.work}
         onChangeText={t => setForm({ ...form, work: t })}
       />
 
-      <Text style={styles.label}>نبذة عن الطبيب</Text>
+      <Text style={styles.label}>{t('about_doctor')}</Text>
       <TextInput
         style={[styles.input, { height: 100, textAlignVertical: 'top' }]}
         value={form.about}
@@ -98,9 +99,7 @@ const styles = useMemo(() => getStyles(colors,fontScale), [colors,fontScale]);
         onPress={handleSave}
         disabled={loading}
       >
-        <Text style={styles.saveBtnText}>
-          {loading ? 'جاري الحفظ...' : 'حفظ التعديلات'}
-        </Text>
+        <Text style={styles.saveBtnText}>{loading ? t('saving') : t('save_changes')}</Text>
       </TouchableOpacity>
     </View>
   );

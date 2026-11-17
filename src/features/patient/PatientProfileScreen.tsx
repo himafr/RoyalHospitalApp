@@ -1,3 +1,4 @@
+import { createDirectionalStyles } from '../../utils/direction';
 import React, { useMemo } from 'react';
 import {
   Image,
@@ -22,8 +23,8 @@ import usePatient from './usePatient';
 import NavBar from '../../components/layout/NavBar';
 
 export default function PatientProfileScreen({ navigation }: any) {
-  const { colors,fontScale } = useTheme();
-const styles = useMemo(() => getStyles(colors,fontScale), [colors,fontScale]);
+  const { colors,fontScale,t, isRTL} = useTheme();
+const styles = useMemo(() => createDirectionalStyles(getStyles(colors,fontScale), isRTL), [colors,fontScale, isRTL]);
   const { email, fullName, photoUrl } = useAuth();
   const { data: user, loading, refetch } = useUser();
   const {
@@ -35,7 +36,7 @@ const styles = useMemo(() => getStyles(colors,fontScale), [colors,fontScale]);
 
   return (
     <>
-    <NavBar navigation={navigation} title='الملف الشخصي' />
+    <NavBar navigation={navigation} title={t('patient_profile')} />
 
     <View style={styles.appHeader}>
       <View style={styles.welcomeHeader}>
@@ -48,9 +49,9 @@ const styles = useMemo(() => getStyles(colors,fontScale), [colors,fontScale]);
         </View>
         <View style={styles.flexAlignmentItem}>
           <Text style={styles.welcomeTitle}>
-            أهلاً بك، {fullName || email?.split('@')[0]}
+            {t('welcome_patient')} {fullName || email?.split('@')[0]}
           </Text>
-          <Text style={styles.welcomeSub}>مريض ذهبي</Text>
+          <Text style={styles.welcomeSub}>{t('gold_patient')}</Text>
         </View>
       </View>
     </View>
@@ -64,12 +65,12 @@ const styles = useMemo(() => getStyles(colors,fontScale), [colors,fontScale]);
       >
         <View style={styles.card}>
           <View style={styles.cardHeader}>
-            <Text style={styles.cardTitle}>المعلومات الشخصية</Text>
+            <Text style={styles.cardTitle}>{t('personal_info')}</Text>
             <TouchableOpacity
               disabled={loading}
               onPress={() =>
                 navigation.navigate('EditModal', {
-                  title: 'تعديل المعلومات الشخصية',
+                  title: t('edit_personal_info'),
                   renderContent: (nav: any) => (
                     <PersonalDetailsForm
                       refreshData={refetch}
@@ -84,39 +85,39 @@ const styles = useMemo(() => getStyles(colors,fontScale), [colors,fontScale]);
           </View>
           <View style={styles.infoGrid}>
             <View style={styles.infoItem}>
-              <Text style={styles.infoLabel}>الاسم الكامل</Text>
+              <Text style={styles.infoLabel}>{t('full_name')}</Text>
               <Text style={styles.infoValue}>
-                {loading ? <SmallIndicator /> : user?.fullName || 'غير محدد'}
+              {loading ? <SmallIndicator /> : user?.fullName || t('not_specified')}
               </Text>
             </View>
             <View style={styles.infoItem}>
-              <Text style={styles.infoLabel}>البريد الإلكتروني</Text>
+              <Text style={styles.infoLabel}>{t('email')}</Text>
               <Text style={styles.infoValue}>
-                {loading ? <SmallIndicator /> : email || 'غير محدد'}
+              {loading ? <SmallIndicator /> : email || t('not_specified')}
               </Text>
             </View>
             <View style={styles.infoItem}>
-              <Text style={styles.infoLabel}>رقم الجوال</Text>
+              <Text style={styles.infoLabel}>{t('phone')}</Text>
               <Text style={styles.infoValue}>
-                {loading ? <SmallIndicator /> : user?.phoneNumber || 'غير محدد'}
+              {loading ? <SmallIndicator /> : user?.phoneNumber || t('not_specified')}
               </Text>
             </View>
             <View style={styles.infoItem}>
-              <Text style={styles.infoLabel}>تاريخ الميلاد</Text>
+              <Text style={styles.infoLabel}>{t('date_of_birth')}</Text>
               <Text style={styles.infoValue}>
-                {loading ? <SmallIndicator /> : user?.dateOfBirth || 'غير محدد'}
+              {loading ? <SmallIndicator /> : user?.dateOfBirth || t('not_specified')}
               </Text>
             </View>
             <View style={styles.infoItem}>
-              <Text style={styles.infoLabel}>الجنس</Text>
+              <Text style={styles.infoLabel}>{t('gender')}</Text>
               <Text style={styles.infoValue}>
-                {loading ? <SmallIndicator /> : user?.gender || 'غير محدد'}
+              {loading ? <SmallIndicator /> : user?.gender || t('not_specified')}
               </Text>
             </View>
             <View style={styles.infoItem}>
-              <Text style={styles.infoLabel}>العنوان</Text>
+              <Text style={styles.infoLabel}>{t('address')}</Text>
               <Text style={styles.infoValue}>
-                {loading ? <SmallIndicator /> : user?.address || 'غير محدد'}
+              {loading ? <SmallIndicator /> : user?.address || t('not_specified')}
               </Text>
             </View>
           </View>
@@ -124,24 +125,24 @@ const styles = useMemo(() => getStyles(colors,fontScale), [colors,fontScale]);
 
         <View style={styles.card}>
           <View style={styles.cardHeader}>
-            <Text style={styles.cardTitle}>مواعيدي القادمة والسابقة</Text>
+            <Text style={styles.cardTitle}>{t('my_appointments')}</Text>
             <TouchableOpacity>
               <Ionicons name="eye" size={20} color={colors.primary} />
             </TouchableOpacity>
           </View>
           <View style={styles.emptyBox}>
-            <Text style={styles.emptyText}>لا توجد مواعيد مجدولة حالياً.</Text>
+            <Text style={styles.emptyText}>{t('no_scheduled_appointments')}</Text>
           </View>
         </View>
 
         <View style={styles.card}>
           <View style={styles.cardHeader}>
-            <Text style={styles.cardTitle}>الملف الطبي</Text>
+            <Text style={styles.cardTitle}>{t('medical_record')}</Text>
             <TouchableOpacity
               disabled={loading}
               onPress={() =>
                 navigation.navigate('EditModal', {
-                  title: 'تعديل فصيلة الدم',
+                  title: t('blood_type'),
                   renderContent: (nav: any) => (
                     <BloodTypeForm
                       refreshData={patientRefetch}
@@ -156,26 +157,26 @@ const styles = useMemo(() => getStyles(colors,fontScale), [colors,fontScale]);
           </View>
           <View style={styles.cardBody}>
             <View style={styles.rowBetween}>
-              <Text style={styles.infoLabel}>فصيلة الدم</Text>
+              <Text style={styles.infoLabel}>{t('blood_type')}</Text>
               <View style={styles.badgeGreen}>
                 <Text style={styles.badgeGreenText}>
-                  {patient?.bloodType || 'غير معروفة'}
+                  {patient?.bloodType || t('unknown')}
                 </Text>
               </View>
             </View>
             <View style={styles.rowBetween}>
-              <Text style={styles.infoLabel}>الحساسية</Text>
+              <Text style={styles.infoLabel}>{t('allergies')}</Text>
               <Text style={styles.infoValue}>
                 {loading ? (
                   <SmallIndicator />
                 ) : (
                   medicalRecord?.allergies.map(v => v.allergy).join(' ,') ||
-                  'لا توجد'
+                  t('no_allergies')
                 )}
               </Text>
             </View>
             <View style={styles.rowBetween}>
-              <Text style={styles.infoLabel}>الأمراض المزمنة</Text>
+              <Text style={styles.infoLabel}>{t('chronic_diseases')}</Text>
               <Text style={styles.infoValue}>
                 {' '}
                 {loading ? (
@@ -183,12 +184,12 @@ const styles = useMemo(() => getStyles(colors,fontScale), [colors,fontScale]);
                 ) : (
                   medicalRecord?.chronicDiseases
                     .map(v => v.disease)
-                    .join(' ,') || 'لا توجد'
+                    .join(' ,') || t('no_chronic')
                 )}
               </Text>
             </View>
             <View style={styles.rowBetween}>
-              <Text style={styles.infoLabel}>الأدوية الحالية</Text>
+              <Text style={styles.infoLabel}>{t('current_medications')}</Text>
               <Text style={styles.infoValue}>
                 {' '}
                 {loading ? (
@@ -196,7 +197,7 @@ const styles = useMemo(() => getStyles(colors,fontScale), [colors,fontScale]);
                 ) : (
                   medicalRecord?.medications
                     .map(v => v.medications)
-                    .join(' ,') || 'لا توجد'
+                    .join(' ,') || t('no_medications')
                 )}
               </Text>
             </View>
@@ -205,12 +206,12 @@ const styles = useMemo(() => getStyles(colors,fontScale), [colors,fontScale]);
 
         <View style={styles.card}>
           <View style={styles.cardHeader}>
-            <Text style={styles.cardTitle}>اتصال الطوارئ</Text>
+            <Text style={styles.cardTitle}>{t('emergency_contact')}</Text>
             <TouchableOpacity
               disabled={patientLoading}
               onPress={() =>
                 navigation.navigate('EditModal', {
-                  title: 'تعديل معلومات الطوارئ',
+                  title: t('edit_emergency_contact'),
                   renderContent: (nav: any) => (
                     <EmergencyContactForm
                       refreshData={patientRefetch}
@@ -225,28 +226,29 @@ const styles = useMemo(() => getStyles(colors,fontScale), [colors,fontScale]);
           </View>
           <View style={styles.cardBody}>
             <View style={styles.rowBetween}>
-              <Text style={styles.infoLabel}>الاسم</Text>
+              <Text style={styles.infoLabel}>{t('name')}</Text>
               <Text style={styles.infoValue}>
                 {patientLoading ? (
                   <SmallIndicator />
                 ) : (
-                  patient?.emergencyContactName || 'غير محدد'
+                  patient?.emergencyContactName || t('not_specified')
                 )}
               </Text>
             </View>
             <View style={styles.rowBetween}>
-              <Text style={styles.infoLabel}>رقم الجوال</Text>
+              <Text style={styles.infoLabel}>{t('phone')}
+              </Text>
               <Text style={styles.infoValue}>
                 {patientLoading ? (
                   <SmallIndicator />
                 ) : (
-                  patient?.emergencyContactPhone || 'غير محدد'
+                  patient?.emergencyContactPhone || t('not_specified')
                 )}
               </Text>
             </View>
             <View style={styles.warningBox}>
               <Text style={styles.warningText}>
-                سيتم التواصل مع هذا الرقم فوراً في الحالات الحرجة فقط
+                {t('emergency_warning')}
               </Text>
             </View>
           </View>
@@ -254,14 +256,14 @@ const styles = useMemo(() => getStyles(colors,fontScale), [colors,fontScale]);
 
         <View style={styles.card}>
           <View style={styles.cardHeader}>
-            <Text style={styles.cardTitle}>تغيير كلمة المرور</Text>
+            <Text style={styles.cardTitle}>{t('change_password')}</Text>
           </View>
           <View style={styles.cardBody}>
             <TouchableOpacity
               style={styles.actionButton}
               onPress={() => {
                 navigation.navigate('EditModal', {
-                  title: 'تحديث كلمة المرور',
+                  title: t('update_password'),
                   renderContent: (nav: any) => (
                     <ChangePasswordForm
                       refreshData={refetch}
@@ -272,7 +274,7 @@ const styles = useMemo(() => getStyles(colors,fontScale), [colors,fontScale]);
               }}
             >
               <Ionicons name="lock-closed" size={20} color={colors.primary} />
-              <Text style={styles.actionText}>تحديث كلمة المرور</Text>
+              <Text style={styles.actionText}>{t('update_password')}</Text>
             </TouchableOpacity>
           </View>
         </View>

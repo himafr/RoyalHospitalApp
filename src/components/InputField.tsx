@@ -1,3 +1,4 @@
+import { createDirectionalStyles } from '../utils/direction';
 import React, { useMemo, useState } from 'react';
 import { StyleSheet, Text, TextInput, TextInputProps, TouchableOpacity, View } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
@@ -13,8 +14,8 @@ interface Props extends TextInputProps {
 }
 
 export default function InputField({ label, value, onChangeText, icon, error, secureTextEntry, ...rest }: Props) {
-   const { colors,fontScale } = useTheme();
-  const styles = useMemo(() => getStyles(colors,fontScale), [colors,fontScale]);
+   const { colors,fontScale, isRTL} = useTheme();
+  const styles = useMemo(() => createDirectionalStyles(getStyles(colors,fontScale), isRTL), [colors,fontScale, isRTL]);
   const [focused, setFocused] = useState(false);
   const [show, setShow] = useState(!secureTextEntry);
 
@@ -34,11 +35,11 @@ export default function InputField({ label, value, onChangeText, icon, error, se
         />
         {secureTextEntry ? (
           <TouchableOpacity onPress={() => setShow(!show)} style={styles.icon}>
-            <Icon name={show ? 'eye-off' : 'eye'} size={20} color={colors.gold} />
+            <Icon name={show ? 'eye-off' : 'eye'} size={20} color={colors.primary} />
           </TouchableOpacity>
         ) : icon ? (
           <View style={styles.icon}>
-            <Icon name={icon} size={18} color={colors.gold} />
+            <Icon name={icon} size={18} color={colors.primary} />
           </View>
         ) : null}
       </View>

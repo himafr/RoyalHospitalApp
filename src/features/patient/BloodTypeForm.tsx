@@ -1,3 +1,4 @@
+import { createDirectionalStyles } from '../../utils/direction';
 import { Picker } from '@react-native-picker/picker';
 import React, { useEffect, useMemo, useState } from 'react';
 import { ActivityIndicator, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
@@ -8,8 +9,8 @@ import { getErrorMessage, showErrorToast, showSuccessToast } from '../../utils/t
 import usePatient from './usePatient';
 
 export default function BloodTypeForm({ navigation,refreshData }: any) {
-  const { colors,fontScale } = useTheme();
-const styles = useMemo(() => getStyles(colors,fontScale), [colors,fontScale]);
+  const { colors,fontScale,t, isRTL} = useTheme();
+const styles = useMemo(() => createDirectionalStyles(getStyles(colors,fontScale), isRTL), [colors,fontScale, isRTL]);
   const { patient, loading,bloodTypeUpdate } = usePatient();
   const [bloodType, setBloodType] = useState<BloodType>();
 
@@ -23,11 +24,11 @@ const styles = useMemo(() => getStyles(colors,fontScale), [colors,fontScale]);
      if (!bloodType) return;
     try {
       await bloodTypeUpdate(bloodType);
-      showSuccessToast('تم تحديث فصيلة الدم.');
+      showSuccessToast(t('blood_type_updated'), t('success'));
       refreshData();
       if (navigation.isFocused()) navigation.goBack();
     } catch (error: unknown) {
-      showErrorToast(getErrorMessage(error, 'تعذر تحديث فصيلة الدم.'));
+      showErrorToast(getErrorMessage(error, t('blood_type_update_error')), t('error'));
     }
 
   };
@@ -36,7 +37,7 @@ const styles = useMemo(() => getStyles(colors,fontScale), [colors,fontScale]);
 
   return (
     <View>
-      <Text style={styles.label}>فصيلة الدم</Text>
+      <Text style={styles.label}>{t('blood_type')}</Text>
       <View style={styles.pickerWrapper}>
         <Picker selectedValue={bloodType} onValueChange={(v) => setBloodType(v)} style={styles.picker}>
           <Picker.Item label="A+" value="A_PLUS" />
@@ -51,7 +52,7 @@ const styles = useMemo(() => getStyles(colors,fontScale), [colors,fontScale]);
       </View>
 
       <TouchableOpacity style={styles.saveBtn} onPress={handleSave} disabled={loading}>
-        <Text style={styles.saveBtnText}>{loading ? 'جاري الحفظ...' : 'حفظ'}</Text>
+        <Text style={styles.saveBtnText}>{loading ? t('saving') : t('save')}</Text>
       </TouchableOpacity>
     </View>
   );

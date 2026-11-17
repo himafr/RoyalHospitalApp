@@ -5,7 +5,7 @@ import { useTheme } from "../context/ModeContext"
 import { radius, spacing } from "../theme"
 
 const VerifyMessage : React.FC<{isVerified:boolean,navigation:any}> =({isVerified,navigation})=> {
-  const {colors,fontScale}=useTheme()
+  const {colors,fontScale,t}=useTheme()
     return (
         <View>
             {!isVerified && (
@@ -34,7 +34,7 @@ const VerifyMessage : React.FC<{isVerified:boolean,navigation:any}> =({isVerifie
     color: colors.text,
     fontSize: 14 * fontScale,
     fontWeight: '900',
-  }}>اضغط هنا لتوثيق الحساب</Text>
+  }}>{t("verify_account_btn")}</Text>
     </TouchableOpacity>
   )}
         </View>

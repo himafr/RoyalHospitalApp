@@ -1,3 +1,4 @@
+import { createDirectionalStyles } from '../../utils/direction';
 import React, { useMemo } from 'react';
 import {
   FlatList,
@@ -17,67 +18,67 @@ import AppHeader from '../../components/layout/AppHeader';
 const features = [
   {
     icon: 'hardware-chip-outline',
-    title: 'أحدث المعدات الطبية',
-    desc: 'نستخدم أحدث التقنيات وأفضل الأجهزة لضمان التشخيص والعلاج الدقيق والسريع.',
+    titleKey: 'feature_equipment_title',
+    descKey: 'feature_equipment_desc',
   },
   {
     icon: 'people-outline',
-    title: 'فريق طبي متخصص',
-    desc: 'أطباء استشاريون ذوو خبرة عالية وشهادات معتمدة في مختلف التخصصات الطبية.',
+    titleKey: 'feature_team_title',
+    descKey: 'feature_team_desc',
   },
   {
     icon: 'document-text-outline',
-    title: 'متابعة دقيقة للحالات',
-    desc: 'نظام ملفات إلكتروني متكامل لمتابعة تاريخك المرضي وتطورات حالتك بدقة متناهية.',
+    titleKey: 'feature_followup_title',
+    descKey: 'feature_followup_desc',
   },
   {
     icon: 'alarm-outline',
-    title: 'تذكير تلقائي بالمواعيد',
-    desc: 'نرسل رسائل تذكيرية نصية وعبر التطبيق لضمان عدم تفويت مواعيدك المهمة.',
+    titleKey: 'feature_reminder_title',
+    descKey: 'feature_reminder_desc',
   },
-];
+] as const;
 
 const services = [
   {
     icon: 'medkit-outline',
-    title: 'الاستشارات الطبية',
-    desc: 'احصل على تشخيص دقيق وخطة علاجية مخصصة لحالتك من قبل نخبة من الاستشاريين في كا...',
+    titleKey: 'service_consultation',
+    descKey: 'service_consultation_desc',
   },
   {
     icon: 'flask-outline',
-    title: 'الإجراءات الطبية',
-    desc: 'خدمات التحاليل المخبرية والأشعة والإجراءات البسيطة التي تتم داخل العيادة بأعلى...',
+    titleKey: 'service_procedures',
+    descKey: 'service_procedures_desc',
   },
   {
     icon: 'refresh-circle-outline',
-    title: 'المتابعة الدورية',
-    desc: 'برامج فحص دوري شاملة للأفراد والعائلات للتأكد من الصحة العامة والكشف المبكر',
+    titleKey: 'service_followup',
+    descKey: 'service_followup_desc',
   },
   {
     icon: 'fitness-outline',
-    title: 'برامج العلاج',
-    desc: 'خطط علاجية طويلة وقصيرة المدى، تشمل العلاج الطبيعي والتأهيلي تحت إشراف',
+    titleKey: 'service_programs',
+    descKey: 'service_programs_desc',
   },
-];
+] as const;
 
 const testimonials = [
   {
     name: 'أحمد المحمدي',
-    text: 'تجربة ممتازة جداً. الطاقم الطبي محترف والتعامل راقي. والأهم من ذلك دقة المواعيد والنظافة العامة للعيادة. أنصح بها بشدة.',
+    textKey: 'home_testimonial_one',
   },
   {
     name: 'سارة العتيبي',
-    text: 'أفضل عيادة زرتها. الاهتمام بالتفاصيل والرعاية الإنسانية لا مثيل لها.',
+    textKey: 'home_testimonial_two',
   },
   {
     name: 'خالد الفيصل',
-    text: 'خدمة راقية وتشخيص دقيق. أنصح الجميع بزيارة عيادة الشفاء.',
+    textKey: 'home_testimonial_three',
   },
-];
+] as const;
 
 export default function PatientHomeScreen({ navigation }: any) {
-  const { colors,fontScale } = useTheme();
-const styles = useMemo(() => getStyles(colors,fontScale), [colors,fontScale]);
+  const { colors,fontScale,t, isRTL} = useTheme();
+const styles = useMemo(() => createDirectionalStyles(getStyles(colors,fontScale), isRTL), [colors,fontScale, isRTL]);
   const { isVerified , signOut} = useAuth();
   return (
     <SmoothScrollView style={styles.root} showsVerticalScrollIndicator={false}>
@@ -85,26 +86,23 @@ const styles = useMemo(() => getStyles(colors,fontScale), [colors,fontScale]);
 
       <View style={styles.hero}>
         <Text style={styles.heroTitle}>
-          رعاية طبية
-          <Text style={{ color: colors.primary }}>باحترافية وثقة</Text>
+          {t('home_title_1')}
+          <Text style={{ color: colors.primary }}>{t('home_title_2')}</Text>
         </Text>
-        <Text style={styles.heroSub}>
-          نقدم أفضل الخدمات الطبية بأحدث التقنيات لضمان صحتكم وسلامتكم. فريقنا
-          الطبي المتخصص جاهز لخدمتكم على مدار الساعة لضمان راحة بالكم.
-        </Text>
+        <Text style={styles.heroSub}>{t('home_desc')}</Text>
 
         <View style={styles.heroBtns}>
           <TouchableOpacity
             style={styles.btnPrimary}
             onPress={() => navigation.navigate('AppointmentTab')}
           >
-            <Text style={styles.btnPrimaryText}>احجز موعدك الان</Text>
+            <Text style={styles.btnPrimaryText}>{t('book_now')}</Text>
           </TouchableOpacity>
           <TouchableOpacity
             style={styles.btnSecondary}
             onPress={() => navigation.navigate('AboutTab')}
           >
-            <Text style={styles.btnSecondaryText}>تعرف علينا</Text>
+            <Text style={styles.btnSecondaryText}>{t('know_us')}</Text>
           </TouchableOpacity>
         </View>
 
@@ -117,29 +115,26 @@ const styles = useMemo(() => getStyles(colors,fontScale), [colors,fontScale]);
               </View>
             ))}
           </View>
-          <View style={{ alignItems: 'flex-end' }}>
-            <View style={{ flexDirection: 'row-reverse' }}>
+          <View style={{ alignItems: 'flex-start' }}>
+            <View style={{ flexDirection: 'row' }}>
               {[1, 2, 3, 4, 5].map(i => (
                 <Ionicons key={i} name="star" size={12} color={colors.primary} />
               ))}
             </View>
-            <Text style={styles.ratingText}>أكثر من 5000 مريض سعيد</Text>
+            <Text style={styles.ratingText}>{t('happy_patients')}</Text>
           </View>
         </View>
       </View>
 
       {/* 3. لماذا تختار عيادتنا؟ (Features) */}
       <View style={styles.section}>
-        <Text style={styles.sectionTitle}>لماذا تختار عيادتنا؟</Text>
-        <Text style={styles.sectionSub}>
-          نتميز بتقديم خدمات طبية عالية الجودة مع التركيز على راحة المريض ودقة
-          التشخيص.
-        </Text>
+        <Text style={styles.sectionTitle}>{t('why_choose_us')}</Text>
+        <Text style={styles.sectionSub}>{t('why_choose_us_desc')}</Text>
 
         <FlatList
           data={features}
           scrollEnabled={false}
-          keyExtractor={i => i.title}
+          keyExtractor={i => i.titleKey}
           renderItem={({ item }) => (
             <View style={styles.featureCard}>
               <View style={styles.featureIcon}>
@@ -150,8 +145,8 @@ const styles = useMemo(() => getStyles(colors,fontScale), [colors,fontScale]);
                 />
               </View>
               <View style={{ flex: 1 }}>
-                <Text style={styles.featureTitle}>{item.title}</Text>
-                <Text style={styles.featureDesc}>{item.desc}</Text>
+                <Text style={styles.featureTitle}>{t(item.titleKey)}</Text>
+                <Text style={styles.featureDesc}>{t(item.descKey)}</Text>
               </View>
             </View>
           )}
@@ -161,19 +156,19 @@ const styles = useMemo(() => getStyles(colors,fontScale), [colors,fontScale]);
       {/* 4. خدماتنا الطبية (Services) */}
       <View style={[styles.section, { backgroundColor: colors.backgroundAlt }]}>
         <View style={styles.servicesHeader}>
-          <Text style={styles.sectionTitle}>خدماتنا الطبية</Text>
+          <Text style={styles.sectionTitle}>{t('our_services')}</Text>
           <TouchableOpacity onPress={() => navigation.navigate('ServicesTab')}>
-            <Text style={styles.linkText}>عرض جميع الخدمات</Text>
+            <Text style={styles.linkText}>{t('view_all_services')}</Text>
           </TouchableOpacity>
         </View>
         <Text style={styles.sectionSub}>
-          نغطي كافة احتياجاتك الصحية تحت سقف واحد
+          {t('services_under_one_roof')}
         </Text>
 
         <FlatList
           data={services}
           scrollEnabled={false}
-          keyExtractor={i => i.title}
+          keyExtractor={i => i.titleKey}
           renderItem={({ item }) => (
             <View style={styles.serviceCard}>
               <View style={styles.serviceIconBox}>
@@ -183,14 +178,18 @@ const styles = useMemo(() => getStyles(colors,fontScale), [colors,fontScale]);
                   color={colors.primary}
                 />
               </View>
-              <Text style={styles.serviceTitle}>{item.title}</Text>
-              <Text style={styles.serviceDesc}>{item.desc}</Text>
+              <Text style={styles.serviceTitle}>{t(item.titleKey)}</Text>
+              <Text style={styles.serviceDesc}>{t(item.descKey)}</Text>
               <TouchableOpacity
                 style={styles.detailsBtn}
                 onPress={() => navigation.navigate('ServicesTab')}
               >
-                <Text style={styles.detailsText}>التفاصيل</Text>
-                <Ionicons name="arrow-back" size={14} color={colors.primary} />
+                <Text style={styles.detailsText}>{t('details')}</Text>
+                <Ionicons
+                  name={isRTL ? 'arrow-back' : 'arrow-forward'}
+                  size={14}
+                  color={colors.primary}
+                />
               </TouchableOpacity>
             </View>
           )}
@@ -200,21 +199,21 @@ const styles = useMemo(() => getStyles(colors,fontScale), [colors,fontScale]);
       {/* 5. آراء المرضى (Testimonials) */}
       <View style={styles.section}>
         <Text style={[styles.sectionTitle, { textAlign: 'center' }]}>
-          آراء المرضى
+          {t('patient_testimonials')}
         </Text>
         <Text style={[styles.sectionSub, { textAlign: 'center' }]}>
-          قصص نجاح مرضانا
+          {t('patient_stories')}
         </Text>
 
-        {testimonials.map((t, i) => (
+        {testimonials.map((testimonial, i) => (
           <View key={i} style={styles.testimonialCard}>
             <View style={styles.testimonialHeader}>
               <View style={styles.avatarMini}>
                 <Ionicons name="person" size={18} color={colors.primary} />
               </View>
-              <View style={{ alignItems: 'flex-end' }}>
-                <Text style={styles.testimonialName}>{t.name}</Text>
-                <View style={{ flexDirection: 'row-reverse' }}>
+              <View style={{ alignItems: 'flex-start' }}>
+                <Text style={styles.testimonialName}>{testimonial.name}</Text>
+                <View style={{ flexDirection: 'row' }}>
                   {[1, 2, 3, 4, 5].map(s => (
                     <Ionicons
                       key={s}
@@ -226,24 +225,21 @@ const styles = useMemo(() => getStyles(colors,fontScale), [colors,fontScale]);
                 </View>
               </View>
             </View>
-            <Text style={styles.testimonialText}>"{t.text}"</Text>
+            <Text style={styles.testimonialText}>"{t(testimonial.textKey)}"</Text>
           </View>
         ))}
       </View>
 
       {/* 6. CTA (ابدأ رحلتك) */}
       <View style={styles.cta}>
-        <Text style={styles.ctaTitle}>تواصل معنا وابدأ رحلتك العلاجية</Text>
-        <Text style={styles.ctaSub}>
-          صحتك هي استثمارك الأهم. لا تتردد في التواصل معنا للحصول على استشارة
-          فورية أو حجز موعد يناسبك.
-        </Text>
+        <Text style={styles.ctaTitle}>{t('cta_title')}</Text>
+        <Text style={styles.ctaSub}>{t('cta_desc')}</Text>
         <View style={styles.ctaBtns}>
           <TouchableOpacity
             style={styles.ctaBtn}
             onPress={() => navigation.navigate('AppointmentTab')}
           >
-            <Text style={styles.ctaBtnText}>احجز موعدك الآن</Text>
+            <Text style={styles.ctaBtnText}>{t('book_now_btn')}</Text>
           </TouchableOpacity>
           <TouchableOpacity
             style={styles.ctaBtnSecondary}
@@ -252,7 +248,7 @@ const styles = useMemo(() => getStyles(colors,fontScale), [colors,fontScale]);
             }}
           >
             <Ionicons name="call" size={20} color={colors.iconSecondary} />
-            <Text style={styles.ctaBtnSecondaryText}>اتصل بنا</Text>
+            <Text style={styles.ctaBtnSecondaryText}>{t('call_us')}</Text>
           </TouchableOpacity>
         </View>
       </View>

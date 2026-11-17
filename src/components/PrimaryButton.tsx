@@ -1,3 +1,4 @@
+import { createDirectionalStyles } from '../utils/direction';
 import React, { useMemo } from 'react';
 import { ActivityIndicator, StyleProp, StyleSheet, Text, TouchableOpacity, View, ViewStyle } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
@@ -15,8 +16,8 @@ interface Props {
 }
 
 export default function PrimaryButton({ title, onPress, loading, disabled, icon, variant = 'primary', style }: Props) {
-  const { colors,fontScale } = useTheme();
-const styles = useMemo(() => getStyles(colors,fontScale), [colors,fontScale]);
+  const { colors,fontScale, isRTL} = useTheme();
+const styles = useMemo(() => createDirectionalStyles(getStyles(colors,fontScale), isRTL), [colors,fontScale, isRTL]);
   const isPrimary = variant === 'primary';
   return (
     <TouchableOpacity
@@ -30,7 +31,7 @@ const styles = useMemo(() => getStyles(colors,fontScale), [colors,fontScale]);
       ) : (
         <View style={styles.content}>
           <Text style={[styles.text, isPrimary ? styles.textPrimary : styles.textSecondary]}>{title}</Text>
-          {icon ? <Icon name={icon} size={20} color={isPrimary ? colors.primary : colors.primaryLight} style={{ marginRight: spacing.sm }} /> : null}
+          {icon ? <Icon name={icon} size={20} color={isPrimary ? colors.primary : colors.primaryLight} style={{ marginRight: isRTL ? spacing.sm : 0, marginLeft: isRTL ? 0 : spacing.sm }} /> : null}
         </View>
       )}
     </TouchableOpacity>

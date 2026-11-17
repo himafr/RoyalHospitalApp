@@ -1,3 +1,4 @@
+import { createDirectionalStyles } from '../../utils/direction';
 import React, { useMemo, useState } from 'react';
 import { KeyboardAvoidingView, Platform, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
@@ -10,8 +11,8 @@ import { lightMode, radius, spacing } from '../../theme';
 import { getErrorMessage, showErrorToast, showSuccessToast } from '../../utils/toast';
 
 export default function SignupScreen({ navigation }: any) {
-  const { colors,fontScale } = useTheme();
-const styles = useMemo(() => getStyles(colors,fontScale), [colors,fontScale]);
+  const { colors,fontScale,t, isRTL} = useTheme();
+const styles = useMemo(() => createDirectionalStyles(getStyles(colors,fontScale), isRTL), [colors,fontScale, isRTL]);
   const { signup } = useAuth();
   const [form, setForm] = useState({ fullName: '', phoneNumber: '', email: '', password: '', passwordCheck: '', gender: 'ذكر', agree: true });
   const [error, setError] = useState('');
@@ -21,16 +22,16 @@ const styles = useMemo(() => getStyles(colors,fontScale), [colors,fontScale]);
 
   const handleSignup = async () => {
     setError('');
-    if (!form.fullName || !form.email || !form.password) return setError('يرجى ملء الحقول المطلوبة');
-    if (form.password !== form.passwordCheck) return setError('كلمتا المرور غير متطابقتين');
-    if (!form.agree) return setError('يجب الموافقة على الشروط');
+    if (!form.fullName || !form.email || !form.password) return setError(t('fill_all_fields'));
+    if (form.password !== form.passwordCheck) return setError(t('password_mismatch'));
+    if (!form.agree) return setError(t('signup_terms_required'));
     setLoading(true);
     try {
       await signup(form);
-      showSuccessToast('تم إنشاء حسابك. أرسلنا إليك كود التفعيل.');
+      showSuccessToast(t('signup_success_notice'), t('success'));
       navigation.navigate('Activate', { email: form.email });
     } catch (e: unknown) {
-      showErrorToast(getErrorMessage(e, 'حدث خطأ أثناء إنشاء الحساب'));
+      showErrorToast(getErrorMessage(e, t('err_generic')), t('error'));
     } finally {
       setLoading(false);
     }
@@ -40,21 +41,24 @@ const styles = useMemo(() => getStyles(colors,fontScale), [colors,fontScale]);
     <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : undefined} style={styles.root}>
       <SmoothScrollView contentContainerStyle={styles.scroll} keyboardShouldPersistTaps="handled">
         <View style={styles.card}>
-          <Text style={styles.header}>إنشاء حساب جديد</Text>
-          <Text style={styles.sub}>انضم إلى نخبة مرضانا واستمتع بخدماتنا المتميزة</Text>
+          <Text style={styles.header}>{t('signup_title')}</Text>
+          <Text style={styles.sub}>{t('signup_subtitle')}</Text>
 
           <View style={{ width: '100%', marginTop: spacing.lg }}>
-            <InputField label="الاسم بالكامل" value={form.fullName} onChangeText={(v) => update('fullName', v)} placeholder="ادخل اسمك الثلاثي" icon="person" />
-            <InputField label="رقم الهاتف" value={form.phoneNumber} onChangeText={(v) => update('phoneNumber', v)} placeholder="011*********" keyboardType="phone-pad" icon="call" />
-            <InputField label="البريد الإلكتروني" value={form.email} onChangeText={(v) => update('email', v)} placeholder="hema@example.com" keyboardType="email-address" icon="at" />
-            <InputField label="كلمة المرور" value={form.password} onChangeText={(v) => update('password', v)} placeholder="أدخل كلمة المرور" secureTextEntry />
-            <InputField label="تأكيد كلمة المرور" value={form.passwordCheck} onChangeText={(v) => update('passwordCheck', v)} placeholder="تأكيد كلمة المرور" secureTextEntry />
+            <InputField label={t('full_name')} value={form.fullName} onChangeText={(v) => update('fullName', v)} placeholder={t('full_name_placeholder')} icon="person" />
+            <InputField label={t('phone_number')} value={form.phoneNumber} onChangeText={(v) => update('phoneNumber', v)} placeholder={t('phone_placeholder')} keyboardType="phone-pad" icon="call" />
+            <InputField label={t('email_label')} value={form.email} onChangeText={(v) => update('email', v)} placeholder={t('email_placeholder')} keyboardType="email-address" icon="at" />
+            <InputField label={t('password')} value={form.password} onChangeText={(v) => update('password', v)} placeholder={t('password_placeholder')} secureTextEntry />
+            <InputField label={t('confirm_password')} value={form.passwordCheck} onChangeText={(v) => update('passwordCheck', v)} placeholder={t('confirm_password_placeholder')} secureTextEntry />
 
-            <Text style={styles.label}>الجنس</Text>
+            <Text style={styles.label}>{t('gender')}</Text>
             <View style={styles.genderRow}>
-              {['ذكر', 'أنثى'].map((g) => (
-                <TouchableOpacity key={g} onPress={() => update('gender', g)} style={[styles.genderBtn, form.gender === g && styles.genderActive]}>
-                  <Text style={[styles.genderText, form.gender === g && styles.genderTextActive]}>{g}</Text>
+              {[
+                { label: t('gender_male'), value: 'ذكر' },
+                { label: t('gender_female'), value: 'أنثى' },
+              ].map(({ label, value }) => (
+                <TouchableOpacity key={value} onPress={() => update('gender', value)} style={[styles.genderBtn, form.gender === value && styles.genderActive]}>
+                  <Text style={[styles.genderText, form.gender === value && styles.genderTextActive]}>{label}</Text>
                 </TouchableOpacity>
               ))}
             </View>
@@ -63,17 +67,17 @@ const styles = useMemo(() => getStyles(colors,fontScale), [colors,fontScale]);
               <View style={[styles.checkbox, form.agree && styles.checkboxActive]}>
                 {form.agree && <Icon name="checkmark" size={14} color={colors.primary} />}
               </View>
-              <Text style={styles.checkText}>أوافق على الشروط والأحكام وسياسة الخصوصية</Text>
+              <Text style={styles.checkText}>{t('terms_agree')}</Text>
             </TouchableOpacity>
 
             {error ? <Text style={styles.error}>{error}</Text> : null}
 
-            <PrimaryButton title="إنشاء الحساب" onPress={handleSignup} loading={loading} icon="arrow-back" />
+            <PrimaryButton title={t('signup')} onPress={handleSignup} loading={loading} icon="arrow-back" />
 
             <View style={styles.loginBox}>
-              <Text style={styles.loginText}>لديك حساب بالفعل؟ </Text>
+              <Text style={styles.loginText}>{t('have_account')} </Text>
               <TouchableOpacity onPress={() => navigation.navigate('Login')}>
-                <Text style={styles.loginLink}>سجل دخولك الآن</Text>
+                <Text style={styles.loginLink}>{t('login_now')}</Text>
               </TouchableOpacity>
             </View>
           </View>

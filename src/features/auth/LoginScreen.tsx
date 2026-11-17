@@ -1,3 +1,4 @@
+import { createDirectionalStyles } from '../../utils/direction';
 import React, { useMemo, useState } from 'react';
 import {
   KeyboardAvoidingView,
@@ -17,8 +18,8 @@ import { getErrorMessage, showErrorToast, showSuccessToast } from '../../utils/t
 import { useTheme } from '../../context/ModeContext';
 
 export default function LoginScreen({ navigation }: any) {
-  const { colors,fontScale } = useTheme();
-const styles = useMemo(() => getStyles(colors,fontScale), [colors,fontScale]);
+  const { colors,fontScale,t, isRTL} = useTheme();
+const styles = useMemo(() => createDirectionalStyles(getStyles(colors,fontScale), isRTL), [colors,fontScale, isRTL]);
   const { login } = useAuth();
   const [email, setEmail] = useState('hema@sallem.com');
   const [password, setPassword] = useState('12345678');
@@ -28,14 +29,15 @@ const styles = useMemo(() => getStyles(colors,fontScale), [colors,fontScale]);
   const handleLogin = async () => {
     setError('');
     if (!email || !password)
-      return setError('يرجى إدخال البريد الإلكتروني وكلمة المرور');
+      return setError(t('login_required_fields'));
     setLoading(true);
     try {
       await login(email.trim(), password);
-      showSuccessToast('أهلاً بك من جديد');
+      showSuccessToast(t('welcome_back'), t('success'));
     } catch (e: unknown) {
       showErrorToast(
-        getErrorMessage(e, 'البريد الإلكتروني أو كلمة المرور غير صحيحة'),
+        getErrorMessage(e, t('incorrect_password')),
+        t('error'),
       );
     } finally {
       setLoading(false);
@@ -55,41 +57,41 @@ const styles = useMemo(() => getStyles(colors,fontScale), [colors,fontScale]);
           <View style={styles.logoHolder}>
             <Icon name="medkit" size={40} color={colors.primary} />
           </View>
-          <Text style={styles.brand}>العيادة</Text>
-          <Text style={styles.tagline}>الفخامة في الرعاية</Text>
+          <Text style={styles.brand}>{t('login_clinic')}</Text>
+          <Text style={styles.tagline}>{t('login_luxury')}</Text>
           <View style={styles.divider} />
-          <Text style={styles.title}>تسجيل الدخول</Text>
+          <Text style={styles.title}>{t('login')}</Text>
 
           <View style={{ width: '100%', marginTop: spacing.lg }}>
             <InputField
-              label="البريد الإلكتروني"
+              label={t('email_label')}
               value={email}
               onChangeText={setEmail}
-              placeholder="hema@example.com"
+              placeholder={t('email_placeholder')}
               keyboardType="email-address"
               icon="at"
             />
             <InputField
-              label="كلمة المرور"
+              label={t('password')}
               value={password}
               onChangeText={setPassword}
-              placeholder="أدخل كلمة المرور"
+              placeholder={t('password_placeholder')}
               secureTextEntry
             />
 
             {error ? <Text style={styles.error}>{error}</Text> : null}
 
             <PrimaryButton
-              title="تسجيل الدخول"
+              title={t('login')}
               onPress={handleLogin}
               loading={loading}
               icon="arrow-back"
             />
 
             <View style={styles.signupBox}>
-              <Text style={styles.signupText}>ليس لديك حساب؟ </Text>
+              <Text style={styles.signupText}>{t('no_account')} </Text>
               <TouchableOpacity onPress={() => navigation.navigate('Signup')}>
-                <Text style={styles.signupLink}>إنشاء حساب جديد</Text>
+                <Text style={styles.signupLink}>{t('create_account')}</Text>
               </TouchableOpacity>
             </View>
             <TouchableOpacity
@@ -97,7 +99,7 @@ const styles = useMemo(() => getStyles(colors,fontScale), [colors,fontScale]);
               style={{ marginTop: spacing.sm, alignSelf: 'center' }}
             >
               <Text style={[styles.signupLink, { fontSize: 14 * fontScale }]}>
-                تسجيل كطبيب
+                {t('doctor_signup')}
               </Text>
             </TouchableOpacity>
           </View>

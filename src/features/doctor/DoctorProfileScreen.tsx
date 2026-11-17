@@ -1,3 +1,4 @@
+import { createDirectionalStyles } from '../../utils/direction';
 import React, { useMemo } from 'react';
 import {
   Image,
@@ -16,10 +17,11 @@ import AddCertificationForm from './AddCertificationForm';
 import EditCareerDetailsForm from './EditCareerDetailsForm';
 import EditCertificationForm from './EditCertificationForm';
 import useDoctor from './useDoctor';
+import { SPECIALTY_TRANSLATION_KEYS } from '../../constants';
 
 export default function DoctorProfileScreen({ navigation }: any) {
-  const { colors,fontScale } = useTheme();
-const styles = useMemo(() => getStyles(colors,fontScale), [colors,fontScale]);
+  const { colors,fontScale,t, isRTL} = useTheme();
+const styles = useMemo(() => createDirectionalStyles(getStyles(colors,fontScale), isRTL), [colors,fontScale, isRTL]);
   const { email, signOut, photoUrl } = useAuth();
   const { doctor: user, loading, refetch,error } = useDoctor();
 
@@ -27,7 +29,7 @@ const styles = useMemo(() => getStyles(colors,fontScale), [colors,fontScale]);
   const InfoItem = ({ label, value }: { label: string; value: string }) => (
     <View style={styles.infoItem}>
       <Text style={styles.infoLabel}>{label}</Text>
-      <Text style={styles.infoValue}>{value || 'غير محدد'}</Text>
+      <Text style={styles.infoValue}>{value || t('not_specified')}</Text>
     </View>
   );
 
@@ -43,12 +45,12 @@ const styles = useMemo(() => getStyles(colors,fontScale), [colors,fontScale]);
             <Ionicons name="person" size={40} color={colors.primary} />
           )}
         </View>
-        <View style={{ flex: 1, alignItems: 'flex-end' }}>
+        <View style={{ flex: 1, alignItems: 'flex-start' }}>
           <Text style={styles.welcomeTitle}>
-            أهلاً بك، د. {email?.split('@')[0]}
+            {t('welcome_doctor')} {email?.split('@')[0]}
           </Text>
           <Text style={styles.welcomeSub}>
-            نتمنى لك يوماً سعيداً وموفقاً في خدمة مرضاك.
+            {t('doctor_welcome_desc')}
           </Text>
         </View>
       </View>
@@ -57,17 +59,17 @@ const styles = useMemo(() => getStyles(colors,fontScale), [colors,fontScale]);
         <View style={styles.briefCard}>
           <Ionicons name="people" size={24} color={colors.success} />
           <Text style={styles.briefValue}>1,250</Text>
-          <Text style={styles.briefLabel}>إجمالي المرضى</Text>
+          <Text style={styles.briefLabel}>{t('total_patients')}</Text>
         </View>
         <View style={styles.briefCard}>
           <Ionicons name="star" size={24} color={colors.primary} />
           <Text style={styles.briefValue}>4.9 / 5</Text>
-          <Text style={styles.briefLabel}>متوسط التقييم</Text>
+          <Text style={styles.briefLabel}>{t('avg_rating')}</Text>
         </View>
         <View style={styles.briefCard}>
           <Ionicons name="trophy" size={24} color={colors.primary} />
           <Text style={styles.briefValue}>15+</Text>
-          <Text style={styles.briefLabel}>سنوات الخبرة</Text>
+          <Text style={styles.briefLabel}>{t('years_experience')}</Text>
         </View>
       </View>
 
@@ -75,26 +77,31 @@ const styles = useMemo(() => getStyles(colors,fontScale), [colors,fontScale]);
       {/* 3. المعلومات المهنية */}
       <View style={styles.card}>
         <View style={styles.cardHeader}>
-          <Text style={styles.cardTitle}>المعلومات المهنية</Text>
+          <Text style={styles.cardTitle}>{t('professional_info')}</Text>
         </View>
         <View style={styles.cardBody}>
-          <InfoItem label="التخصص" value={user?.specialty || 'غير محدد'} />
           <InfoItem
-            label="المسمى الوظيفي"
-            value={user?.specialization || 'غير محدد'}
+            label={t('specialty')}
+            value={user?.specialty
+              ? t(SPECIALTY_TRANSLATION_KEYS[user.specialty] || 'specialty')
+              : t('not_specified')}
           />
-          <InfoItem label="العضويات المهنية" value={user?.work || 'غير محدد'} />
+          <InfoItem
+            label={t('job_title')}
+            value={user?.specialization || t('not_specified')}
+          />
+          <InfoItem label={t('memberships')} value={user?.work || t('not_specified')} />
 
-          <Text style={styles.label}>نبذة عن الطبيب</Text>
+          <Text style={styles.label}>{t('about_doctor')}</Text>
           <Text style={styles.aboutText}>
-            {user?.about || 'لم يتم إضافة نبذة بعد.'}
+            {user?.about || t('no_biography')}
           </Text>
         </View>
         <TouchableOpacity
           style={styles.actionBtn}
           onPress={() => {
            navigation.navigate('EditModal', {
-                title: 'تعديل المعلومات المهنية',
+                title: t('edit_professional_info'),
                 renderContent: (nav: any) => (
                 <EditCareerDetailsForm
                     refetchData={refetch}
@@ -105,19 +112,23 @@ const styles = useMemo(() => getStyles(colors,fontScale), [colors,fontScale]);
           }}
         >
           <Ionicons name="create" size={20} color={colors.primary} />
-          <Text style={styles.actionBtnText}>تعديل المعلومات المهنية</Text>
-          <Ionicons name="chevron-back" size={20} color={colors.primary} />
+          <Text style={styles.actionBtnText}>{t('edit_professional_info')}</Text>
+          <Ionicons
+            name={isRTL ? 'chevron-back' : 'chevron-forward'}
+            size={20}
+            color={colors.primary}
+          />
         </TouchableOpacity>
       </View>
 
       {/* 5. الشهادات العلمية */}
       <View style={styles.card}>
         <View style={styles.cardHeader}>
-          <Text style={styles.cardTitle}>الشهادات العلمية</Text>
+          <Text style={styles.cardTitle}>{t('certifications')}</Text>
           <TouchableOpacity
             onPress={() =>
               navigation.navigate('EditModal', {
-                title: 'اضافة شهاده',
+                title: t('add_certification'),
                 renderContent: (nav: any) => (
                   <AddCertificationForm
                     refetchData={refetch}
@@ -141,7 +152,7 @@ const styles = useMemo(() => getStyles(colors,fontScale), [colors,fontScale]);
                     <Ionicons name="school" size={18} color={colors.primary} />
                   </View>
                 )}
-                <View style={{ flex: 1, alignItems: 'flex-end' }}>
+                <View style={{ flex: 1, alignItems: 'flex-start' }}>
                   <Text style={styles.certName}>{cert.name}</Text>
                   <Text style={styles.certOrg}>
                     {cert.organization} - {cert.place}
@@ -153,7 +164,7 @@ const styles = useMemo(() => getStyles(colors,fontScale), [colors,fontScale]);
                       'EditModal',
 
                       {
-                        title: 'تعديل الشهاده العلمية',
+                        title: t('edit_certification'),
                         renderContent: (nav: any) => (
                           <EditCertificationForm
                             navigation={nav}
@@ -170,14 +181,14 @@ const styles = useMemo(() => getStyles(colors,fontScale), [colors,fontScale]);
               </View>
             ))
           ) : (
-            <Text style={styles.emptyText}>لم يتم إضافة شهادات بعد.</Text>
+            <Text style={styles.emptyText}>{t('no_certifications')}</Text>
           )}
         </View>
       </View>
 
       <TouchableOpacity style={styles.logoutBtn} onPress={signOut}>
         <Ionicons name="log-out-outline" size={20} color={colors.iconSecondary} />
-        <Text style={styles.logoutText}>تسجيل الخروج</Text>
+        <Text style={styles.logoutText}>{t('logout')}</Text>
       </TouchableOpacity>
 
       <View style={{ height: 100 }} />

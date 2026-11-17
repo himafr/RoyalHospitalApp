@@ -1,3 +1,4 @@
+import { createDirectionalStyles } from '../utils/direction';
 import React, { useMemo } from 'react';
 import { StyleSheet, View } from 'react-native';
 import SmoothScrollView from '../components/SmoothScrollView';
@@ -5,8 +6,8 @@ import { useTheme } from '../context/ModeContext';
 import { lightMode, spacing } from '../theme';
 
 export default function EditModalScreen({ route, navigation }: any) {
-  const { colors,fontScale } = useTheme();
-const styles = useMemo(() => getStyles(colors,fontScale), [colors,fontScale]);
+  const { colors,fontScale, isRTL} = useTheme();
+const styles = useMemo(() => createDirectionalStyles(getStyles(colors,fontScale), isRTL), [colors,fontScale, isRTL]);
   const { renderContent } = route.params;
 
   return (

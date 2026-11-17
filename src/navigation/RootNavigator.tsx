@@ -21,7 +21,7 @@ const Stack = createNativeStackNavigator();
 export const navigationRef = createNavigationContainerRef();
 
 export default function RootNavigator() {
-  const { colors,fontScale } = useTheme();
+  const { colors, t, isRTL } = useTheme();
   const { loading, isAuthenticated, role } = useAuth();
   if (loading)
     return (
@@ -31,7 +31,7 @@ export default function RootNavigator() {
     );
 
   return (
-    <NavigationContainer>
+    <NavigationContainer direction={isRTL ? 'rtl' : 'ltr'}>
       <Stack.Navigator
         screenOptions={{
           headerShown: false,
@@ -73,7 +73,7 @@ export default function RootNavigator() {
                 presentation: 'modal',
                 headerShown: true,
                 animationDuration: 250,
-                title: 'تفعيل الحساب',
+                title: t('activate_account'),
                 headerTintColor: colors.primary,
                 headerStyle: { backgroundColor: colors.backgroundAlt },
               }}
@@ -85,7 +85,7 @@ export default function RootNavigator() {
                 presentation: 'modal',
                 headerShown: true,
                 animationDuration: 250,
-                title: route.params?.title || 'تعديل',
+                title: route.params?.title || t('edit'),
               })}
             />
           </>

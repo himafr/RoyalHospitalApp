@@ -8,6 +8,8 @@ import DoctorHomeScreen from '../features/doctor/DoctorHomeScreen';
 import ServicesScreen from '../features/services/ServicesScreen';
 import DoctorsScreen from '../screens/main/DoctorsScreen';
 import HomeScreen from '../screens/main/HomeScreen';
+import PatientDashboardScreen from '../features/patient/PatientDashboardScreen';
+import DoctorDashboardScreen from '../features/doctor/DoctorDashboardScreen';
 
 const Tab = createBottomTabNavigator();
 
@@ -29,6 +31,7 @@ export default function MainTabs() {
     >
       <Tab.Screen name="HomeTab" component={isDoctor?DoctorHomeScreen:HomeScreen} />
       <Tab.Screen name="AppointmentTab" component={isDoctor?DoctorAllAppointmentsScreen:AppointmentScreen} />
+      <Tab.Screen name="Dashboard" component={isDoctor?DoctorDashboardScreen:PatientDashboardScreen} />
       <Tab.Screen name="ServicesTab" component={ServicesScreen} />
       <Tab.Screen name="DoctorsTab" component={DoctorsScreen} />
     </Tab.Navigator>

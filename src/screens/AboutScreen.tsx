@@ -1,3 +1,4 @@
+import { createDirectionalStyles } from '../utils/direction';
 import React, { useMemo } from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 import Ionicons from 'react-native-vector-icons/Ionicons'; // تأكد من طريقة الاستيراد اللي ظبطتها
@@ -7,30 +8,30 @@ import { lightMode, radius, shadow, spacing } from '../theme';
 import NavBar from '../components/layout/NavBar';
 
 export default function AboutScreen({navigation}:any) {
-  const { colors,fontScale } = useTheme();
-const styles = useMemo(() => getStyles(colors,fontScale), [colors,fontScale]);
+  const { colors,fontScale,t, isRTL} = useTheme();
+const styles = useMemo(() => createDirectionalStyles(getStyles(colors,fontScale), isRTL), [colors,fontScale, isRTL]);
   return (
     <SmoothScrollView style={styles.root}>
-      <NavBar navigation={navigation} title='عن العيادة' />
+      <NavBar navigation={navigation} title={t('clinic_about')} />
       <View style={styles.hero}>
-        <Text style={styles.heroTitle}>عيادة الشفاء</Text>
-        <Text style={styles.heroSub}>إرث من الثقة ورؤية لمستقبل الرعاية الصحية</Text>
+        <Text style={styles.heroTitle}>{t('app_name')}</Text>
+        <Text style={styles.heroSub}>{t('about_desc')}</Text>
       </View>
 
       <View style={styles.section}>
-        <Text style={styles.sectionTitle}>رسالتنا المؤسسية</Text>
+        <Text style={styles.sectionTitle}>{t('our_message')}</Text>
         <View style={styles.card}>
           <Ionicons name="globe-outline" size={32} color={colors.primary} />
           <Text style={styles.cardText}>
-            تتمحور رسالتنا حول إرساء دعائم نظام صحي متكامل يجمع بين الكفاءة التشغيلية والتميز الطبي. نحن نلتزم بتقديم رعاية آمنة ورحيمة تتجاوز توقعات المرضى، مع التركيز المستمر على تحسين الجودة النوعية للخدمات من خلال الابتكار الطبي المستمر.
+            {t('our_message_desc')}
           </Text>
         </View>
 
-        <Text style={styles.sectionTitle}>رؤيتنا الاستراتيجية</Text>
+        <Text style={styles.sectionTitle}>{t('our_vision')}</Text>
         <View style={styles.card}>
           <Ionicons name="eye-outline" size={32} color={colors.primary} />
           <Text style={styles.cardText}>
-            نتطلع إلى أن نكون المرجعية الأولى للتميز الطبي والابتكار في الرعاية الصحية على مستوى المنطقة. رؤيتنا تهدف إلى قيادة التحول في القطاع الصحي الخاص عبر تبني تقنيات الذكاء الاصطناعي في التشخيص، وخلق منظومة صحية ذكية.
+            {t('our_vision_desc')}
           </Text>
         </View>
       </View>
