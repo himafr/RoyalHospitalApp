@@ -10,6 +10,9 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import * as authApi from '../api/auth';
 import { jwtDecode as decode } from 'jwt-decode';
 import { DeviceEventEmitter } from 'react-native';
+import { getSettings } from '../api/settings';
+import { Settings } from '../../types/settings';
+import { useTheme } from './ModeContext';
 interface AuthContextData {
   fullName: string | null;
   email: string | null;
@@ -29,6 +32,7 @@ interface AuthContextData {
 const AuthContext = createContext<AuthContextData>({} as AuthContextData);
 
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
+  const {setLanguage,setFontSize,setMode}=useTheme()
   const [fullName, setFullName] = useState<string | null>(null);
   const [email, setEmail] = useState<string | null>(null);
   const [token, setToken] = useState<string | null>(null);
@@ -38,7 +42,6 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
   const getPhotoUrl = (authToken: string) =>
     decode<{ photoUrl?: string | null }>(authToken).photoUrl ?? null;
-  
 
   useEffect(() => {
     (async () => {
@@ -88,10 +91,14 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
   const login = async (email: string, password: string) => {
     const res = (await authApi.login(email, password)) as any;
-    console.log(res);
     const { token: t, fullName: fn, email: e, role: r } = res;
-    console.log(t, fn, e, r);
     await persist(t, fn, e, r);
+    const settings = (await getSettings()).data as Settings;
+    await AsyncStorage.setItem('settings', JSON.stringify(settings));
+    setFontSize(settings.fontSize);
+    setLanguage(settings.language);
+    setMode(settings.darkMode)
+
   };
 
   const signup = async (data: any) => {
@@ -111,7 +118,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     setFullName(null);
     await AsyncStorage.removeItem('auth_token');
     await AsyncStorage.removeItem('user');
-  },[]);
+  }, []);
 
   useEffect(() => {
     const sub = DeviceEventEmitter.addListener('unauthorized', () => {

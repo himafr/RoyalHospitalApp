@@ -12,8 +12,9 @@ import {
 import { I18nManager, View } from 'react-native';
 import { darkMode, lightMode } from '../theme';
 import { Language, TranslationKey, translations } from '../utils/language';
+import { Settings } from '../../types/settings';
 
-type FontSize = 'small' | 'medium' | 'large';
+type FontSize = 'SMALL' | 'MEDIUM' | 'LARGE';
 type Preferences = { fontSize: FontSize; language: Language };
 type SettingsLoadStatus = 'loading' | 'ready' | 'failed';
 
@@ -24,6 +25,7 @@ type ThemeContextType = {
   colors: typeof lightMode;
   isDark: boolean;
   toggleMode: () => void;
+  setMode: (v:boolean) => void;
   fontSize: FontSize;
   setFontSize: (size: FontSize) => void;
   fontScale: number;
@@ -33,13 +35,13 @@ type ThemeContextType = {
   t: (key: TranslationKey) => string;
 };
 const fontScales: Record<FontSize, number> = {
-  small: 0.85,
-  medium: 1,
-  large: 1.2,
+  SMALL: 0.85,
+  MEDIUM: 1,
+  LARGE: 1.2,
 };
 
 const isFontSize = (value: string | null): value is FontSize =>
-  value === 'small' || value === 'medium' || value === 'large';
+  value === 'SMALL' || value === 'MEDIUM' || value === 'LARGE';
 
 const isLanguage = (value: string | null): value is Language =>
   value === 'ar' || value === 'en';
@@ -49,7 +51,7 @@ const ThemeContext = createContext<ThemeContextType>({} as ThemeContextType);
 export const ThemeProvider = ({ children }: { children: ReactNode }) => {
   const [isDark, setIsDark] = useState(true);
   const [preferences, setPreferences] = useState<Preferences>({
-    fontSize: 'medium',
+    fontSize: 'MEDIUM',
     language: 'ar',
   });
   const [settingsLoadStatus, setSettingsLoadStatus] =
@@ -75,29 +77,34 @@ export const ThemeProvider = ({ children }: { children: ReactNode }) => {
     );
   }, []);
   const toggleMode = useCallback(() => setIsDark(value => !value), []);
+  const setMode = useCallback((v:boolean) => setIsDark(v), []);
 
   useEffect(() => {
     let isMounted = true;
 
     const loadSettings = async () => {
+      console.log("first",await AsyncStorage.getItem("settings"))
       try {
-        const [storedFontSize, storedLanguage] = await Promise.all([
-          AsyncStorage.getItem(FONT_SIZE_KEY),
-          AsyncStorage.getItem(LANGUAGE_KEY),
-        ]);
+        const {
+          darkMode: storedDarkMode,
+          fontSize:storedFontSize,
+          language:storedLanguage,
+        } = JSON.parse(
+          (await AsyncStorage.getItem('settings')) || '',
+        ) as Settings;
         if (!isMounted) return;
 
         setPreferences(current => ({
           fontSize: touchedPreferences.current.fontSize
             ? current.fontSize
             : isFontSize(storedFontSize)
-              ? storedFontSize
-              : 'medium',
+            ? storedFontSize
+            : 'MEDIUM',
           language: touchedPreferences.current.language
             ? current.language
             : isLanguage(storedLanguage)
-              ? storedLanguage
-              : 'ar',
+            ? storedLanguage
+            : 'ar',
         }));
         setSettingsLoadStatus('ready');
       } catch (error) {
@@ -143,6 +150,7 @@ export const ThemeProvider = ({ children }: { children: ReactNode }) => {
       language,
       isRTL,
       setLanguage,
+      setMode,
       t,
     }),
     [

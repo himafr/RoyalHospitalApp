@@ -38,11 +38,6 @@ export default function AppHeader({
           onPress={() => setMenuVisible(true)}
           style={styles.menuBtn}
         >
-          <Ionicons
-            name={`caret-${menuVisible ? 'up' : 'down'}-outline`}
-            size={18}
-            color={colors.navIcon}
-          />
           {photoUrl ? (
             <Image source={{ uri: photoUrl }} style={styles.avatar} />
           ) : (
@@ -50,6 +45,11 @@ export default function AppHeader({
               <Text style={styles.avatarText}>{userInitial}</Text>
             </View>
           )}
+          <Ionicons
+            name={`caret-${menuVisible ? 'up' : 'down'}-outline`}
+            size={18}
+            color={colors.navIcon}
+          />
         </TouchableOpacity>
       </View>
       <View>
@@ -75,10 +75,10 @@ export default function AppHeader({
       </View>
 
       <View style={styles.rightSection}>
+        <Text style={styles.title}>{title || t('app_name')}</Text>
         <View style={styles.logoCircle}>
           <Ionicons name="medkit" size={22} color={colors.navIcon} />
         </View>
-        <Text style={styles.title}>{title || t('app_name')}</Text>
       </View>
 
       <Modal

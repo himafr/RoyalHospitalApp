@@ -252,9 +252,9 @@ export default function SettingsScreen({ navigation }: any) {
             <View>
               <Text style={styles.rowTitle}>{t('font_size')}</Text>
               <Text style={styles.rowSub}>
-                {fontSize === 'small'
+                {fontSize === 'SMALL'
                   ? t('small')
-                  : fontSize === 'medium'
+                  : fontSize === 'MEDIUM'
                   ? t('medium')
                   : t('large')}
               </Text>

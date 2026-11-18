@@ -12,12 +12,12 @@ export default function App() {
   return (
     <SafeAreaProvider>
       <StatusBar barStyle="light-content" />
-      <AuthProvider>
         <ThemeProvider>
+      <AuthProvider>
           <RootNavigator />
           <Toast config={toastConfig} />
-        </ThemeProvider>
       </AuthProvider>
+        </ThemeProvider>
     </SafeAreaProvider>
   );
 }
