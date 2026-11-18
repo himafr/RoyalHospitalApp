@@ -59,7 +59,7 @@ const getStyles = (colors: typeof lightMode, fontScale:number) =>
     },
     focused: { borderColor: colors.inputBorderFocused },
     errorBorder: { borderColor: colors.error },
-    input: { flex: 1, fontSize: 16 * fontScale, color: colors.text, textAlign: 'right', paddingVertical: 0 },
+    input: { flex: 1, fontSize: 16 * fontScale, color: colors.text,   paddingVertical: 0 },
     icon: { paddingHorizontal: spacing.sm },
-    errorText: { color: colors.error, fontSize: 12 * fontScale, marginTop: spacing.xs, textAlign: 'right' },
+    errorText: { color: colors.error, fontSize: 12 * fontScale, marginTop: spacing.xs,   },
   });

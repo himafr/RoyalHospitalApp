@@ -228,7 +228,7 @@ const getStyles = (colors: typeof lightMode, fontScale:number) =>
       color: colors.onPrimary,
       opacity: 0.8,
       marginTop: 4,
-      textAlign: 'right',
+       
     },
 
     briefContainer: {
@@ -268,7 +268,7 @@ const getStyles = (colors: typeof lightMode, fontScale:number) =>
       fontSize: 20 * fontScale,
       fontWeight: '900',
       color: colors.text,
-      textAlign: 'right',
+       
     },
     linkText: { color: colors.link, fontWeight: '700', fontSize: 13 * fontScale },
 
@@ -296,12 +296,12 @@ const getStyles = (colors: typeof lightMode, fontScale:number) =>
       fontSize: 16 * fontScale,
       fontWeight: '700',
       color: colors.text,
-      textAlign: 'right',
+       
     },
     appointmentTime: {
       fontSize: 12 * fontScale,
       color: colors.textMuted,
-      textAlign: 'right',
+       
     },
     badgeGreen: {
       backgroundColor: colors.success + '20',
@@ -336,7 +336,7 @@ const getStyles = (colors: typeof lightMode, fontScale:number) =>
       fontSize: 15 * fontScale,
       fontWeight: '700',
       color: colors.text,
-      textAlign: 'right',
+       
     },
 
     logoutBtn: {
@@ -377,26 +377,26 @@ const getStyles = (colors: typeof lightMode, fontScale:number) =>
     infoLabel: {
       fontSize: 12 * fontScale,
       color: colors.textMuted,
-      textAlign: 'right',
+       
       marginBottom: 4,
     },
     infoValue: {
       fontSize: 14 * fontScale,
       color: colors.text,
       fontWeight: '700',
-      textAlign: 'right',
+       
     },
 
     label: {
       fontSize: 12 * fontScale,
       color: colors.textMuted,
-      textAlign: 'right',
+       
       marginBottom: 4,
     },
     aboutText: {
       fontSize: 14 * fontScale,
       color: colors.textSecondary,
-      textAlign: 'right',
+       
       lineHeight: 22,
     },
     certItem: {
@@ -421,9 +421,9 @@ const getStyles = (colors: typeof lightMode, fontScale:number) =>
       fontSize: 15 * fontScale,
       fontWeight: '900',
       color: colors.text,
-      textAlign: 'right',
+       
     },
-    certOrg: { fontSize: 12 * fontScale, color: colors.textMuted, textAlign: 'right' },
+    certOrg: { fontSize: 12 * fontScale, color: colors.textMuted,   },
     emptyText: {
       textAlign: 'center',
       color: colors.textMuted,

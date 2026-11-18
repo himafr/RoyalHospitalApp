@@ -83,7 +83,7 @@ const getStyles = (colors: typeof lightMode, fontScale:number) =>
       fontSize: 20 * fontScale,
       fontWeight: '900',
       color: colors.text,
-      textAlign: 'right',
+       
     },
     linkText: { color: colors.link, fontWeight: '700', fontSize: 13 * fontScale },
     emptyText: {
@@ -115,12 +115,12 @@ const getStyles = (colors: typeof lightMode, fontScale:number) =>
       fontSize: 16 * fontScale,
       fontWeight: '700',
       color: colors.text,
-      textAlign: 'right',
+       
     },
     appointmentTime: {
       fontSize: 12 * fontScale,
       color: colors.textMuted,
-      textAlign: 'right',
+       
     },
 
     badgeOrange: {

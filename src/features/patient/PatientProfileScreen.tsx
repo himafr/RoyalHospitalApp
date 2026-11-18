@@ -353,14 +353,14 @@ const getStyles = (colors: typeof lightMode, fontScale:number) =>
     infoLabel: {
       fontSize: 12 * fontScale,
       color: colors.textMuted,
-      textAlign: 'right',
+       
       marginBottom: 4,
     },
     infoValue: {
       fontSize: 14 * fontScale,
       color: colors.text,
       fontWeight: '700',
-      textAlign: 'right',
+       
     },
 
     rowBetween: {
@@ -391,7 +391,7 @@ const getStyles = (colors: typeof lightMode, fontScale:number) =>
     warningText: {
       fontSize: 12 * fontScale,
       color: colors.warning,
-      textAlign: 'right',
+       
       fontWeight: '700',
     },
 

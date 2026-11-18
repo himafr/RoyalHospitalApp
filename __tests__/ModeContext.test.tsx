@@ -43,6 +43,38 @@ describe('ThemeProvider preferences', () => {
     expect(theme.isDark).toBe(false);
   });
 
+  it('normalizes legacy lowercase saved font size', async () => {
+    mockGetItem.mockImplementation(async key => {
+      if (key === 'settings') {
+        return JSON.stringify({
+          darkMode: true,
+          fontSize: 'large',
+          language: 'ar',
+        });
+      }
+      return null;
+    });
+
+    let theme!: ReturnType<typeof useTheme>;
+    function Harness() {
+      theme = useTheme();
+      return null;
+    }
+
+    await act(async () => {
+      ReactTestRenderer.create(
+        <ThemeProvider>
+          <Harness />
+        </ThemeProvider>,
+      );
+      await Promise.resolve();
+      await Promise.resolve();
+    });
+
+    expect(theme.fontSize).toBe('LARGE');
+    expect(theme.fontScale).toBe(1.2);
+  });
+
   it('restores saved font size and language', async () => {
     mockGetItem.mockImplementation(async key => {
       if (key === 'settings') {

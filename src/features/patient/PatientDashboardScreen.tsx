@@ -375,8 +375,8 @@ const getStyles = (colors: typeof lightMode, fs: (n: number) => number) =>
       marginLeft: spacing.md,
     },
     avatarText: { fontSize: fs(28), fontWeight: '900', color: colors.primary },
-    userName: { fontSize: fs(18), fontWeight: '900', color: colors.text, textAlign: 'right' },
-    userRole: { fontSize: fs(13), color: colors.textSecondary, textAlign: 'right', marginTop: 2 },
+    userName: { fontSize: fs(18), fontWeight: '900', color: colors.text,   },
+    userRole: { fontSize: fs(13), color: colors.textSecondary,   marginTop: 2 },
     joinRow: { flexDirection: 'row-reverse', alignItems: 'center', gap: 4, marginTop: spacing.xs },
     joinText: { fontSize: fs(12), color: colors.textMuted },
     lastLoginBadge: {
@@ -430,8 +430,8 @@ const getStyles = (colors: typeof lightMode, fs: (n: number) => number) =>
     },
     nextAppointmentTitle: { fontSize: fs(14), fontWeight: '900', color: colors.primary },
     nextAppointmentBody: { paddingRight: spacing.sm },
-    nextAppointmentDoctor: { fontSize: fs(16), fontWeight: '900', color: colors.text, textAlign: 'right' },
-    nextAppointmentSpecialty: { fontSize: fs(12), color: colors.textSecondary, textAlign: 'right', marginTop: 2 },
+    nextAppointmentDoctor: { fontSize: fs(16), fontWeight: '900', color: colors.text,   },
+    nextAppointmentSpecialty: { fontSize: fs(12), color: colors.textSecondary,   marginTop: 2 },
     nextAppointmentTimeRow: { flexDirection: 'row-reverse', alignItems: 'center', gap: 4, marginTop: spacing.xs },
     nextAppointmentTime: { fontSize: fs(12), color: colors.secondary, fontWeight: '700' },
     nextAppointmentBtn: {
@@ -508,8 +508,8 @@ const getStyles = (colors: typeof lightMode, fs: (n: number) => number) =>
       justifyContent: 'center', alignItems: 'center',
     },
     listItemIconText: { fontSize: fs(16), fontWeight: '900', color: colors.primary },
-    listItemTitle: { fontSize: fs(14), fontWeight: '700', color: colors.text, textAlign: 'right' },
-    listItemSubtitle: { fontSize: fs(12), color: colors.textMuted, textAlign: 'right', marginTop: 2 },
+    listItemTitle: { fontSize: fs(14), fontWeight: '700', color: colors.text,   },
+    listItemSubtitle: { fontSize: fs(12), color: colors.textMuted,   marginTop: 2 },
     statusBadge: {
       paddingHorizontal: spacing.sm,
       paddingVertical: 4,
@@ -531,7 +531,7 @@ const getStyles = (colors: typeof lightMode, fs: (n: number) => number) =>
       borderRadius: radius.pill,
     },
     ratingText: { fontSize: fs(12), color: colors.warning, fontWeight: '900' },
-    paymentAmount: { fontSize: fs(14), fontWeight: '900', color: colors.text, textAlign: 'right' },
+    paymentAmount: { fontSize: fs(14), fontWeight: '900', color: colors.text,   },
 
     // النشاطات
     activityRow: {
@@ -546,6 +546,6 @@ const getStyles = (colors: typeof lightMode, fs: (n: number) => number) =>
       width: 40, height: 40, borderRadius: 20,
       justifyContent: 'center', alignItems: 'center',
     },
-    activityText: { fontSize: fs(14), color: colors.text, textAlign: 'right' },
-    activityTime: { fontSize: fs(11), color: colors.textMuted, textAlign: 'right', marginTop: 2 },
+    activityText: { fontSize: fs(14), color: colors.text,   },
+    activityTime: { fontSize: fs(11), color: colors.textMuted,   marginTop: 2 },
   });

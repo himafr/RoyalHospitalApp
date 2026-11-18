@@ -315,7 +315,7 @@ const getStyles = (colors: typeof lightMode, fontScale: number) =>
       fontSize: 14 * fontScale,
       color: colors.text,
       fontWeight: '700',
-      textAlign: 'right',
+       
       marginBottom: spacing.xs,
       marginTop: spacing.md,
     },
@@ -342,7 +342,7 @@ const getStyles = (colors: typeof lightMode, fontScale: number) =>
     error: {
       color: colors.error,
       fontSize: 12 * fontScale,
-      textAlign: 'right',
+       
       marginTop: -spacing.sm,
       marginBottom: spacing.sm,
     },
@@ -371,7 +371,7 @@ const getStyles = (colors: typeof lightMode, fontScale: number) =>
     noSlots: {
       color: colors.textMuted,
       fontSize: 14 * fontScale,
-      textAlign: 'right',
+       
       width: '100%',
       padding: spacing.md,
     },

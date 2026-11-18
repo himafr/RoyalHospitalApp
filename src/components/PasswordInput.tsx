@@ -51,7 +51,7 @@ const getStyles = (colors: typeof lightMode, fontScale:number) =>
     input: {
       flex: 1,
       padding: spacing.md,
-      textAlign: 'right',
+       
       color: colors.text,
     },
     iconBtn: {

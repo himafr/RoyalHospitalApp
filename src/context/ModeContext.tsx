@@ -40,8 +40,18 @@ const fontScales: Record<FontSize, number> = {
   LARGE: 1.2,
 };
 
-const isFontSize = (value: string | null): value is FontSize =>
-  value === 'SMALL' || value === 'MEDIUM' || value === 'LARGE';
+const normalizeFontSize = (value: string | null): FontSize | null => {
+  switch (value?.toUpperCase()) {
+    case 'SMALL':
+      return 'SMALL';
+    case 'MEDIUM':
+      return 'MEDIUM';
+    case 'LARGE':
+      return 'LARGE';
+    default:
+      return null;
+  }
+};
 
 const isLanguage = (value: string | null): value is Language =>
   value === 'ar' || value === 'en';
@@ -84,10 +94,14 @@ export const ThemeProvider = ({ children }: { children: ReactNode }) => {
   );
   const setFontSize = useCallback(
     (size: FontSize) => {
+      const normalizedSize = normalizeFontSize(size);
+      if (!normalizedSize) return;
       touchedPreferences.current.fontSize = true;
       setPreferences(current => {
         const v =
-          current.fontSize === size ? current : { ...current, fontSize: size };
+          current.fontSize === normalizedSize
+            ? current
+            : { ...current, fontSize: normalizedSize };
         savePreferences(v);
         return v;
       });
@@ -149,12 +163,15 @@ export const ThemeProvider = ({ children }: { children: ReactNode }) => {
             : isBoolean(stored?.isDark)
             ? stored.isDark
             : true;
+          const storedFontSize = normalizeFontSize(
+            stored?.fontSize ?? null,
+          );
 
           return {
             fontSize: touchedPreferences.current.fontSize
               ? current.fontSize
-              : isFontSize(stored?.fontSize ?? null)
-              ? stored!.fontSize!
+              : storedFontSize
+              ? storedFontSize
               : 'MEDIUM',
             language: touchedPreferences.current.language
               ? current.language
@@ -192,12 +209,8 @@ export const ThemeProvider = ({ children }: { children: ReactNode }) => {
 
   useEffect(() => {
     if (settingsLoadStatus === 'loading') return;
-    const shouldBeRTL = isRTL;
-    if (I18nManager.isRTL === shouldBeRTL) {
-      I18nManager.forceRTL(shouldBeRTL);
-      I18nManager.allowRTL(shouldBeRTL);
-    }
-  }, [isRTL, settingsLoadStatus]);
+    
+  }, [settingsLoadStatus]);
 
   const value = useMemo(
     () => ({

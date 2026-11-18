@@ -151,9 +151,9 @@
 //     borderColor: colors.gold,
 //     padding: spacing.lg,
 //   },
-//   header: { fontSize: 2 * fontScale8, color: colors.primary, textAlign: 'right' },
-//   sub: { fontSize: 14 * fontScale, color: colors.textMuted, marginTop: spacing.xs, textAlign: 'right' },
-//   label: { fontSize: 12 * fontScale, color: colors.textMuted, marginBottom: spacing.xs, textTransform: 'uppercase', textAlign: 'right' },
+//   header: { fontSize: 2 * fontScale8, color: colors.primary,   },
+//   sub: { fontSize: 14 * fontScale, color: colors.textMuted, marginTop: spacing.xs,   },
+//   label: { fontSize: 12 * fontScale, color: colors.textMuted, marginBottom: spacing.xs, textTransform: 'uppercase',   },
 //   genderRow: { flexDirection: 'row', gap: spacing.sm, marginBottom: spacing.md },
 //   genderBtn: {
 //     flex: 1,
@@ -178,7 +178,7 @@
 //     marginLeft: spacing.sm,
 //   },
 //   checkboxActive: { backgroundColor: colors.gold },
-//   checkText: { fontSize: 13 * fontScale, color: colors.textMuted, flex: 1, textAlign: 'right' },
+//   checkText: { fontSize: 13 * fontScale, color: colors.textMuted, flex: 1,   },
 //   error: { color: colors.danger, fontSize: 13 * fontScale, marginBottom: spacing.sm, textAlign: 'center' },
 //   loginBox: {
 //     flexDirection: 'row',

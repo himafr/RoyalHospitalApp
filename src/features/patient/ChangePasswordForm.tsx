@@ -108,7 +108,7 @@ const getStyles = (colors: typeof lightMode, fontScale:number) =>
       color: colors.text,
       fontWeight: '700',
       marginBottom: spacing.xs,
-      textAlign: 'right',
+       
     },
     input: {
       borderWidth: 1,
@@ -118,7 +118,7 @@ const getStyles = (colors: typeof lightMode, fontScale:number) =>
       borderRadius: radius.md,
       padding: spacing.md,
       marginBottom: spacing.md,
-      textAlign: 'right',
+       
     },
     saveBtn: {
       backgroundColor: colors.buttonPrimary,

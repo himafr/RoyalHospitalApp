@@ -352,8 +352,8 @@ const getStyles = (colors: typeof lightMode, fontScale:number) =>
       alignItems: 'center',
       padding: spacing.lg,
     },
-    headerTitle: { fontSize: 24 * fontScale, fontWeight: '900', color: colors.text, textAlign: 'right' },
-    headerSub: { fontSize: 14 * fontScale, color: colors.textSecondary, textAlign: 'right', marginTop: 4 },
+    headerTitle: { fontSize: 24 * fontScale, fontWeight: '900', color: colors.text,   },
+    headerSub: { fontSize: 14 * fontScale, color: colors.textSecondary,   marginTop: 4 },
     statusBtn: {
       flexDirection: 'row-reverse', alignItems: 'center',
       paddingHorizontal: spacing.sm, paddingVertical: 6,
@@ -417,8 +417,8 @@ const getStyles = (colors: typeof lightMode, fontScale:number) =>
       width: 36, height: 36, borderRadius: radius.md,
       justifyContent: 'center', alignItems: 'center',
     },
-    statTitle: { fontSize: 13 * fontScale, color: colors.textSecondary, fontWeight: '700', textAlign: 'right' },
-    statValue: { fontSize: 22 * fontScale, fontWeight: '900', color: colors.text, textAlign: 'right' },
+    statTitle: { fontSize: 13 * fontScale, color: colors.textSecondary, fontWeight: '700',   },
+    statValue: { fontSize: 22 * fontScale, fontWeight: '900', color: colors.text,   },
     currencyText: { fontSize: 12 * fontScale, color: colors.textMuted, fontWeight: '700' },
     statBody: {},
     statFooter: {
@@ -457,8 +457,8 @@ const getStyles = (colors: typeof lightMode, fontScale:number) =>
       flexDirection: 'row-reverse', alignItems: 'center',
       gap: spacing.sm, marginBottom: spacing.sm,
     },
-    newsText: { fontSize: 14 * fontScale, color: colors.text, fontWeight: '700', textAlign: 'right' },
-    newsDate: { fontSize: 11 * fontScale, color: colors.textMuted, textAlign: 'right' },
+    newsText: { fontSize: 14 * fontScale, color: colors.text, fontWeight: '700',   },
+    newsDate: { fontSize: 11 * fontScale, color: colors.textMuted,   },
 
     // Cards (general)
     card: {
@@ -488,7 +488,7 @@ const getStyles = (colors: typeof lightMode, fontScale:number) =>
     reviewPatientName: { fontSize: 15 * fontScale, fontWeight: '900', color: colors.text },
     reviewComment: {
       fontSize: 14 * fontScale, color: colors.textSecondary,
-      textAlign: 'right', fontStyle: 'italic', lineHeight: 22,
+        fontStyle: 'italic', lineHeight: 22,
     },
 
     // Performance
@@ -496,11 +496,11 @@ const getStyles = (colors: typeof lightMode, fontScale:number) =>
     performanceItem: { width: '48%' },
     performanceLabel: {
       fontSize: 12 * fontScale, color: colors.textMuted,
-      textAlign: 'right', marginBottom: 4,
+        marginBottom: 4,
     },
     performanceValue: {
       fontSize: 18 * fontScale, fontWeight: '900', color: colors.text,
-      textAlign: 'right', marginBottom: spacing.sm,
+        marginBottom: spacing.sm,
     },
     progressBar: {
       height: 8, backgroundColor: colors.border,
@@ -547,7 +547,7 @@ const getStyles = (colors: typeof lightMode, fontScale:number) =>
     sectionTitle: { fontSize: 20 * fontScale, fontWeight: '900', color: colors.text },
     sectionSub: {
       fontSize: 14 * fontScale, color: colors.textSecondary,
-      marginBottom: spacing.md, textAlign: 'right',
+      marginBottom: spacing.md,  
     },
     featuresGrid: {
       flexDirection: 'row-reverse', flexWrap: 'wrap',

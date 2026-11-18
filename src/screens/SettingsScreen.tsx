@@ -62,6 +62,7 @@ export default function SettingsScreen({ navigation }: any) {
   //   ]);
   // };
 
+  console.log("rtl",isRTL)
   const handleDeleteAccount = () => {
     Alert.alert(
       t('delete_account'),
@@ -97,9 +98,9 @@ export default function SettingsScreen({ navigation }: any) {
         title={t('choose_font_size')}
         selectedValue={fontSize}
         options={[
-          { label: t('small'), value: 'small' },
-          { label: t('medium'), value: 'medium' },
-          { label: t('large'), value: 'large' },
+          { label: t('small'), value: 'SMALL' },
+          { label: t('medium'), value: 'MEDIUM' },
+          { label: t('large'), value: 'LARGE' },
         ]}
         onSelect={(v) => setFontSize(v as any)}
         onClose={() => setFontSizeModalVisible(false)}
@@ -134,7 +135,6 @@ export default function SettingsScreen({ navigation }: any) {
             onValueChange={toggleMode}
             trackColor={{ false: colors.border, true: colors.secondary }}
             thumbColor={colors.card}
-            style={{ transform: [{ scaleX: isRTL ? 1 : -1 }] }}
           />
         </View>
       </View>
@@ -167,7 +167,6 @@ export default function SettingsScreen({ navigation }: any) {
             onValueChange={setNotificationsEnabled}
             trackColor={{ false: colors.border, true: colors.secondary }}
             thumbColor={colors.card}
-            style={{ transform: [{ scaleX: isRTL ? 1 : -1 }] }}
           />
         </View>
 
@@ -190,7 +189,6 @@ export default function SettingsScreen({ navigation }: any) {
             onValueChange={setEmailAlerts}
             trackColor={{ false: colors.border, true: colors.secondary }}
             thumbColor={colors.card}
-            style={{ transform: [{ scaleX: isRTL ? 1 : -1 }] }}
           />
         </View>
 
@@ -213,7 +211,6 @@ export default function SettingsScreen({ navigation }: any) {
             onValueChange={setSmsAlerts}
             trackColor={{ false: colors.border, true: colors.secondary }}
             thumbColor={colors.card}
-            style={{ transform: [{ scaleX: isRTL ? 1 : -1 }] }}
           />
         </View>
       </View>
@@ -410,12 +407,12 @@ const getStyles = (colors: typeof lightMode, fontScale: number) =>
       fontSize: 15 * fontScale,
       fontWeight: '700',
       color: colors.text,
-      textAlign: 'right',
+       
     },
     rowSub: {
       fontSize: 12 * fontScale,
       color: colors.textMuted,
-      textAlign: 'right',
+       
       marginTop: 2,
     },
 

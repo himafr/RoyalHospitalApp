@@ -95,7 +95,7 @@ const getStyles = (colors: typeof lightMode, fs: (n: number) => number) =>
       fontSize: fs(18),
       fontWeight: '900',
       color: colors.text,
-      textAlign: 'right',
+       
       marginBottom: spacing.md,
       paddingBottom: spacing.sm,
       borderBottomWidth: 1,
@@ -117,7 +117,7 @@ const getStyles = (colors: typeof lightMode, fs: (n: number) => number) =>
       fontSize: fs(15),
       color: colors.text,
       fontWeight: '700',
-      textAlign: 'right',
+       
     },
     optionTextSelected: {
       color: colors.primary,

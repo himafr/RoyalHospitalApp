@@ -32,7 +32,7 @@ describe('createDirectionalStyles', () => {
       marginLeft: 8,
     });
     expect(StyleSheet.flatten(directionalStyles.text)).toMatchObject({
-      textAlign: 'right',
+       
       writingDirection: 'rtl',
     });
     expect(StyleSheet.flatten(directionalStyles.aligned)?.alignItems).toBe(

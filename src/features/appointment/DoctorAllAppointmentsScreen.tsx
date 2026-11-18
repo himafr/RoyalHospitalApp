@@ -224,8 +224,8 @@ const getStyles = (colors: typeof lightMode, fontScale:number) =>
       alignItems: 'center',
     },
     avatarText: { color: colors.primary, fontWeight: '900', fontSize: 16 * fontScale },
-    patientName: { fontSize: 15 * fontScale, fontWeight: '900', color: colors.text, textAlign: 'right' },
-    patientPhone: { fontSize: 12 * fontScale, color: colors.textMuted, textAlign: 'right' },
+    patientName: { fontSize: 15 * fontScale, fontWeight: '900', color: colors.text,   },
+    patientPhone: { fontSize: 12 * fontScale, color: colors.textMuted,   },
 
     badge: {
       paddingHorizontal: spacing.sm,

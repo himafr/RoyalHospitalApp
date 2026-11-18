@@ -101,12 +101,12 @@ const getStyles = (colors: typeof lightMode, fontScale:number) =>
       fontSize: 24 * fontScale,
       fontWeight: '900',
       color: colors.text,
-      textAlign: 'right',
+       
     },
     sub: {
       fontSize: 14 * fontScale,
       color: colors.textSecondary,
-      textAlign: 'right',
+       
       marginTop: spacing.xs,
     },
     card: {
@@ -132,14 +132,14 @@ const getStyles = (colors: typeof lightMode, fontScale:number) =>
       fontSize: 16 * fontScale,
       fontWeight: '900',
       color: colors.text,
-      textAlign: 'right',
+       
       marginBottom: spacing.xs,
     },
     desc: {
       fontSize: 14 * fontScale,
       color: colors.textSecondary,
       lineHeight: 21,
-      textAlign: 'right',
+       
       marginBottom: spacing.md,
     },
     priceRow: {

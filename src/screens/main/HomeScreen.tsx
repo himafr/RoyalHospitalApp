@@ -100,7 +100,7 @@ const styles = useMemo(() => createDirectionalStyles(getStyles(colors,fontScale)
           </TouchableOpacity>
           <TouchableOpacity
             style={styles.btnSecondary}
-            onPress={() => navigation.navigate('AboutTab')}
+            onPress={() => navigation.navigate('About')}
           >
             <Text style={styles.btnSecondaryText}>{t('know_us')}</Text>
           </TouchableOpacity>
@@ -291,14 +291,12 @@ const getStyles = (colors: typeof lightMode, fontScale:number) =>
       fontWeight: '900',
       color: colors.text,
       lineHeight: 38,
-      textAlign: 'right',
     },
     heroSub: {
       fontSize: 14 * fontScale,
       color: colors.textSecondary,
       lineHeight: 21,
       marginTop: spacing.md,
-      textAlign: 'right',
     },
 
     heroBtns: {
@@ -348,13 +346,11 @@ const getStyles = (colors: typeof lightMode, fontScale:number) =>
       fontSize: 24 * fontScale,
       fontWeight: '900',
       color: colors.text,
-      textAlign: 'right',
       marginBottom: spacing.xs,
     },
     sectionSub: {
       fontSize: 14 * fontScale,
       color: colors.textSecondary,
-      textAlign: 'right',
       marginBottom: spacing.lg,
       lineHeight: 22,
     },
@@ -383,12 +379,10 @@ const getStyles = (colors: typeof lightMode, fontScale:number) =>
       fontSize: 16 * fontScale,
       fontWeight: '900',
       color: colors.text,
-      textAlign: 'right',
     },
     featureDesc: {
       fontSize: 14 * fontScale,
       color: colors.textSecondary,
-      textAlign: 'right',
       marginTop: 4,
       lineHeight: 21,
     },
@@ -429,13 +423,11 @@ const getStyles = (colors: typeof lightMode, fontScale:number) =>
       fontSize: 16 * fontScale,
       fontWeight: '900',
       color: colors.text,
-      textAlign: 'right',
       marginBottom: spacing.xs,
     },
     serviceDesc: {
       fontSize: 14 * fontScale,
       color: colors.textSecondary,
-      textAlign: 'right',
       lineHeight: 22,
     },
 
@@ -458,7 +450,6 @@ const getStyles = (colors: typeof lightMode, fontScale:number) =>
       fontSize: 14 * fontScale,
       color: colors.textSecondary,
       lineHeight: 21,
-      textAlign: 'right',
       fontStyle: 'italic',
     },
 

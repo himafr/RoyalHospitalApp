@@ -69,8 +69,8 @@ const styles = useMemo(() => createDirectionalStyles(getStyles(colors,fontScale)
 
 const getStyles = (colors: typeof lightMode, fontScale:number) =>
   StyleSheet.create({
-    label: { fontSize: 14 * fontScale, color: colors.text, fontWeight: '700', marginBottom: spacing.xs, textAlign: 'right' },
-    input: { borderWidth: 1, borderColor: colors.inputBorder, backgroundColor: colors.inputBackground, color: colors.text, borderRadius: radius.md, padding: spacing.md, marginBottom: spacing.md, textAlign: 'right' },
+    label: { fontSize: 14 * fontScale, color: colors.text, fontWeight: '700', marginBottom: spacing.xs,   },
+    input: { borderWidth: 1, borderColor: colors.inputBorder, backgroundColor: colors.inputBackground, color: colors.text, borderRadius: radius.md, padding: spacing.md, marginBottom: spacing.md,   },
     saveBtn: { backgroundColor: colors.buttonPrimary, padding: spacing.md, borderRadius: radius.md, alignItems: 'center' },
     photoBtn: { borderWidth: 1, borderColor: colors.primary, borderRadius: radius.md, padding: spacing.md, marginBottom: spacing.md, alignItems: 'center' },
     photoBtnText: { color: colors.primary, fontWeight: '700' },

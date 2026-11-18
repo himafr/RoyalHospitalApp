@@ -265,14 +265,14 @@ const getStyles = (colors: typeof lightMode, fontScale:number) =>
       fontSize: 13 * fontScale,
       color: colors.textMuted,
       fontWeight: '700',
-      textAlign: 'right',
+       
       marginBottom: 4,
     },
     priceValue: {
       fontSize: 22 * fontScale,
       fontWeight: '900',
       color: colors.text,
-      textAlign: 'right',
+       
     },
     currency: {
       fontSize: 14 * fontScale,
@@ -304,7 +304,7 @@ const getStyles = (colors: typeof lightMode, fontScale:number) =>
       fontWeight: '900',
       color: colors.text,
       flex: 1,
-      textAlign: 'right',
+       
     },
     countBadge: {
       backgroundColor: colors.primaryLight,
@@ -325,7 +325,7 @@ const getStyles = (colors: typeof lightMode, fontScale:number) =>
       fontSize: 15 * fontScale,
       color: colors.textSecondary,
       lineHeight: 24,
-      textAlign: 'right',
+       
     },
 
     // المميزات
@@ -346,7 +346,7 @@ const getStyles = (colors: typeof lightMode, fontScale:number) =>
     featureText: {
       fontSize: 14 * fontScale,
       color: colors.textSecondary,
-      textAlign: 'right',
+       
       flex: 1,
       lineHeight: 22,
     },
@@ -398,13 +398,13 @@ const getStyles = (colors: typeof lightMode, fontScale:number) =>
     footerPriceLabel: {
       fontSize: 11 * fontScale,
       color: colors.textMuted,
-      textAlign: 'right',
+       
     },
     footerPrice: {
       fontSize: 18 * fontScale,
       fontWeight: '900',
       color: colors.text,
-      textAlign: 'right',
+       
     },
     bookBtn: {
       flexDirection: 'row-reverse',

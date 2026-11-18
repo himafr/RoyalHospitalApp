@@ -90,13 +90,13 @@ const getStyles = (colors: typeof lightMode, fontScale:number) =>
       color: colors.text,
       fontSize: 16 * fontScale,
       fontWeight: '700',
-      textAlign: 'right',
+       
     },
     message: {
       color: colors.textSecondary,
       fontSize: 14 * fontScale,
       lineHeight: 21,
       marginTop: spacing.xs,
-      textAlign: 'right',
+       
     },
   });

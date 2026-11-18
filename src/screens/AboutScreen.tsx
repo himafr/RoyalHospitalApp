@@ -53,7 +53,7 @@ const getStyles = (colors: typeof lightMode, fontScale:number) =>
     heroTitle: { fontSize: 32 * fontScale, fontWeight: '900', color: colors.onPrimary, textAlign: 'center' },
     heroSub: { fontSize: 16 * fontScale, color: colors.onPrimary, opacity: 0.8, textAlign: 'center', marginTop: spacing.sm },
     section: { padding: spacing.lg },
-    sectionTitle: { fontSize: 22 * fontScale, fontWeight: '900', color: colors.text, textAlign: 'right', marginTop: spacing.md, marginBottom: spacing.sm },
+    sectionTitle: { fontSize: 22 * fontScale, fontWeight: '900', color: colors.text,   marginTop: spacing.md, marginBottom: spacing.sm },
     card: {
       backgroundColor: colors.card,
       padding: spacing.lg,
@@ -63,5 +63,5 @@ const getStyles = (colors: typeof lightMode, fontScale:number) =>
       marginBottom: spacing.lg,
       ...shadow.card,
     },
-    cardText: { fontSize: 15 * fontScale, color: colors.textSecondary, lineHeight: 24, marginTop: spacing.md, textAlign: 'right' },
+    cardText: { fontSize: 15 * fontScale, color: colors.textSecondary, lineHeight: 24, marginTop: spacing.md,   },
   });
