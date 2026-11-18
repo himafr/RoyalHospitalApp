@@ -12,10 +12,15 @@ beforeEach(() => {
 });
 
 describe('ThemeProvider preferences', () => {
-  it('restores saved font size and language', async () => {
+  it('restores the saved dark mode after restart', async () => {
     mockGetItem.mockImplementation(async key => {
-      if (key === 'royal_hospital.font_size') return 'large';
-      if (key === 'royal_hospital.language') return 'en';
+      if (key === 'settings') {
+        return JSON.stringify({
+          darkMode: false,
+          fontSize: 'MEDIUM',
+          language: 'ar',
+        });
+      }
       return null;
     });
 
@@ -35,7 +40,38 @@ describe('ThemeProvider preferences', () => {
       await Promise.resolve();
     });
 
-    expect(theme.fontSize).toBe('large');
+    expect(theme.isDark).toBe(false);
+  });
+
+  it('restores saved font size and language', async () => {
+    mockGetItem.mockImplementation(async key => {
+      if (key === 'settings') {
+        return JSON.stringify({
+          darkMode: true,
+          fontSize: 'LARGE',
+          language: 'en',
+        });
+      }
+      return null;
+    });
+
+    let theme!: ReturnType<typeof useTheme>;
+    function Harness() {
+      theme = useTheme();
+      return null;
+    }
+
+    await act(async () => {
+      ReactTestRenderer.create(
+        <ThemeProvider>
+          <Harness />
+        </ThemeProvider>,
+      );
+      await Promise.resolve();
+      await Promise.resolve();
+    });
+
+    expect(theme.fontSize).toBe('LARGE');
     expect(theme.fontScale).toBe(1.2);
     expect(theme.language).toBe('en');
     expect(theme.isRTL).toBe(false);
@@ -61,14 +97,14 @@ describe('ThemeProvider preferences', () => {
 
     expect(theme.isRTL).toBe(true);
     await act(async () => {
-      theme.setFontSize('small');
+      theme.setFontSize('SMALL');
       theme.setLanguage('en');
     });
 
     expect(theme.isRTL).toBe(false);
     expect(mockSetItem).toHaveBeenCalledWith(
       'royal_hospital.font_size',
-      'small',
+      'SMALL',
     );
     expect(mockSetItem).toHaveBeenCalledWith(
       'royal_hospital.language',
