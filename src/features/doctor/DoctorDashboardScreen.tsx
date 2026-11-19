@@ -10,9 +10,8 @@ import {
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import { useTheme } from '../../context/ModeContext';
 import { lightMode, spacing, radius, shadow } from '../../theme';
-import { formatLocalizedDate } from '../../utils/language';
+import { formatLocalizedDate } from '../../i18n/index';
 
-// ==================== MOCK DATA ====================
 const MOCK_DOCTOR = {
   name: 'محمد العلي',
   specialty: 'القلب والأوعية الدموية',

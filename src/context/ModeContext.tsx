@@ -9,10 +9,13 @@ import {
   useRef,
   useState,
 } from 'react';
-import { I18nManager, View } from 'react-native';
+import {  View } from 'react-native';
 import { darkMode, lightMode } from '../theme';
-import { Language, TranslationKey, translations } from '../utils/language';
+import { Language, TranslationKey, translations } from '../i18n/index';
 import { Settings } from '../../types/settings';
+import { updateSettings } from '../api/settings';
+import { ErrorToast } from 'react-native-toast-message';
+import { showErrorToast } from '../utils/toast';
 
 type FontSize = 'SMALL' | 'MEDIUM' | 'LARGE';
 type Preferences = { fontSize: FontSize; language: Language; isDark: boolean };
@@ -88,7 +91,18 @@ export const ThemeProvider = ({ children }: { children: ReactNode }) => {
         fontSize: v.fontSize,
         language: v.language,
       };
-      await AsyncStorage.setItem('settings', JSON.stringify(settings));
+      try{
+
+        await updateSettings(settings)
+        await AsyncStorage.setItem('settings', JSON.stringify(settings));
+      }catch (e){
+        if(e instanceof Error){
+          showErrorToast(e.message,e.name)
+        }else{
+          showErrorToast("something went wrong.","Internal Error")
+        }
+        
+      }
     },
     [],
   );
