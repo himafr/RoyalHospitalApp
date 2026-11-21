@@ -4,10 +4,10 @@ import { Alert, DeviceEventEmitter, Platform } from 'react-native';
 import { navigationRef } from '../navigation/RootNavigator';
 import { CommonActions } from '@react-navigation/native';
 
-export const BASE_URL =
-  Platform.OS === 'android'
-    ? 'http://10.0.2.2:8080/api'
-    : 'http://localhost:8080/api';
+export const BASE_URL ="http://3.236.166.9:8080/api"
+  // Platform.OS === 'android'
+  //   ? 'http://10.0.2.2:8080/api'
+  //   : 'http://localhost:8080/api';
 
 const client = axios.create({
   baseURL: BASE_URL,
@@ -18,7 +18,6 @@ const client = axios.create({
 client.interceptors.request.use(async config => {
   const token = await AsyncStorage.getItem('auth_token');
   if (token) config.headers.Authorization = `Bearer ${token}`;
-  await new Promise(r => setTimeout(r, 3000));
   return config;
 });
 

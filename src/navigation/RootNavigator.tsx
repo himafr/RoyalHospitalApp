@@ -4,7 +4,7 @@ import {
 } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import React from 'react';
-import { ActivityIndicator,  StyleSheet, View } from 'react-native';
+import { ActivityIndicator,  Image,  StyleSheet, View } from 'react-native';
 import { useAuth } from '../context/AuthContext';
 import { useTheme } from '../context/ModeContext';
 import ActivateScreen from '../features/auth/ActivateScreen';
@@ -26,7 +26,7 @@ export default function RootNavigator() {
   if (loading)
     return (
       <View style={[styles.loader, { backgroundColor: colors.background }]}>
-        <ActivityIndicator size="large" color={colors.primary} />
+      <Image  source={require('../assets/images/md.png')} />
       </View>
     );
 
