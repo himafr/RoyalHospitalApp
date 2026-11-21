@@ -6,7 +6,6 @@ export const login = (email: string, password: string) =>
 
 export const signup = (data: any) => client.post(BASE_URL+'/signup', data);
 
-// export const doctorSignup = (data: any) => client.post('/auth/doctor-signup', data);
 
 export const sendActivationCode = () =>
   client.post('/activation');

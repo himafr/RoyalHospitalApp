@@ -10,3 +10,6 @@ export const getServices = (params: GetServicesParams) =>
 
 export const getServiceById=(id:number)=>
   client.get("/services/"+id )
+
+export const searchServices = (searchTerm: string) =>
+  client.get('/services/search', { params: { s: searchTerm } });

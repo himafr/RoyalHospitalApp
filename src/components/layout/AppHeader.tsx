@@ -15,20 +15,20 @@ import Ionicons from 'react-native-vector-icons/Ionicons';
 import { useAuth } from '../../context/AuthContext';
 import { useTheme } from '../../context/ModeContext';
 import { lightMode, radius, shadow, spacing } from '../../theme';
+import VerifyMessage from '../VerifyMessage';
 
-export default function AppHeader({
-  title,
-}: {
-  title?: string;
-}) {
+export default function AppHeader({ title }: { title?: string }) {
   const insets = useSafeAreaInsets();
-  const { colors ,toggleMode,fontScale,t, isRTL} = useTheme();
-  
-  const { fullName, email, photoUrl, signOut } = useAuth();
+  const { colors, toggleMode, fontScale, t, isRTL } = useTheme();
+
+  const { fullName, email, photoUrl, signOut, isVerified } = useAuth();
   const navigation = useNavigation();
   const [menuVisible, setMenuVisible] = useState(false);
   const [isAvailable, setIsAvailable] = useState(true);
-  const styles = useMemo(() => createDirectionalStyles(getStyles(colors,fontScale), isRTL), [colors,fontScale, isRTL]);
+  const styles = useMemo(
+    () => createDirectionalStyles(getStyles(colors, fontScale), isRTL),
+    [colors, fontScale, isRTL],
+  );
 
   const userInitial = (fullName || email || 'U').trim().charAt(0).toUpperCase();
   return (
@@ -52,28 +52,8 @@ export default function AppHeader({
           />
         </TouchableOpacity>
       </View>
-      <View>
-        <TouchableOpacity
-          style={[
-            styles.statusBtn,
-            isAvailable ? styles.statusActive : styles.statusInactive,
-          ]}
-          onPress={() =>{ setIsAvailable(!isAvailable)
-            toggleMode()
-          }}
-        >
-          <View
-            style={[
-              styles.statusDot,
-              isAvailable ? styles.dotGreen : styles.dotRed,
-            ]}
-          />
-          <Text style={styles.statusText}>
-            {isAvailable ? t('available') : t('on_leave')}
-          </Text>
-        </TouchableOpacity>
-      </View>
 
+      {<VerifyMessage isVerified={isVerified()} navigation={navigation} />}
       <View style={styles.rightSection}>
         <Text style={styles.title}>{title || t('app_name')}</Text>
         <View style={styles.logoCircle}>
@@ -102,7 +82,7 @@ export default function AppHeader({
                   size={24}
                   color={colors.primary}
                 />
-                <Text style={styles.menuItemText}>{t("profile")}</Text>
+                <Text style={styles.menuItemText}>{t('profile')}</Text>
               </TouchableOpacity>
 
               <View style={styles.divider} />
@@ -115,7 +95,7 @@ export default function AppHeader({
                 }}
               >
                 <Ionicons name="cog" size={24} color={colors.primary} />
-                <Text style={styles.menuItemText}> {t("settings")}</Text>
+                <Text style={styles.menuItemText}> {t('settings')}</Text>
               </TouchableOpacity>
 
               <View style={styles.divider} />
@@ -133,7 +113,7 @@ export default function AppHeader({
                   size={24}
                   color={colors.primary}
                 />
-                <Text style={styles.menuItemText}>{t("about")}</Text>
+                <Text style={styles.menuItemText}>{t('about')}</Text>
               </TouchableOpacity>
 
               <View style={styles.divider} />
@@ -151,7 +131,7 @@ export default function AppHeader({
                   color={colors.error}
                 />
                 <Text style={[styles.menuItemText, { color: colors.error }]}>
-                  {t("logout")}
+                  {t('logout')}
                 </Text>
               </TouchableOpacity>
             </View>
@@ -162,7 +142,7 @@ export default function AppHeader({
   );
 }
 
-const getStyles = (colors: typeof lightMode, fontScale:number) =>
+const getStyles = (colors: typeof lightMode, fontScale: number) =>
   StyleSheet.create({
     headerContainer: {
       height: 85,
@@ -189,7 +169,11 @@ const getStyles = (colors: typeof lightMode, fontScale:number) =>
     statusDot: { width: 8, height: 8, borderRadius: 4 },
     dotGreen: { backgroundColor: colors.success },
     dotRed: { backgroundColor: colors.error },
-    statusText: { fontSize: 12 * fontScale, fontWeight: '700', color: colors.navText },
+    statusText: {
+      fontSize: 12 * fontScale,
+      fontWeight: '700',
+      color: colors.navText,
+    },
 
     rightSection: {
       flexDirection: 'row-reverse',

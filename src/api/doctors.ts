@@ -14,3 +14,6 @@ export const doctorUpdate = (params:any) =>
 
 export const getDoctor = () =>
   client.get('/doctors/me' );
+
+export const searchDoctors = (searchTerm: string) =>
+  client.get('/doctors/search', { params: { s: searchTerm } });
